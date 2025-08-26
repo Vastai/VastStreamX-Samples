@@ -1,0 +1,31 @@
+{
+    "OpType": "FUSION_OP_RGB_LETTERBOX_CVTCOLOR_NORM_TENSOR",
+    "OpConfig": {
+        "IimageFormat": "RGB_PLANAR",
+        "IimageWidth": 832,
+        "IimageHeight": 960,
+        "IimageWidthPitch": 832,
+        "IimageHeightPitch": 960,
+        "OimageWidth": 640,
+        "OimageHeight": 640,
+        "ResizeType": "BILINEAR_CV",
+        "Mean": [
+            0.5,
+            0.5,
+            0.5
+        ],
+        "Std": [
+            0.5,
+            0.5,
+            0.5
+        ],
+        "Padding": [
+            127,
+            127,
+            127
+        ],
+        "NormaType": "DIV255_MINUSMEAN_DIVSTD",
+        "ColorCvtCode": "RGB2BGR",
+        "TensorType0": "UINT8"
+    }
+}

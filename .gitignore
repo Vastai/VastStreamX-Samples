@@ -1,0 +1,14 @@
+build
+build_debug
+.vscode
+debug
+out
+.vs
+__pycache__/
+log/
+outfile/
+**/**__pycache__
+*.npz
+.toolbox
+*.html
+core.*

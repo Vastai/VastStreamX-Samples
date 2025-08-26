@@ -1,0 +1,19 @@
+{
+    "OpType": "FUSION_OP_RGB_RESIZE_CVTCOLOR_NORM_TENSOR",
+    "OpConfig": {
+        "IimageFormat": "BGR888",
+        "Mean": [
+            0.5,
+            0.5,
+            0.5
+        ],
+        "Std": [
+            0.5,
+            0.5,
+            0.5
+        ],
+        "NormaType": "DIV255_MINUSMEAN_DIVSTD",
+        "ColorCvtCode": "BGR2RGB",
+        "ResizeType": "BILINEAR"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "OpType": "SINGLE_OP_RESIZE",
+    "OpConfig": {
+        "IimageWidth": 512,
+        "IimageHeight": 512,
+        "IimageWidthPitch": 512,
+        "IimageHeightPitch": 512,
+        "OimageWidth": 640,
+        "OimageHeight": 640,
+        "OimageWidthPitch": 640,
+        "OimageHeightPitch": 640,
+        "IimageFormat": "RGB_PLANAR",
+        "OimageFormat": "RGB_PLANAR",
+        "ResizeType": "BILINEAR_CV"
+    }
+}

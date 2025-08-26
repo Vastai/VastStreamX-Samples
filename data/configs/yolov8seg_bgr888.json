@@ -1,0 +1,15 @@
+{
+    "OpType": "FUSION_OP_RGB_LETTERBOX_CVTCOLOR_NORM_TENSOR",
+    "OpConfig": {
+        "IimageFormat": "BGR888",
+        "EdgePaddingType": "CONSTANT",
+        "Padding": [
+            114,
+            114,
+            114
+        ],
+        "ResizeType": "BILINEAR",
+        "NormaType": "DIV255",
+        "ColorCvtCode": "BGR2RGB"
+    }
+}

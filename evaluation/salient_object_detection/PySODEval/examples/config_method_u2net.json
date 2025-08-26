@@ -1,0 +1,9 @@
+{
+  "Method1": {
+    "ECSSD": {
+      "path": "./u2net_output",
+      "prefix": "",
+      "suffix": ".png"
+    }
+  }
+}

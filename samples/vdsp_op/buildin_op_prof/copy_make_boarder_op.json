@@ -1,0 +1,22 @@
+{
+    "OpType": "SINGLE_OP_COPY_MAKE_BORDER",
+    "OpConfig": {
+        "IimageWidth": 210,
+        "IimageHeight": 222,
+        "IimageWidthPitch": 210,
+        "IimageHeightPitch": 222,
+        "OimageWidth": 224,
+        "OimageHeight": 224,
+        "IimageFormat": "BGR888",
+        "ResizeType": "BILINEAR_CV",
+        "Padding": [
+            114,
+            114,
+            114
+        ],
+        "EdgeTop": 1,
+        "EdgeBottom": 1,
+        "EdgeLeft": 5,
+        "EdgeRight": 9
+    }
+}

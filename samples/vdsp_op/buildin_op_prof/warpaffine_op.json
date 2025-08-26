@@ -1,0 +1,29 @@
+{
+    "OpType": "SINGLE_OP_WARP_AFFINE",
+    "OpConfig": {
+        "IimageWidth": 512,
+        "IimageHeight": 512,
+        "IimageWidthPitch": 512,
+        "IimageHeightPitch": 512,
+        "IimageFormat": "YUV_NV12",
+        "OimageWidth": 512,
+        "OimageHeight": 512,
+        "OimageWidthPitch": 512,
+        "OimageHeightPitch": 512,
+        "Flags": 1,
+        "BorderMode": "CONSTANT",
+        "BorderValue": [
+            114,
+            114,
+            114
+        ],
+        "M": [
+            0.7890625,
+            -0.611328125,
+            56.0,
+            0.611328125,
+            0.7890625,
+            -416.0
+        ]
+    }
+}

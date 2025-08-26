@@ -1,0 +1,32 @@
+{
+    "OpType": "SINGLE_OP_BATCH_CROP_RESIZE",
+    "OpConfig": {
+        "IimageWidth": 512,
+        "IimageHeight": 512,
+        "IimageWidthPitch": 512,
+        "IimageHeightPitch": 512,
+        "OimageWidth": 640,
+        "OimageHeight": 640,
+        "OimageWidthPitch": 640,
+        "OimageHeightPitch": 640,
+        "IimageFormat": "BGR888",
+        "ResizeType": "BILINEAR_CV",
+        "CropNum": 2,
+        "CropX": [
+            11,
+            23
+        ],
+        "CropY": [
+            22,
+            33
+        ],
+        "CropWidth": [
+            431,
+            120
+        ],
+        "CropHeight": [
+            330,
+            289
+        ]
+    }
+}

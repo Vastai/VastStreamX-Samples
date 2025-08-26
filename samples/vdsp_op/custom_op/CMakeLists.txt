@@ -1,0 +1,3 @@
+add_subdirectory(brightness)
+add_subdirectory(argmax)
+add_subdirectory(norma_tensor_3ch)

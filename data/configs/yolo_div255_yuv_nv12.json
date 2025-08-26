@@ -1,0 +1,8 @@
+{
+    "OpType": "FUSION_OP_YUV_NV12_LETTERBOX_2RGB_NORM_TENSOR",
+    "OpConfig": {
+        "NormaType": "DIV255",
+        "ColorCvtCode": "YUV2RGB_NV12",
+        "ResizeType": "BILINEAR_CV"
+    }
+}

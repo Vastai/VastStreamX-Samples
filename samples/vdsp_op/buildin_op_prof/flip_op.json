@@ -1,0 +1,15 @@
+{
+    "OpType": "SINGLE_OP_FLIP",
+    "OpConfig": {
+        "IimageWidth": 512,
+        "IimageHeight": 512,
+        "IimageWidthPitch": 512,
+        "IimageHeightPitch": 512,
+        "OimageWidth": 224,
+        "OimageHeight": 224,
+        "OimageWidthPitch": 224,
+        "OimageHeightPitch": 224,
+        "IimageFormat": "YUV_NV12",
+        "Direction": 0
+    }
+}

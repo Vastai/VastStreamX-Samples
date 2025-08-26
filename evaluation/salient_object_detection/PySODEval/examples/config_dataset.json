@@ -1,0 +1,14 @@
+{
+  "ECSSD": {
+    "image": {
+      "path": "/opt/vastai/vaststreamx/data/datasets/ECSSD/image",
+      "prefix": "",
+      "suffix": ".jpg"
+    },
+    "mask": {
+      "path": "/opt/vastai/vaststreamx/data/datasets/ECSSD/mask",
+      "prefix": "",
+      "suffix": ".png"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "OpType": "SINGLE_OP_CVT_COLOR",
+    "OpConfig": {
+        "IimageWidth": 512,
+        "IimageHeight": 512,
+        "IimageWidthPitch": 512,
+        "IimageHeightPitch": 512,
+        "OimageWidth": 512,
+        "OimageHeight": 512,
+        "OimageWidthPitch": 512,
+        "OimageHeightPitch": 512,
+        "ColorCvtCode": "YUV2RGB_NV12",
+        "ColorSpace": "BT601"
+    }
+}

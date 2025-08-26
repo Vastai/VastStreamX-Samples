@@ -1,0 +1,16 @@
+{
+    "OpType": "SINGLE_OP_CROP",
+    "OpConfig": {
+        "IimageWidth": 512,
+        "IimageHeight": 512,
+        "IimageWidthPitch": 512,
+        "IimageHeightPitch": 512,
+        "OimageWidth": 224,
+        "OimageHeight": 224,
+        "OimageWidthPitch": 224,
+        "OimageHeightPitch": 224,
+        "IimageFormat": "BGR888",
+        "CropX": 11,
+        "CropY": 22
+    }
+}

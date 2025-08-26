@@ -1,0 +1,5 @@
+add_subdirectory(det_yolo)
+add_subdirectory(detr)
+add_subdirectory(rtdetr)
+add_subdirectory(grounding_dino)
+add_subdirectory(alpr_yolov10n)

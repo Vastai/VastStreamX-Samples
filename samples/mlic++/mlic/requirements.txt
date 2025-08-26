@@ -1,0 +1,5 @@
+CompressAI==1.2.0b3
+pydantic==2.10.6
+einops
+timm
+opencv-python
