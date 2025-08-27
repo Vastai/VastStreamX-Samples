@@ -7,7 +7,6 @@ out
 __pycache__/
 log/
 outfile/
-**/**__pycache__
 *.npz
 .toolbox
 *.html
