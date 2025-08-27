@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/ifzhang/ByteTrack)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/mot/bytetrack) |
+|    来源   | [github](https://github.com/ifzhang/ByteTrack)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/mot/bytetrack) |
 |  输入 shape |   [ (1,3,800,1440) ]     |
 | INT8量化方式 |   percentile          |
 |  官方精度 | "MOTA": 87.0,"IDF1":80.1 |

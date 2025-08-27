@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v2.6.0/doc/doc_ch/algorithm_rec_crnn.md)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/text_recognition/crnn) |
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v2.6.0/doc/doc_ch/algorithm_rec_crnn.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/text_recognition/crnn) |
 |  输入 shape |   [ (1,3,32,100) ]     |
 | INT8量化方式 |   max          |
 |  官方精度 | "ACC": 81.04 |

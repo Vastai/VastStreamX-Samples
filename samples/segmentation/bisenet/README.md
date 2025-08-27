@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/zllrunning/face-parsing.PyTorch)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/segmentation/bisenet) |
+|    来源   | [github](https://github.com/zllrunning/face-parsing.PyTorch)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/bisenet) |
 |  输入 shape |   [ (1,3,512,512) ]     |
 | INT8量化方式 |   kl_divergence         |
 |  官方精度 |  "mIOU": 0.744   |

@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/xuebinqin/U-2-Net/tree/master)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/salient_object_detection/u2net) |
+|    来源   | [github](https://github.com/xuebinqin/U-2-Net/tree/master)  [modelzoo](-) |
 |  输入 shape |   [ (1,3,320,320) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  "mae":0.033, "avgfmeasure": 0.922, "sm": 0.928    |

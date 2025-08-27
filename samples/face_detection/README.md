@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/biubug6/Pytorch_Retinaface)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/face_detection/retinaface) |
+|    来源   | [github](https://github.com/biubug6/Pytorch_Retinaface)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/face_detection/retinaface) |
 |  输入 shape |   [ (1,3,640,640) ]     |
 | INT8量化方式 |   percentile          |
 |  官方精度 | "Easy": 94.33, "Medium": 90.90, "Hard": 66.40 |

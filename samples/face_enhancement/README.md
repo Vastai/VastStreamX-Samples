@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/yangxy/GPEN)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/super_resolution/gpen) |
+|    来源   | [github](https://github.com/yangxy/GPEN)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/image_colorization/gpen) |
 |  输入 shape |   [ (1,3,512,512) ]     |
 | INT8量化方式 |   mse          |
 |  官方精度 | "PSNR": - , "SSIM": - |

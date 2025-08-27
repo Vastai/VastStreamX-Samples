@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | github  [modelzoo](http://gitlabdev.vastai.com/Algorithm/algorithm_modelzoo/-/tree/develop/classification/mobilevit) |
+|    来源   | github  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/mobilevit) |
 |  输入 shape |   [ (1,3,224,224) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |   -          |

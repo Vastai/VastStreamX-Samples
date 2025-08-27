@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/IDEA-Research/GroundingDINO)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/detection/grounding_dino) |
+|    来源   | [github](https://github.com/IDEA-Research/GroundingDINO)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/grounding_dino) |
 |  输入 shape |  "text": [(1,195),(1,195),(1,195),(1,195,195)], "image":[(1,3,800,1333)]  |
 | INT8量化方式 |   -          |
 |  官方精度 |  "mAP@.5":   - ;     "mAP@.5:.95":  48.4   |

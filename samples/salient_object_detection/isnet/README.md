@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/xuebinqin/DIS)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/salient_object_detection/isnet) |
+|    来源   | [github](https://github.com/xuebinqin/DIS)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/salient_object_detection/isnet) |
 |  输入 shape |   [ (1,3,320,320) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  "mae":0.114, "avgfmeasure": 0.672, "sm": 0.789    |

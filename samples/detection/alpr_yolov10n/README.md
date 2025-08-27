@@ -4,8 +4,8 @@
 
 ## 数据准备
 
-下载模型 [yolov10n_alpr.tar.gz](http://cee-release.vastai.com:32482/vastpipe-samples/data/x86_linux_models.ai.2.8.1/yolov10n_alpr.tar.gz) 到 /opt/vastai/vaststreamx/data/models 里并解压
-下载模型 [PP-OCRv4_rec_infer.tar.gz](http://cee-release.vastai.com:32482/vastpipe-samples/data/x86_linux_models.ai.2.8.1/PP-OCRv4_rec_infer.tar.gz) 到 /opt/vastai/vaststreamx/data/models 里并解压
+下载模型 yolov10n_alpr 到 /opt/vastai/vaststreamx/data/models 里并解压
+下载模型 PP-OCRv4_rec 到 /opt/vastai/vaststreamx/data/models 里并解压
 
 ## C++ sample
 

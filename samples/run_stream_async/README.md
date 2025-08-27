@@ -12,7 +12,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/resnet.py)  [modelzoo](http://gitlabdev.vastai.com/Algorithm/algorithm_modelzoo/-/tree/develop/classification/resnet) |
+|    来源   | [github](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/resnet.py)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/resnet) |
 |  输入 shape |   [ (1,3,224,224) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  top1_rate:76.130 ; top5_rate: 92.862       |

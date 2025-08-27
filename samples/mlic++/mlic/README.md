@@ -17,9 +17,9 @@
 
 ## 数据集准备
 
-下载 mlic 模型 [mlic.tar.gz](http://cee-release.vastai.com:32482/vastpipe-samples/data/x86_linux_models.ai.2.8.1/mlic.tar.gz) 到 /opt/vastai/vaststreamx/data/models 里并解压
-下载 图片集 [kodak_768_512.tar.gz](http://cee-release.vastai.com:32482/vastpipe-samples/data/datasets/kodak_768_512.tar.gz) 到 /opt/vastai/vaststreamx/data/datasets 里并解压
-下载 mlic 预训练模型 [mlicpp_mse_q5_2960000.pth.tar](http://cee-release.vastai.com:32482/vastpipe-samples/data/pre_trained/mlicpp_mse_q5_2960000.pth.tar) 到 /opt/vastai/vaststreamx/data/pre-trained 里，不用解压
+下载 mlic 模型  到 /opt/vastai/vaststreamx/data/models 里并解压
+下载 图片集 kodak_768_512.tar.gz 到 /opt/vastai/vaststreamx/data/datasets 里并解压
+下载 mlic 预训练模型  mlicpp_mse_q5_2960000.pth.tar  到 /opt/vastai/vaststreamx/data/pre-trained 里，不用解压
 
 ## Python Sample
 

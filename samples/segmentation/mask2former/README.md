@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/facebookresearch/Mask2Former)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/segmentation/mask2former) |
+|    来源   | [github](https://github.com/facebookresearch/Mask2Former)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/mask2former) |
 |  输入 shape |   [ (1,3,1024,1024) ]     |
 | INT8量化方式 |   -         |
 |  官方精度 | Detection  "mAP@.5:.95": - ;  Segmentation  "mAP@.5:.95":  43.7   |

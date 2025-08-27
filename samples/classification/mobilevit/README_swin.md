@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/microsoft/Swin-Transformer)  [modelzoo](http://gitlabdev.vastai.com/Algorithm/algorithm_modelzoo/-/tree/develop/classification/swin_transformer) |
+|    来源   | [github](https://github.com/microsoft/Swin-Transformer)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/swin_transformer) |
 |  输入 shape |   [ (1,3,224,224) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  top1_rate:83.2    top5_rate:96.2         |

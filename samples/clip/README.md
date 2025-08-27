@@ -8,7 +8,7 @@ C++ 与 Python Sample 均需要安装 python clip 包，安装方法 pip3 instal
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/openai/CLIP.git)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/classification/vision_transformer) |
+|    来源   | [github](https://github.com/openai/CLIP.git) [modelzoo](-) |
 |  输入 shape | image: [ (1,3,224,224) ]   text: [(1,77)]  |
 | INT8量化方式 |   -          |
 |  官方精度 |  -      |

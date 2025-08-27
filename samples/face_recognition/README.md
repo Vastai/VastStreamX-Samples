@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/timesler/facenet-pytorch)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/face_recognize/facenet) |
+|    来源   | [github](https://github.com/timesler/facenet-pytorch)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/face_recognize/facenet) |
 |  输入 shape |   [ (1,3,160,160) ]     |
 | INT8量化方式 |   percentile          |
 |  官方精度 | "ACC":0.9965, "AUC":0.9997,   "ERR":0.0050   |

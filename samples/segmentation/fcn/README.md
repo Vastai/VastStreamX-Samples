@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/Tramac/awesome-semantic-segmentation-pytorch/blob/master/core/models/fcn.py)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/segmentation/fcn) |
+|    来源   | [github](https://github.com/Tramac/awesome-semantic-segmentation-pytorch/blob/master/core/models/fcn.py)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/fcn) |
 |  输入 shape |   [ (1,3,320,320) ]     |
 | INT8量化方式 |   kl_divergence         |
 |  官方精度 |  "mIOU": 53.339   |

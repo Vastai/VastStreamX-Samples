@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/facebookresearch/dinov2)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/image_retrieval/dinov2) |
+|    来源   | [github](https://github.com/facebookresearch/dinov2)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/image_retrieval/dinov2) |
 |  输入 shape |   [ (1,3,224,224) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  -    |

@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/AILab-CVC/YOLO-World)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/detection/yolo_world) |
+|    来源   | [github](https://github.com/AILab-CVC/YOLO-World)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/yolo_world) |
 |  输入 shape |  "text": [(1,16),(1,16)], "image":[(1,3,1280,1280),(1203,512)]  |
 | INT8量化方式 |   -          |
 |  官方精度 |  "mAP@.5":   45.5 ;     "mAP@.5:.95": 34.6  |

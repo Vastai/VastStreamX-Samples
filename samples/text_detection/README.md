@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/algorithm_det_db.md)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/text_detection/dbnet) |
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/algorithm_det_db.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/text_detection/dbnet) |
 |  输入 shape |   [ (1,3,736,1280) ]     |
 | INT8量化方式 |   kl_divergence        |
 |  官方精度 | "precision": 0.8641, "recall": 0.7872, "Hmean": 0.8238 |

@@ -5,7 +5,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/ultralytics/yolov5)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/detection/yolov5) |
+|    来源   | [github](https://github.com/ultralytics/yolov5)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/yolov5) |
 |  输入 shape |   [ (1,3,640,640) ]     |
 | INT8量化方式 |   percentile          |
 |  官方精度 |  "mAP@.5":   64.1  ;     "mAP@.5:.95":  45.4    |

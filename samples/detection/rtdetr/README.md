@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/lyuwenyu/RT-DETR)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/detection/rtdetr) |
+|    来源   | [github](https://github.com/lyuwenyu/RT-DETR)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/rtdetr) |
 |  输入 shape |   [ (1,3,1066,800) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  "mAP@.5":   63.8 ;     "mAP@.5:.95":  46.5    |

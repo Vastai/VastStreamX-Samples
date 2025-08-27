@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/nutonomy/second.pytorch)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/point_pillar/PointPillars) |
+|    来源   | [github](https://github.com/nutonomy/second.pytorch)  [modelzoo](-) |
 |  输入 shape |   [ (16000,32,10,3,16000,1,16000) ]     |
 | INT8量化方式 |   percentile         |
 |  官方精度 |  "Car@0.7":86.4516/77.2855/74.6538, "Pedestrian@0.5":57.7573/52.3014/47.9166, "Cyclist@0.5":79.9918/62.6580/59.6744 |

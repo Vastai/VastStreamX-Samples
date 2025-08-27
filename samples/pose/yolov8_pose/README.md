@@ -6,7 +6,7 @@
 
 | 模型信息       | 值                                                                                                                                              |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 来源           | [github](https://github.com/ultralytics/ultralytics) [modelzoo](http://192.168.20.70/VastML/algorithm_modelzoo/-/tree/develop/pose/yolov8_pose) |
+| 来源           | [github](https://github.com/ultralytics/ultralytics) [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/pose/yolov8_pose) |
 | 输入 shape     | [ (1,3,640,640) ]                                                                                                                               |
 | INT8量化方式   | percentile                                                                                                                                      |
 | 官方精度       | Pose "mAP@.5:.95":60.0                                                                                                                          |

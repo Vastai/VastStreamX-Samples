@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/starhiking/HeatmapInHeatmap)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/face_alignment/hih) |
+|    来源   | [github](https://github.com/starhiking/HeatmapInHeatmap)  [modelzoo](-) |
 |  输入 shape |   [ (1,3,256,256) ]     |
 | INT8量化方式 |   percentile          |
 |  官方精度 |  "NME":  0.0408    |

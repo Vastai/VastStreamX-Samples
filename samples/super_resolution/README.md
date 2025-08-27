@@ -7,7 +7,7 @@ edsr 三件套的输入是 (h x w) = (256 x 256) ，输出是 (h x w) = (512 x 5
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/yulunzhang/RCAN)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/super_resolution/rcan) |
+|    来源   | [github](https://github.com/yulunzhang/RCAN)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/super_resolution/rcan) |
 |  输入 shape |   [ (1,3,1080,1920) ]     |
 | INT8量化方式 |   max        |
 |  官方精度 | "PSNR":  32.785, "SSIM": 0.776 |

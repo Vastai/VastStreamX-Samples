@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | huggingface  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/classification/vision_transformer) |
+|    来源   | huggingface  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/vision_transformer) |
 |  输入 shape |   [ (1,3,224,224) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 |  -      |

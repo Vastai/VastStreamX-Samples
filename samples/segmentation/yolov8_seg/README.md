@@ -6,7 +6,7 @@
 ## 模型信息
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/ultralytics/ultralytics)  [modelzoo](http://gitlabdev.vastai.com/VastML/algorithm_modelzoo/-/tree/develop/segmentation/yolov8_seg) |
+|    来源   | [github](https://github.com/ultralytics/ultralytics)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/yolov8_seg) |
 |  输入 shape |   [ (1,3,1024,1024) ]     |
 | INT8量化方式 |   -         |
 |  官方精度 | Detection  "mAP@.5:.95": - ;  Segmentation  "mAP@.5:.95":  40.8   |
