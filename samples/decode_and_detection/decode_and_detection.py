@@ -66,6 +66,12 @@ def argument_parser():
         type=int,
         help="number of channels to decode",
     )
+    parser.add_argument(
+        "--drop_per_frames",
+        default=0,
+        type=int,
+        help="drop one frame per frames",
+    )
     args = parser.parse_args()
     return args
 
@@ -98,12 +104,20 @@ def process(args, index=0):
     cap = vsx.VideoCapture(
         args.uri, vsx.CaptureMode.FULLSPEED_MODE, args.device_id, True
     )
-
+    frame_count = 0
     cnt = 0
     tick = time.time()
     while True:
         ret, image, _ = cap.read()
         if ret:
+
+            # drop frames
+            frame_count += 1
+            if frame_count == args.drop_per_frames:
+                frame_count = 0
+                print("drop frame")
+                continue
+
             objects = detector.process(image)
             if args.output_path:
                 draw_results(image, objects, cnt, args.output_path)

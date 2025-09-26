@@ -34,13 +34,15 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("output_path", '\0', "output path", false, "");
   args.add<uint32_t>("num_channels", '\0', "number of channles to decode",
                      false, 1);
+  args.add<uint32_t>("drop_per_frames", '\0', "drop one frame per frames",
+                     false, 0);
   args.parse_check(argc, argv);
   return args;
 }
 
 void process(std::string uri, const std::string model_prefix,
              std::string vdsp_params, uint32_t device_id, float threshold,
-             const std::string output_path, uint32_t index) {
+             const std::string output_path, uint32_t index,uint64_t drop_per_frames=0) {
   uint32_t batch_size = 1;
   vsx::Detector detector(model_prefix, vdsp_params, batch_size, device_id);
   detector.SetThreshold(threshold);
@@ -48,6 +50,7 @@ void process(std::string uri, const std::string model_prefix,
   vsx::VideoCapture video_capture(uri, vsx::FULLSPEED_MODE, device_id);
   uint32_t idx = 0;
   auto tick = std::chrono::high_resolution_clock::now();
+  uint64_t frame_count = 0;
   while (1) {
     vsx::Image image;
     bool flag = video_capture.read(image);
@@ -55,7 +58,14 @@ void process(std::string uri, const std::string model_prefix,
       std::cout << "cap.read() returns 0\n";
       break;
     }
-
+    // drop frame per frames
+    frame_count++;
+    if (frame_count == drop_per_frames) {
+      std::cout << "drop frame\n";
+      frame_count = 0;
+      continue;
+    }
+    
     auto result = detector.Process(image);
     if (!output_path.empty()) {
       auto res_shape = result.Shape();
@@ -130,11 +140,12 @@ int main(int argc, char** argv) {
   uint32_t device_id = args.get<uint32_t>("device_id");
   float threshold = args.get<float>("threshold");
   std::string output_path = args.get<std::string>("output_path");
+  uint32_t drop_per_frames = args.get<uint32_t>("drop_per_frames");
 
   for (int i = 0; i < num_channels; i++) {
     std::shared_ptr<std::thread> t =
         std::make_shared<std::thread>(process, uri, model_prefix, vdsp_params,
-                                      device_id, threshold, output_path, i);
+                                      device_id, threshold, output_path, i,drop_per_frames);
     vec_of_threads.emplace_back(t);
   }
   for (const std::shared_ptr<std::thread>& t : vec_of_threads) {

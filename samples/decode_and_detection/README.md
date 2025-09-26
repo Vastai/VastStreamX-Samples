@@ -7,15 +7,16 @@
 ### decode_and_detection 命令参数说明
 ```bash
 options:
-  -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov5m-int8-percentile-1_3_640_640-vacc-pipeline/mod])
-      --hw_config       hw-config file of the model suite (string [=])
-      --vdsp_params     vdsp preprocess parameter file (string [=../data/configs/yolo_div255_yuv_nv12.json])
-  -d, --device_id       device id to run (unsigned int [=0])
-  -t, --threshold       threshold for detection (float [=0.1])
-      --uri             uri to decode (string [=../data/videos/test.mp4])
-      --output_path     output path (string [=])
-      --num_channels    number of channles to decode (unsigned int [=1])
-  -?, --help            print this message
+  -m, --model_prefix       model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov5m-int8-percentile-1_3_640_640-vacc-pipeline/mod])
+      --hw_config          hw-config file of the model suite (string [=])
+      --vdsp_params        vdsp preprocess parameter file (string [=../data/configs/yolo_div255_yuv_nv12.json ])
+  -d, --device_id          device id to run (unsigned int [=0])
+  -t, --threshold          threshold for detection (float [=0.1])
+      --uri                uri to decode (string [=../data/videos/test.mp4])
+      --output_path        output path (string [=])
+      --num_channels       number of channles to decode (unsigned int [=1])
+      --drop_per_frames    drop one frame per frames (unsigned int [=0])
+  -?, --help               print this message
 ```
 
 ### decode_and_detection 命令示例
@@ -54,6 +55,8 @@ optional arguments:
                         output path
   --num_channels NUM_CHANNELS
                         number of channels to decode
+  --drop_per_frames DROP_PER_FRAMES
+                        drop one frame per frames
 ```
 ### decode_and_detection.py 脚本运行示例
 
