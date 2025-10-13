@@ -8,7 +8,7 @@
  */
 #include "glog/logging.h"
 #include "vaststreamx/vaststreamx.h"
-
+#include <iostream>
 int main(int argc, char* argv[]) {
   // init card
   CHECK(vsx::SetDevice(0) == 0) << "SetDevice 0 failed";

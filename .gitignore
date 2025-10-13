@@ -11,3 +11,4 @@ outfile/
 .toolbox
 *.html
 core.*
+box_overlaps.c
