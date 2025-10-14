@@ -67,11 +67,24 @@ def argument_parser():
         help="number of channels to decode",
     )
     parser.add_argument(
-        "--drop_per_frames",
+        "--keep",
+        default=1,
+        type=int,
+        help="keep num"
+    )
+    parser.add_argument(
+        "--drop",
         default=0,
         type=int,
-        help="drop one frame per frames",
+        help="drop num"
     )
+    parser.add_argument(
+        "--uri_list",
+        default="",
+        help="input uri list"
+    )
+    
+    
     args = parser.parse_args()
     return args
 
@@ -96,46 +109,56 @@ def draw_results(yuv_frame, objects, idx, output_path):
     return img_rgb
 
 
-def process(args, index=0):
+def process(args, input_uri, index=0):
     batch_size = 1
     detector = Detector(args.model_prefix, args.vdsp_params, batch_size, args.device_id)
     detector.set_threshold(args.threshold)
 
     cap = vsx.VideoCapture(
-        args.uri, vsx.CaptureMode.FULLSPEED_MODE, args.device_id, True
+        input_uri, vsx.CaptureMode.FULLSPEED_MODE, args.device_id, True
     )
-    frame_count = 0
+
     cnt = 0
     tick = time.time()
+    count = 0
+    video_count = 0
     while True:
         ret, image, _ = cap.read()
-        if ret:
-
-            # drop frames
-            frame_count += 1
-            if frame_count == args.drop_per_frames:
-                frame_count = 0
-                print("drop frame")
-                continue
-
-            objects = detector.process(image)
-            if args.output_path:
-                draw_results(image, objects, cnt, args.output_path)
-            tock = time.time()
-            cnt += 1
-            print(f"{index}th Decode+AI @ {cnt/(tock-tick)} fps")
-        else:
-            print("cap.read() returns 0")
-            break
+        count+=1
+        video_count+=1
+        if(count <= args.keep):
+            if ret:
+                objects = detector.process(image)
+                if args.output_path:
+                    draw_results(image, objects, cnt, args.output_path)
+                tock = time.time()
+                cnt += 1
+                print(f"{index}th Decode+AI @ {cnt/(tock-tick)} fps")
+            else:
+                print("cap.read() returns 0")
+                break
+        
+        if(count == args.keep+args.drop):
+            count = 0
 
     cap.release()
-
 
 if __name__ == "__main__":
     args = argument_parser()
     process_list = []
-    for i in range(args.num_channels):
-        p = multiprocessing.Process(target=process, args=(args, i))
+
+    input_list = []
+    if args.uri_list != "":
+        with open(args.uri_list, "rt") as f:
+            input_list=[line.strip() for line in f.readlines()]
+        print(f"input_list:{input_list}");
+    elif args.uri != "":
+        for i in range(args.num_channels):
+            input_list.append(args.uri)
+
+    for index, input_uri in enumerate(input_list):
+        print(f"input_uri:{input_uri}")
+        p = multiprocessing.Process(target=process, args=(args, input_uri, index))
         process_list.append(p)
         p.start()
         time.sleep(0.5)
