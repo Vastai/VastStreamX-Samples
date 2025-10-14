@@ -34,66 +34,48 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("output_path", '\0', "output path", false, "");
   args.add<uint32_t>("num_channels", '\0', "number of channles to decode",
                      false, 1);
-  args.add<uint32_t>("drop_per_frames", '\0', "drop one frame per frames",
-                     false, 0);
+  args.add<uint32_t>("keep", '\0', "keep num", false, 1);
+  args.add<uint32_t>("drop", '\0', "drop num", false, 0);
+  args.add<std::string>("uri_list", '\0', "input list", false, "");
   args.parse_check(argc, argv);
   return args;
 }
 
 void process(std::string uri, const std::string model_prefix,
              std::string vdsp_params, uint32_t device_id, float threshold,
-             const std::string output_path, uint32_t index,uint64_t drop_per_frames=0) {
+             const std::string output_path, uint32_t index, uint32_t keep, uint32_t drop) {
   uint32_t batch_size = 1;
   vsx::Detector detector(model_prefix, vdsp_params, batch_size, device_id);
   detector.SetThreshold(threshold);
   vsx::SetDevice(device_id);
   vsx::VideoCapture video_capture(uri, vsx::FULLSPEED_MODE, device_id);
-  uint32_t idx = 0;
+  uint32_t video_count_ =  0;
+  uint32_t yolo_count_ = 0;
+  uint32_t count = 0;
   auto tick = std::chrono::high_resolution_clock::now();
-  uint64_t frame_count = 0;
+  std::chrono::time_point<std::chrono::high_resolution_clock> last_print_time;
+  last_print_time = std::chrono::high_resolution_clock::now();
+
+  vsx::Image image;
   while (1) {
-    vsx::Image image;
     bool flag = video_capture.read(image);
     if (!flag) {
-      std::cout << "cap.read() returns 0\n";
+      std::cout << "channel:"<<index<<" video_capture read file EOF, finished!\n";
+      video_capture.release();
+      std::cout << "channel:"<<index<<" release finished!\n";
       break;
     }
-    // drop frame per frames
-    frame_count++;
-    if (frame_count == drop_per_frames) {
-      std::cout << "drop frame\n";
-      frame_count = 0;
-      continue;
-    }
-    
-    auto result = detector.Process(image);
-    if (!output_path.empty()) {
+    ++count;
+    ++video_count_;
+    if(count <= keep){
+      ++yolo_count_;
+      auto result = detector.Process(image);
       auto res_shape = result.Shape();
       const float* res_data = result.Data<float>();
 
-      vsx::Image cpu_image(image.Format(), image.Width(), image.Height(),
-                           vsx::Context::CPU(0), image.WidthPitch(),
-                           image.HeightPitch(), image.GetDType());
-      cpu_image.CopyFrom(image);
-
-      vsx::Image unpitch_image(image.Format(), image.Width(), image.Height(),
-                               vsx::Context::CPU());
-      unpitch_image.CopyFrom(cpu_image);
-      uint8_t* yuv_nv12 = unpitch_image.MutableData<uint8_t>();
-      int width = unpitch_image.WidthPitch() > unpitch_image.Width()
-                      ? unpitch_image.WidthPitch()
-                      : unpitch_image.Width();
-      int height = unpitch_image.HeightPitch() > unpitch_image.Height()
-                       ? unpitch_image.HeightPitch()
-                       : unpitch_image.Height();
-
-      cv::Mat img_rgb;
-      // nv12 -> bgr_interleave
-      cv::Mat nv12_opencv(height * 3 / 2, width, CV_8UC1, yuv_nv12, width);
-      cv::cvtColor(nv12_opencv, img_rgb, cv::COLOR_YUV2BGR_NV12);
       DetecResultInfo det_result;
       det_result.channelId = index;
-      det_result.frameId = idx++;
+      det_result.frameId = count;
       for (int j = 0; j < res_shape[0]; j++) {
         if (res_data[0] < 0) break;
         ObjectData object;
@@ -105,25 +87,30 @@ void process(std::string uri, const std::string model_prefix,
         object.height = res_data[5];
         det_result.objects.emplace_back(object);
         det_result.obj_nums++;
-        std::cerr << "classId: " << res_data[0] << ", score: " << res_data[1]
-                  << "\n";
-        std::cerr << "bounding_box: xmin:" << res_data[2]
-                  << ", ymin:" << res_data[3] << ", width:" << res_data[4]
-                  << ", height:" << res_data[5] << "\n";
-        cv::Rect2f rect{res_data[2], res_data[3], res_data[4], res_data[5]};
-        cv::rectangle(img_rgb, rect, cv::Scalar(0, 255, 0), 2);
+        // std::cerr << "classId: " << res_data[0] << ", score: " << res_data[1]
+        //           << "\n";
+        // std::cerr << "bounding_box: xmin:" << res_data[2]
+        //           << ", ymin:" << res_data[3] << ", width:" << res_data[4]
+        //           << ", height:" << res_data[5] << "\n";
         res_data += vsx::kDetectionOffset;
       }
-      std::string ouput_file =
-          output_path + "/img_" + std::to_string(idx) + ".png";
-      cv::imwrite(ouput_file, img_rgb);
+    }
+    if(count == keep+drop){
+      count = 0;
+    }
+    auto tock = std::chrono::high_resolution_clock::now();
+    auto cost =
+        std::chrono::duration_cast<std::chrono::milliseconds>(tock - tick)
+            .count();
+    auto elapsed_since_last_print = std::chrono::duration_cast<std::chrono::seconds>(tock - last_print_time).count();
 
-      auto tock = std::chrono::high_resolution_clock::now();
-      auto cost =
-          std::chrono::duration_cast<std::chrono::milliseconds>(tock - tick)
-              .count();
-      std::cout << index << "th Decode+AI @ " << (idx * 1000.0 / cost)
-                << " fps\n";
+    if (elapsed_since_last_print >= 5) {
+        // std::cout << index << "th Decode @"
+        //           << (video_count_ * 1000.0 / cost)
+        //           << " fps, AI @:"
+        //           << (yolo_count_ * 1000.0 / cost)
+        //           << "fps" << std::endl;
+        last_print_time = tock;  // 更新上次打印时间
     }
   }
 }
@@ -140,12 +127,27 @@ int main(int argc, char** argv) {
   uint32_t device_id = args.get<uint32_t>("device_id");
   float threshold = args.get<float>("threshold");
   std::string output_path = args.get<std::string>("output_path");
-  uint32_t drop_per_frames = args.get<uint32_t>("drop_per_frames");
+  uint32_t keep = args.get<uint32_t>("keep");
+  uint32_t drop = args.get<uint32_t>("drop");
+  std::string uri_list = args.get<std::string>("uri_list");
+  std::vector<std::string> input_list;
+  if (!uri_list.empty()) {
+    input_list = vsx::ReadFileList(uri_list);
+    num_channels = input_list.size();
+  } else if (!uri.empty()) {
+    for (uint32_t i = 0; i < num_channels; i++) {
+      input_list.emplace_back(uri);
+    }
+  } else {
+    std::cerr << "uri_list is empty and  uri is empty too!" << std::endl;
+    return 0;
+  }
+
 
   for (int i = 0; i < num_channels; i++) {
     std::shared_ptr<std::thread> t =
-        std::make_shared<std::thread>(process, uri, model_prefix, vdsp_params,
-                                      device_id, threshold, output_path, i,drop_per_frames);
+        std::make_shared<std::thread>(process, input_list[i], model_prefix, vdsp_params,
+                                      device_id, threshold, output_path, i, keep, drop);
     vec_of_threads.emplace_back(t);
   }
   for (const std::shared_ptr<std::thread>& t : vec_of_threads) {
