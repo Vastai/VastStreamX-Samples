@@ -1,6 +1,6 @@
 # Rt-Detr Sample
 
-本 目录 提供基于 rt-detr 模型的目标检测 sample
+本目录提供基于 rt-detr 模型的目标检测 sample
 
 
 ## 模型信息

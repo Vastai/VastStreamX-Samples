@@ -1,12 +1,12 @@
-# CLIP Sample 
+# SIGLIP Sample 
 
 本 sample 提供 siglip 算法的基本用法。
 
 
 ## 模型信息
 |    模型信息   |  值       |
-|-----------|-----------|
-|    来源   | [github](https://huggingface.co/google/siglip-so400m-patch14-384) 
+|--------------|-----------|
+|     来源     | [github](https://huggingface.co/google/siglip-so400m-patch14-384) |
 
 ## 数据准备
 下载elf elf.tar.gz 并解压 到 /opt/vastai/vaststreamx/data/ 里  
@@ -49,9 +49,9 @@ python3 siglip_sample.py \
 --device_id 0 \
 --input_file ../../data/images/CLIP.png 
 
-#结果示例
+# 结果示例
 score: [[0.5303]], score_onnx: [[0.53075683]], cos:1
-#跑数据集, 计算vsx输出结果 与 onnx 输出结果的余旋相似度，统计其平均值
+# 跑数据集, 计算vsx输出结果 与 onnx 输出结果的余旋相似度，统计其平均值
 python3 siglip_sample.py \
 --model_prefix /opt/vastai/vaststreamx/data/siglip/models/qnn/siglip-instruct-sim_vacc_runmodel \
 --onnx_path /opt/vastai/vaststreamx/data/siglip/models/siglip-instruct-sim.onnx \
@@ -66,9 +66,7 @@ Maximum Cosine Similarity: 1
 Minimum Cosine Similarity: 0.9999998807907104
 ```
 
-### siglip_image 模型性能分析
-
-siglip_image_prof.py 命令行参数说明
+### siglip_image_prof.py 命令行参数说明
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -96,7 +94,7 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
-siglip_image_prof.py 命令行示例
+### siglip_image_prof.py 命令行示例
 ```bash
 # 测试最大吞吐
 python3 siglip_image_prof.py \
@@ -124,7 +122,7 @@ python3 siglip_image_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-siglip_image_prof.py 命令行结果示例
+### siglip_image_prof.py 命令行结果示例
 ```bash
 # 测试最大吞吐
 - number of instances: 1

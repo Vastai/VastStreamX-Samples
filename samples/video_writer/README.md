@@ -1,5 +1,5 @@
-# Video Encoder Sample
-本目录提供 Video Encoder  sample, 视频编码支持 YUV_NV12 格式的图片输入
+# Video Writer Sample
+本目录提供 Video Writer sample, 视频编码支持 YUV_NV12 格式的图片输入
 
 数据准备:
 将 videos.tar.gz 解压到 /opt/vastai/vaststreamx/data/里得到 videos文件夹
@@ -22,7 +22,7 @@ options:
 ### video_writer 运行示例
 在 build 目录里执行   
 ```bash
-#h264文件编码示例
+# h264文件编码示例
 ./vaststreamx-samples/bin/video_writer \
 --device_id 0 \
 --input_file /opt/vastai/vaststreamx/data/videos/yuv/bbs_sunflower_nv12_1920x1080_30.yuv \
@@ -31,9 +31,9 @@ options:
 --frame_rate 30 \
 --codec_type h264 \
 --output_uri ./test_h264.ts
-#结果保存为 ./test_h264.ts，可以用 PotPlayer 播放器查看 编码得到的视频
+# 结果保存为 ./test_h264.ts，可以用 PotPlayer 播放器查看 编码得到的视频
 
-#h265文件编码示例
+# h265文件编码示例
 ./vaststreamx-samples/bin/video_writer \
 --device_id 0 \
 --input_file /opt/vastai/vaststreamx/data/videos/yuv/bbs_sunflower_nv12_1920x1080_30.yuv \
@@ -42,7 +42,7 @@ options:
 --frame_rate 30 \
 --codec_type h265 \
 --output_uri ./test_h265.ts
-#结果保存为 test_h265.ts PotPlayer 播放器查看 编码得到的视频
+# 结果保存为 test_h265.ts, 可以用 PotPlayer 播放器查看 编码得到的视频
 ```
 
 ## Python Sample 
@@ -68,7 +68,7 @@ options:
 
 在本目录下运行  
 ```bash
-#h264文件编码示例
+# h264文件编码示例
 python3 video_writer.py  \
 --device_id 0 \
 --input_file /opt/vastai/vaststreamx/data/videos/yuv/bbs_sunflower_nv12_1920x1080_30.yuv \
@@ -77,9 +77,9 @@ python3 video_writer.py  \
 --frame_rate 30 \
 --codec_type h264 \
 --output_uri test_h264.ts
-#结果保存为 test_h264.ts，可以用 PotPlayer 播放器查看 编码得到的视频
+# 结果保存为 test_h264.ts，可以用 PotPlayer 播放器查看 编码得到的视频
 
-#h264文件编码示例
+# h265文件编码示例
 python3 video_writer.py  \
 --device_id 0 \
 --input_file /opt/vastai/vaststreamx/data/videos/yuv/bbs_sunflower_nv12_1920x1080_30.yuv \
@@ -88,5 +88,5 @@ python3 video_writer.py  \
 --frame_rate 30 \
 --codec_type h265 \
 --output_uri test_h265.ts
-#结果保存为 test_h265.ts，可以用 PotPlayer 播放器查看 编码得到的视频
+# 结果保存为 test_h265.ts，可以用 PotPlayer 播放器查看 编码得到的视频
 ```

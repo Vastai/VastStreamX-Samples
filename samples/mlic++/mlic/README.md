@@ -65,7 +65,7 @@ optional arguments:
   --patch PATCH         padding patch size (default: 64)
 ```
 
-### elic_inference.py 脚本命令示例
+### mlic_inference.py 脚本命令示例
 
 ```bash
 # 测试单张图片
