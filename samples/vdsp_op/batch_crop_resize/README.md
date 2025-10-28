@@ -4,10 +4,10 @@ BatchCropResize 的功能为，根据输入的一组 rectangle, 在同一张照�
 
 对 BatchCropResize op 的性能测试，请看 buildin_op_prof 目录
 
-
-## C++ Sample 
+## C++ Sample
 
 ### batch_crop_resize 命令行参数说明
+
 ```bash
 options:
   -d, --device_id       device id to run (unsigned int [=0])
@@ -21,6 +21,7 @@ options:
 ```
 
 ### batch_crop_resize 命令行示例
+
 ```bash
 ./vaststreamx-samples/bin/batch_crop_resize \
 --device_id 0 \
@@ -31,12 +32,13 @@ options:
 --output_file1 batch_crop_resize_result1.jpg \
 --output_file2 batch_crop_resize_result2.jpg 
 ```
+
 最终结果保存为 batch_crop_resize_result1.jpg  batch_crop_resize_result2.jpg
 
-
-## Python Sample 
+## Python Sample
 
 ### batch_crop_resize.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -55,6 +57,7 @@ optional arguments:
   --crop_rect2 CROP_RECT2
                         crop rect [x,y,w,h]
 ```
+
 ### batch_crop_resize.py 命令行示例
 
 ```bash

@@ -2,8 +2,8 @@
 
 本目录提供基于 vit base 16 模型的 Classfication sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | huggingface  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/vision_transformer) |
@@ -12,7 +12,6 @@
 |  官方精度 |  -      |
 |  VACC FP16  精度 | top1_rate: 80.184 top5_rate: 95.398 |
 |  VACC INT8  精度 | -  |
-
 
 ## 数据准备
 
@@ -23,6 +22,7 @@
 ## C++ sample
 
 ### vit 命令行参数
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/vit-b-fp16-none-1_3_224_224-vacc/mod])
@@ -40,7 +40,8 @@ options:
 
 ### vit 运行示例
 
-在 build 目录里执行   
+在 build 目录里执行
+
 ```bash
 #单张图片示例
 ./vaststreamx-samples/bin/vit \
@@ -82,8 +83,8 @@ Top5:
 [VACC]:  top1_rate: 80.184 top5_rate: 95.398
 ```
 
-
 ### vit_prof 命令行参数
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/vit-b-fp16-none-1_3_224_224-vacc/mod])
@@ -102,7 +103,8 @@ options:
 
 ### vit_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/vit_prof \
@@ -167,9 +169,10 @@ options:
     p99 latency: 9250
 ```
 
-## Python Sample 
+## Python Sample
 
 ### vit.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -199,6 +202,7 @@ optional arguments:
 ### vit.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张照片示例
 python3 vit.py \
@@ -239,7 +243,6 @@ Top5:
 [VACC]:  top1_rate: 80.2 top5_rate: 95.402
 ```
 
-
 ## Python sample 性能测试
 
 ### vit_prof.py 命令行参数说明
@@ -273,10 +276,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### vit_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 vit_prof.py \
@@ -306,8 +309,6 @@ python3 vit_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
-
 
 ### vit_prof.py 运行结果示例
 

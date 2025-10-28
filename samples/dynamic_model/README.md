@@ -2,14 +2,14 @@
 
 本目录提供基于 yolov5s dynamic shape 模型的 sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/ultralytics/yolov5)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/yolov5) |
 |  输入 shape |   [ (1,3,320,320) - (1,3,640,640) ]     |
 | INT8量化方式 |   percentile          |
-|  官方精度 |  "mAP@.5":   56.8  ;     "mAP@.5:.95":  37.4	   |
+|  官方精度 |  "mAP@.5":   56.8  ;     "mAP@.5:.95":  37.4    |
 |  VACC FP16  精度 | "mAP@.5":   55.3 ;  "mAP@.5:.95":  36.8  |
 |  VACC INT8  精度 | "mAP@.5":   54.6 ;  "mAP@.5:.95":  36.0  |
 
@@ -18,9 +18,10 @@
 下载模型 torch-yolov5s_coco-int8-percentile-Y-Y-2-none 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 det_coco_val 到 /opt/vastai/vaststreamx/data/datasets 里
 
-## C++ Sample 
+## C++ Sample
 
 ### dynamic_yolo 命令行参数说明
+
 ```bash
 options:
   -m, --module_info              model info json files (string [=/opt/vastai/vaststreamx/data/models/torch-yolov5s_coco-int8-percentile-Y-Y-2-none/yolov5s_coco_module_info.json])
@@ -36,8 +37,11 @@ options:
       --dataset_output_folder    dataset output folder path (string [=])
   -?, --help                     print this message
 ```
+
 ### dynamic_yolo 命令行示例
+
 在build 目录执行
+
 ```bash
 ./vaststreamx-samples/bin/dynamic_yolo \
 -m /opt/vastai/vaststreamx/data/models/torch-yolov5s_coco-int8-percentile-Y-Y-2-none/yolov5s_coco_module_info.json \
@@ -71,7 +75,9 @@ python3 ../evaluation/detection/eval_map.py \
 
 
 ```
+
 ### dynamic_yolo 单张图片结果示例
+
 ```bash
 # 单张图片结果示例，检测框绘制于 dynamic_model_result.jpg
 Detection objects:
@@ -100,9 +106,8 @@ Object class: car, score: 0.502441, bbox: [463.2, 76.05, 229.8, 96.3]
 
 ```
 
-
-
 ### dynamic_yolo_prof 命令行参数说明
+
 ```bash
 options:
   -m, --module_info        model info json files (string [=/opt/vastai/vaststreamx/data/models/torch-yolov5s_coco-int8-percentile-Y-Y-2-none/yolov5s_coco_module_info.json])
@@ -119,7 +124,9 @@ options:
   -q, --queue_size         aync wait queue size (unsigned int [=2])
   -?, --help               print this message
 ```
+
 ### dynamic_yolo_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/dynamic_yolo_prof \
@@ -151,7 +158,9 @@ options:
 --input_host 1 \
 --queue_size 0
 ```
+
 ### dynamic_yolo_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 2
@@ -187,6 +196,7 @@ options:
 ## Python Sample
 
 ### dynamic_yolo.py  命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -209,7 +219,9 @@ optional arguments:
 ```
 
 ### dynamic_yolo.py  命令行示例
+
 在当前目录下执行
+
 ```bash
 python3 dynamic_yolo.py \
 -m /opt/vastai/vaststreamx/data/models/torch-yolov5s_coco-int8-percentile-Y-Y-2-none/yolov5s_coco_module_info.json \
@@ -242,7 +254,9 @@ python3 ../../evaluation/detection/eval_map.py \
 
 
 ```
+
 ### dynamic_yolo.py 结果示例
+
 ```bash
 # 单张图片结果示例
 Detection objects:
@@ -335,6 +349,7 @@ python3 dynamic_yolo_prof.py \
 ```
 
 ### dynamic_yolo_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 2

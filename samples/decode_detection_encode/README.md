@@ -2,9 +2,10 @@
 
 本目录展示如何实现  视频 解码 + AI + 编码 的功能
 
-## C++ Sample 
+## C++ Sample
 
 ### decode_detection_encode 命令参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov5m-int8-percentile-1_3_640_640-vacc-pipeline/mod])
@@ -33,10 +34,10 @@ options:
 #检测结果绘制与图片并保存于 dec_det_out
 ```
 
-
 ## Python Sample
 
 ### decode_detection_encode.py 脚本参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -54,6 +55,7 @@ optional arguments:
   --num_channels NUM_CHANNELS
                         number of channels to decode
 ```
+
 ### decode_detection_encode.py 脚本运行示例
 
 ```bash

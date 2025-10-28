@@ -1,8 +1,9 @@
 # FCN Model Sample
 
-本例程提供基于 FCN 模型的图像分割 sample 
+本例程提供基于 FCN 模型的图像分割 sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/Tramac/awesome-semantic-segmentation-pytorch/blob/master/core/models/fcn.py)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/fcn) |
@@ -12,16 +13,15 @@
 |  VACC FP16  精度 |  "mIOU": 52.990  |
 |  VACC INT8  精度 |  "mIOU": 52.989   |
 
-
 ## 数据准备
 
 下载模型 fcn16s_vgg16-int8-kl_divergence-1_3_320_320-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 segmentation 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
 ## C++ Sample
 
 ### fcn 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/fcn16s_vgg16-int8-kl_divergence-1_3_320_320-vacc/mod])
@@ -35,10 +35,13 @@ options:
       --dataset_output_folder    dataset output folder (string [=])
   -?, --help                     print this message
 ```
+
 ### fcn 命令行示例
-在build目录下执行   
+
+在build目录下执行
 
 单张图片示例，结果保存为 fcn_result.jpg
+
 ```bash
 ./vaststreamx-samples/bin/fcn \
 -m /opt/vastai/vaststreamx/data/models/fcn16s_vgg16-int8-kl_divergence-1_3_320_320-vacc/mod \
@@ -48,8 +51,8 @@ options:
 --output_file fcn_result.jpg
 ```
 
-
 数据集测试示例
+
 ```bash
 mkdir -p fcn_out
 ./vaststreamx-samples/bin/fcn \
@@ -70,14 +73,16 @@ python3 ../evaluation/fcn/awesome_vamp_eval.py \
 --input_shape 320 320 \
 --vamp_flag
 ```
+
 精度结果示例
+
 ```bash
 看最后一行
 validation pixAcc: 88.257, mIoU: 52.952
 ```
 
-
 ### fcn_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/fcn16s_vgg16-int8-kl_divergence-1_3_320_320-vacc/mod])
@@ -95,7 +100,9 @@ options:
 ```
 
 ### fcn_prof 命令行示例
-在build目录下执行   
+
+在build目录下执行
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/fcn_prof  \
@@ -125,6 +132,7 @@ options:
 ```
 
 ### fcn_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -160,6 +168,7 @@ options:
 ## Python Sample
 
 ### fcn.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -182,8 +191,11 @@ optional arguments:
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder
 ```
+
 ### fcn.py 命令行示例
+
 在当前目录执行
+
 ```bash
 python3 fcn.py \
 -m /opt/vastai/vaststreamx/data/models/fcn16s_vgg16-int8-kl_divergence-1_3_320_320-vacc/mod \
@@ -192,11 +204,12 @@ python3 fcn.py \
 --input_file ../../../data/images/cycling.jpg \
 --output_file fcn_result.jpg
 ```
+
 结果保存到  fcn_result.jpg
 
-
 测试数据集
-```bash 
+
+```bash
 mkdir -p fcn_out
 python3 fcn.py \
 -m /opt/vastai/vaststreamx/data/models/fcn16s_vgg16-int8-kl_divergence-1_3_320_320-vacc/mod \
@@ -215,17 +228,16 @@ python3 ../../../evaluation/fcn/awesome_vamp_eval.py \
 --input_shape 320 320 \
 --vamp_flag
 ```
+
 精度结果示例
+
 ```bash
 看最后一行
 validation pixAcc: 88.257, mIoU: 52.952
 ```
 
-
-
-
-
 ### fcn_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -254,7 +266,9 @@ optional arguments:
 ```
 
 ### fcn_prof.py 命令行示例
+
 在当前目录执行
+
 ```bash
 # 测试最大吞吐
 python3 fcn_prof.py \
@@ -285,6 +299,7 @@ python3 fcn_prof.py \
 ```
 
 ### fcn_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

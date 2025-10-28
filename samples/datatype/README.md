@@ -15,6 +15,7 @@
 ```
 
 ### image 命令行示例
+
 在build目录下执行  
 
 ```bash
@@ -23,7 +24,6 @@
 --input_file ../data/images/dog.jpg \
 --output_file image_out.jpg
 ```
-
 
 ### tensor 命令行参数说明
 
@@ -37,6 +37,7 @@ options:
 ```
 
 ### tensor 命令行示例
+
 在build目录下执行  
 
 ```bash
@@ -46,11 +47,10 @@ options:
 --output_npz tensor_out.npz
 ```
 
-
 ## Python Sample
 
-
 ### image.py  命令行参数说明
+
 ```bash
   -h, --help            show this help message and exit
   -d DEVICE_ID, --device_id DEVICE_ID
@@ -60,7 +60,9 @@ options:
   --output_file OUTPUT_FILE
                         output file
 ```
+
 ### image.py 命令行示例
+
 ```bash
 python3 image.py \
 --device_id 0 \
@@ -69,6 +71,7 @@ python3 image.py \
 ```
 
 ### tensor.py 命令行参数说明
+
 ```bash
   -h, --help            show this help message and exit
   -d DEVICE_ID, --device_id DEVICE_ID
@@ -78,15 +81,12 @@ python3 image.py \
   --output_npz OUTPUT_NPZ
                         output file
 ```
+
 ### tensor.py 命令行示例
+
 ```bash
  python3 tensor.py \
  --device_id 0 \
 --input_npz /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/val_npz_6inputs/test_0.npz \
 --output_npz tensor_out.npz
 ```
-
-
-
-
-

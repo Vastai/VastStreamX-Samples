@@ -3,6 +3,7 @@
 本目录提供基于 resnet50 模型的 Classfication  sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/resnet.py)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/resnet) |
@@ -20,6 +21,7 @@
 ## C++ sample
 
 ### classification 命令行参数
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod])
@@ -36,7 +38,8 @@ options:
 
 ### classification 运行示例
 
-在 build 目录里执行   
+在 build 目录里执行
+
 ```bash
 #单张图片示例
 ./vaststreamx-samples/bin/classification \
@@ -77,8 +80,8 @@ Top5:
 [VACC]:  top1_rate: 75.816 top5_rate: 92.796
 ```
 
-
 ### cls_prof 命令行参数
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod])
@@ -97,7 +100,8 @@ options:
 
 ### cls_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/cls_prof \
@@ -127,7 +131,9 @@ options:
 ```
 
 ### cls_prof 运行结果示例
+
 以下结果是 880MHz 测试结果
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -160,9 +166,10 @@ options:
     p99 latency: 1072
 ```
 
-## Python Sample 
+## Python Sample
 
 ### classification.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -190,6 +197,7 @@ optional arguments:
 ### classification.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张照片示例
 python3 classification.py \
@@ -213,8 +221,6 @@ python3 classification.py \
 python3 ../../../evaluation/classification/eval_topk.py  cls_result.txt  
 ```
 
-
-
 ### classification.py 运行结果示例
 
 ```bash
@@ -230,7 +236,6 @@ Top5:
 #精度统计结果
 [VACC]:  top1_rate: 75.806 top5_rate: 92.806
 ```
-
 
 ## Python sample 性能测试
 
@@ -263,10 +268,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### cls_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 cls_prof.py \
@@ -295,11 +300,10 @@ python3 cls_prof.py \
 --queue_size 0
 ```
 
-
-
 ### cls_prof.py 运行结果示例
 
 以下结果是 880MHz 测试结果
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

@@ -1,11 +1,11 @@
-# CLIP Sample 
+# CLIP Sample
 
-本 sample 提供 clip 算法的基本用法，clip 算法主要功能是，提供一张图片和多个字符串，计算各字符串与图片的匹配程度，分数越高，对应的字符串与图片匹配越高。 clip 算法 有两个模型，一个是 image 模型，一个 text 模型。     
+本 sample 提供 clip 算法的基本用法，clip 算法主要功能是，提供一张图片和多个字符串，计算各字符串与图片的匹配程度，分数越高，对应的字符串与图片匹配越高。 clip 算法 有两个模型，一个是 image 模型，一个 text 模型。
 
-C++ 与 Python Sample 均需要安装 python clip 包，安装方法 pip3 install  git+https://github.com/openai/CLIP.git
-
+C++ 与 Python Sample 均需要安装 python clip 包，安装方法 pip3 install  git+<https://github.com/openai/CLIP.git>
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/openai/CLIP.git) [modelzoo](-) |
@@ -16,14 +16,15 @@ C++ 与 Python Sample 均需要安装 python clip 包，安装方法 pip3 instal
 |  VACC INT8  精度 | -  |
 
 ## 数据准备
+
 下载模型 clip_image-fp16-none-1_3_224_224-vacc  到 /opt/vastai/vaststreamx/data/models 里  
 下载模型 clip_text-fp16-none-1_77-vacc  到 /opt/vastai/vaststreamx/data/models 里  
 下载数据集 ILSVRC2012_img_val 到 /opt/vastai/vaststreamx/data/datasets 里  
 
-
 ## C++ Sample
 
 ### clip_sample 命令行参数说明
+
 ```bash
 options:
       --imgmod_prefix          image model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/clip_image-fp16-none-1_3_224_224-vacc/mod])
@@ -43,8 +44,10 @@ options:
   -?, --help                   print this message
 ```
 
-### clip_sample 命令行示例    
+### clip_sample 命令行示例
+
 在build目录里执行  
+
 ```bash
 # 测试 ../data/images/CLIP.png 与 "a diagram", "a dog", "a cat" 三个字符串的匹配分数
 # 1. 先将  "a diagram", "a dog", "a cat" 转成 clip_text 模型所需的 token tensor。
@@ -107,6 +110,7 @@ python3 ../evaluation/classification/eval_topk.py  clip_result.txt
 ### clip_image 模型性能测试
 
 clip_image_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix       model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/clip_image-fp16-none-1_3_224_224-vacc/mod])
@@ -123,7 +127,9 @@ options:
   -q, --queue_size         aync wait queue size (unsigned int [=1])
   -?, --help               print this message
 ```
-clip_image_prof 命令行示例 
+
+clip_image_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/clip_image_prof \
@@ -153,7 +159,9 @@ clip_image_prof 命令行示例
 --queue_size 0
 
 ```
-clip_image_prof 命令行结果示例 
+
+clip_image_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -187,7 +195,9 @@ clip_image_prof 命令行结果示例
 ```
 
 ### clip_text 模型性能测试
+
 clip_text_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix      model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/clip_text-fp16-none-1_77-vacc/mod])
@@ -203,7 +213,9 @@ options:
       --test_input_npz    test input npz file (string)
   -?, --help              print this message
 ```
-clip_text_prof 命令行示例 
+
+clip_text_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/clip_text_prof  \
@@ -233,7 +245,9 @@ clip_text_prof 命令行示例
 --queue_size 0
 
 ```
-clip_text_prof 命令行结果示例 
+
+clip_text_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -266,11 +280,12 @@ clip_text_prof 命令行结果示例
     p99 latency: 3629
 ```
 
+## Python Sample
 
-## Python Sample 
 在当前文档所在目录执行
 
 ### clip_sample.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -303,6 +318,7 @@ optional arguments:
 ```
 
 ### clip_sample.py 命令行示例
+
 ```bash
 # 测试 a diagram,a dog,a cat 与 CLIP.png 的匹配分数
 python3 clip_sample.py \
@@ -341,9 +357,11 @@ python3 ../../evaluation/classification/eval_topk.py  clip_result.txt
 # 统计精度结果
 [VACC]:  top1_rate: 55.622 top5_rate: 82.598
 ```
+
 ### clip_image 模型性能分析
 
 clip_image_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -371,7 +389,9 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 clip_image_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 clip_image_prof.py \
@@ -399,7 +419,9 @@ python3 clip_image_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
+
 clip_image_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -435,6 +457,7 @@ clip_image_prof.py 命令行结果示例
 ### clip_text 模型性能分析
 
 clip_text_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -459,7 +482,9 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 clip_text_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 clip_text_prof.py \
@@ -486,7 +511,9 @@ python3 clip_text_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
+
 clip_text_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

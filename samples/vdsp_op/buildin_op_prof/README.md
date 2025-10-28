@@ -1,12 +1,11 @@
 # Buildin Op Profile
 
-Buildin Op 即 SDK 自带的算子。 本 sample 用于展示如何测试各算子的性能   
-可以更改json文件里的参数，实现测试不同输入场景下的性能测试 
+Buildin Op 即 SDK 自带的算子。 本 sample 用于展示如何测试各算子的性能
+可以更改json文件里的参数，实现测试不同输入场景下的性能测试
 
 注：本sample不支持 BERT_EMBEDDING_OP 的性能测试
 
-## C++ Sample 
-
+## C++ Sample
 
 ### buildin_op_prof 命令参数说明
 
@@ -21,7 +20,6 @@ options:
   -?, --help           print this message
 ```
 
-
 ### SINGLE_OP_RESIZE
 
 ```bash
@@ -33,7 +31,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -50,7 +50,6 @@ options:
     p99 latency: 1126
 ```
 
-
 ### SINGLE_OP_CROP
 
 ```bash
@@ -62,7 +61,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 12
   devices: [ 0 ]
@@ -90,7 +91,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 8
   devices: [ 0 ]
@@ -107,8 +110,6 @@ options:
     p99 latency: 794
 ```
 
-
-
 ### SINGLE_OP_BATCH_CROP_RESIZE
 
 ```bash
@@ -120,7 +121,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -137,8 +140,6 @@ options:
     p99 latency: 2752
 ```
 
-
-
 ### SINGLE_OP_WARP_AFFINE
 
 ```bash
@@ -150,7 +151,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -167,8 +170,8 @@ options:
     p99 latency: 7008
 ```
 
-
 ### SINGLE_OP_FLIP
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/flip_op.json \
@@ -178,7 +181,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -195,8 +200,8 @@ options:
     p99 latency: 2615
 ```
 
-
 ### SINGLE_OP_SCALE
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/scale_op.json \
@@ -206,7 +211,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -222,7 +229,9 @@ options:
     p95 latency: 1494
     p99 latency: 1520
 ```
+
 ### SINGLE_OP_COPY_MAKE_BORDER
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/copy_make_boarder_op.json \
@@ -232,7 +241,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -250,6 +261,7 @@ options:
 ```
 
 ### FUSION_OP_YUV_NV12_RESIZE_2RGB_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_resize_2rgb.json \
@@ -259,7 +271,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -277,6 +291,7 @@ options:
 ```
 
 ### FUSION_OP_YUV_NV12_CVTCOLOR_RESIZE_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_cvtcolor_resize.json \
@@ -286,7 +301,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -304,6 +321,7 @@ options:
 ```
 
 ### FUSION_OP_YUV_NV12_RESIZE_CVTCOLOR_CROP_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_resize_cvtcolor_crop.json \
@@ -313,7 +331,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -331,6 +351,7 @@ options:
 ```
 
 ### FUSION_OP_YUV_NV12_CROP_CVTCOLOR_RESIZE_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_crop_cvtcolor_resize.json \
@@ -340,7 +361,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -358,6 +381,7 @@ options:
 ```
 
 ### FUSION_OP_YUV_NV12_CVTCOLOR_RESIZE_CROP_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_cvtcolor_resize_crop.json \
@@ -367,7 +391,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -385,6 +411,7 @@ options:
 ```
 
 ### FUSION_OP_YUV_NV12_CVTCOLOR_LETTERBOX_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_cvtcolor_letterbox.json \
@@ -394,7 +421,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -411,8 +440,8 @@ options:
     p99 latency: 788
 ```
 
-
 ### FUSION_OP_YUV_NV12_LETTERBOX_2RGB_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/nv12_letterbox_2rgb.json \
@@ -422,7 +451,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -440,6 +471,7 @@ options:
 ```
 
 ### FUSION_OP_RGB_CVTCOLOR_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/rgb_cvtcolor.json \
@@ -449,7 +481,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 8
   devices: [ 0 ]
@@ -467,6 +501,7 @@ options:
 ```
 
 ### FUSION_OP_RGB_RESIZE_CVTCOLOR_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/rgb_resize_cvtcolor.json \
@@ -476,7 +511,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -494,6 +531,7 @@ options:
 ```
 
 ### FUSION_OP_RGB_RESIZE_CVTCOLOR_CROP_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/rgb_resize_cvtcolor_crop.json \
@@ -503,7 +541,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -520,8 +560,8 @@ options:
     p99 latency: 1255
 ```
 
-
 ### FUSION_OP_RGB_CROP_RESIZE_CVTCOLOR_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/rgb_crop_resize_cvtcolor.json \
@@ -531,7 +571,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -549,6 +591,7 @@ options:
 ```
 
 ### FUSION_OP_RGB_LETTERBOX_CVTCOLOR_NORM_TENSOR
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/rgb_letterbox_cvtcolor.json \
@@ -558,7 +601,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [ 0 ]
@@ -576,6 +621,7 @@ options:
 ```
 
 ### FUSION_OP_RGB_LETTERBOX_CVTCOLOR_NORM_TENSOR_EXT
+
 ```bash
 ./vaststreamx-samples/bin/buildin_op_prof \
 --op_config ../samples/vdsp_op/buildin_op_prof/rgb_letterbox_cvtcolor_ext.json \
@@ -585,7 +631,9 @@ options:
 --percentiles "[50,90,95,99]" \
 --input_host 1
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [ 0 ]
@@ -602,18 +650,10 @@ options:
     p99 latency: 3675
 ```
 
-
-
-
-
-
-
-
-
-
 ## Python Sample
 
 ### buildin_op_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -632,6 +672,7 @@ optional arguments:
 ```
 
 ### SINGLE_OP_RESIZE
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config resize_op.json \
@@ -641,7 +682,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [0]
@@ -659,6 +702,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### SINGLE_OP_CROP
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config crop_op.json \
@@ -668,7 +712,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 12
   devices: [0]
@@ -696,7 +742,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0
 ```
+
 结果示例
+
 ```bash
 - number of instances: 8
   devices: [0]
@@ -712,7 +760,9 @@ python3 buildin_op_prof.py \
     p95 latency: 856
     p99 latency: 872
 ```
+
 ### SINGLE_OP_BATCH_CROP_RESIZE
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config batch_crop_resize_op.json \
@@ -722,7 +772,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -738,7 +790,9 @@ python3 buildin_op_prof.py \
     p95 latency: 2663
     p99 latency: 2705
 ```
+
 ### SINGLE_OP_WARP_AFFINE
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config warpaffine_op.json \
@@ -748,7 +802,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -766,6 +822,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### SINGLE_OP_FLIP
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config flip_op.json \
@@ -775,7 +832,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [0]
@@ -791,7 +850,9 @@ python3 buildin_op_prof.py \
     p95 latency: 2464
     p99 latency: 2485
 ```
+
 ### SINGLE_OP_SCALE
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config scale_op.json \
@@ -801,7 +862,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -818,8 +881,8 @@ python3 buildin_op_prof.py \
     p99 latency: 1486
 ```
 
-
 ### SINGLE_OP_COPY_MAKE_BORDER
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config copy_make_boarder_op.json \
@@ -829,7 +892,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -847,6 +912,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_YUV_NV12_RESIZE_2RGB_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config nv12_resize_2rgb.json \
@@ -856,7 +922,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -873,8 +941,8 @@ python3 buildin_op_prof.py \
     p99 latency: 2265
 ```
 
-
 ### FUSION_OP_YUV_NV12_CVTCOLOR_RESIZE_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config nv12_cvtcolor_resize.json \
@@ -884,7 +952,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -902,6 +972,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_YUV_NV12_RESIZE_CVTCOLOR_CROP_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config nv12_resize_cvtcolor_crop.json \
@@ -911,7 +982,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -929,6 +1002,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_YUV_NV12_CROP_CVTCOLOR_RESIZE_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config nv12_crop_cvtcolor_resize.json \
@@ -938,7 +1012,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [0]
@@ -956,6 +1032,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_YUV_NV12_CVTCOLOR_RESIZE_CROP_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config nv12_cvtcolor_resize_crop.json \
@@ -965,7 +1042,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -983,6 +1062,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_YUV_NV12_CVTCOLOR_LETTERBOX_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config  nv12_cvtcolor_letterbox.json \
@@ -992,7 +1072,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -1010,6 +1092,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_YUV_NV12_LETTERBOX_2RGB_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config nv12_letterbox_2rgb.json \
@@ -1019,7 +1102,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -1037,6 +1122,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_RGB_CVTCOLOR_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config rgb_cvtcolor.json \
@@ -1046,7 +1132,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 8
   devices: [0]
@@ -1063,7 +1151,6 @@ python3 buildin_op_prof.py \
     p99 latency: 755
 ```
 
-
 ### FUSION_OP_RGB_RESIZE_CVTCOLOR_NORM_TENSOR
 
 ```bash
@@ -1075,7 +1162,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 1 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [0]
@@ -1091,7 +1180,9 @@ python3 buildin_op_prof.py \
     p95 latency: 994
     p99 latency: 1089
 ```
+
 ### FUSION_OP_RGB_RESIZE_CVTCOLOR_CROP_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config rgb_resize_cvtcolor_crop.json \
@@ -1101,7 +1192,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [0]
@@ -1119,6 +1212,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_RGB_CROP_RESIZE_CVTCOLOR_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config rgb_crop_resize_cvtcolor.json \
@@ -1128,7 +1222,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -1146,6 +1242,7 @@ python3 buildin_op_prof.py \
 ```
 
 ### FUSION_OP_RGB_LETTERBOX_CVTCOLOR_NORM_TENSOR
+
 ```bash
 python3 buildin_op_prof.py \
 --op_config rgb_letterbox_cvtcolor.json \
@@ -1155,7 +1252,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 6
   devices: [0]
@@ -1183,7 +1282,9 @@ python3 buildin_op_prof.py \
 --percentiles "[50,90,95,99]" \
 --input_host 0 
 ```
+
 结果示例
+
 ```bash
 - number of instances: 5
   devices: [0]
@@ -1199,31 +1300,3 @@ python3 buildin_op_prof.py \
     p95 latency: 4910
     p99 latency: 4944
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

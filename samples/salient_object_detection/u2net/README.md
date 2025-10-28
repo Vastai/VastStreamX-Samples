@@ -3,6 +3,7 @@
 本目录提供基于 u2net 模型的 salient object detection sample。
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/xuebinqin/U-2-Net/tree/master)  [modelzoo](-) |
@@ -12,15 +13,15 @@
 |  VACC FP16  精度 |  "mae":0.032, "avgfmeasure": 0.925, "sm": 0.928  |
 |  VACC INT8  精度 |  "mae":0.035, "avgfmeasure": 0.922, "sm": 0.925   |
 
-
 ## 数据准备
 
 下载模型 u2net-int8-percentile-1_3_320_320-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 ECSSD 到 /opt/vastai/vaststreamx/data/datasets 里
 
-## C++ Sample 
+## C++ Sample
 
 ### u2net 命令行参数
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/u2net-int8-percentile-1_3_320_320-vacc/mod])
@@ -36,7 +37,9 @@ options:
 ```
 
 ### u2net 命令行示例
+
 在build 目录里执行
+
 ```bash
 #测试单张图片
 ./vaststreamx-samples/bin/u2net \
@@ -58,9 +61,11 @@ mkdir -p u2net_output
 --dataset_output_folder ./u2net_output
 # 灰度图将被保存在 ./u2net_output 文件夹。
 ```
+
 ### u2net 运行结果示例
 
 测试数据集精度
+
 ```bash
 python3 ../evaluation/salient_object_detection/PySODEval/eval.py \
 --dataset-json ../evaluation/salient_object_detection/PySODEval/examples/config_dataset.json \
@@ -68,6 +73,7 @@ python3 ../evaluation/salient_object_detection/PySODEval/eval.py \
 ```
 
 输出精度
+
 ```bash
 All methods have been evaluated:
 Dataset: ECSSD
@@ -76,8 +82,8 @@ Dataset: ECSSD
 | Method1   | 0.035 |         0.939 |         0.922 |         0.927 |          0.984 |          0.943 |           1 |       0.905 |   0.957 |   0.944 |   0.952 | 0.925 | 0.904 |
 ```
 
-
 ### u2net_prof 命令行参数
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/u2net-int8-percentile-1_3_320_320-vacc/mod])
@@ -96,7 +102,8 @@ options:
 
 ### u2net_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/u2net_prof \
@@ -159,9 +166,10 @@ options:
     p99 latency: 14785
 ```
 
-## Python Sample 
+## Python Sample
 
 ### u2net.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -189,6 +197,7 @@ optional arguments:
 ### u2net.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #测试单张图片
 python3 u2net.py \
@@ -212,7 +221,9 @@ python3 u2net.py \
 ```
 
 ### u2net.py 运行结果示例
+
 在本目录下运行
+
 ```bash
 python3 ../../../evaluation/salient_object_detection/PySODEval/eval.py \
 --dataset-json ../../../evaluation/salient_object_detection/PySODEval/examples/config_dataset.json \
@@ -220,6 +231,7 @@ python3 ../../../evaluation/salient_object_detection/PySODEval/eval.py \
 ```
 
 数据集精度为
+
 ```bash
 All methods have been evaluated:
 Dataset: ECSSD
@@ -227,7 +239,6 @@ Dataset: ECSSD
 |-----------|-------|---------------|---------------|---------------|----------------|----------------|-------------|-------------|---------|---------|---------|-------|-------|
 | Method1   | 0.035 |         0.939 |         0.919 |         0.922 |          0.983 |          0.933 |           1 |       0.918 |   0.958 |   0.945 |   0.953 | 0.926 | 0.902 |
 ```
-
 
 ### u2net_prof.py 命令行参数说明
 
@@ -258,10 +269,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### u2net_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 u2net_prof.py \

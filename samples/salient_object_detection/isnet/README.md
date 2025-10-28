@@ -3,6 +3,7 @@
 本目录提供基于 isnet 模型的 salient object detection sample。
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/xuebinqin/DIS)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/salient_object_detection/isnet) |
@@ -12,14 +13,15 @@
 |  VACC FP16  精度 |  "mae":0.115, "avgfmeasure": 0.672, "sm": 0.789  |
 |  VACC INT8  精度 |  "mae":0.117, "avgfmeasure": 0.668, "sm": 0.787   |
 
-
 ## 数据准备
 
 下载模型 isnet-int8-kl_divergence-1_3_320_320-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 ECSSD 到 /opt/vastai/vaststreamx/data/datasets 里
-## C++ Sample 
+
+## C++ Sample
 
 ### isnet 命令行参数
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/isnet-int8-kl_divergence-1_3_320_320-vacc/mod])
@@ -35,7 +37,9 @@ options:
 ```
 
 ### isnet 命令行示例
+
 在build 目录里执行
+
 ```bash
 #测试单张图片
 ./vaststreamx-samples/bin/isnet \
@@ -57,9 +61,11 @@ mkdir -p isnet_output
 --dataset_output_folder ./isnet_output
 # 灰度图将被保存在文件夹 isnet_output 内。
 ```
+
 ### isnet 运行结果示例
 
 测试数据集精度
+
 ```bash
 python3 ../evaluation/salient_object_detection/PySODEval/eval.py \
 --dataset-json ../evaluation/salient_object_detection/PySODEval/examples/config_dataset.json \
@@ -67,6 +73,7 @@ python3 ../evaluation/salient_object_detection/PySODEval/eval.py \
 ```
 
 输出精度
+
 ```bash
 All methods have been evaluated:
 Dataset: ECSSD
@@ -75,8 +82,8 @@ Dataset: ECSSD
 | Method1   | 0.116 |         0.755 |         0.671 |         0.737 |          0.847 |           0.78 |           1 |         0.7 |   0.845 |   0.751 |   0.835 | 0.789 | 0.647 |
 ```
 
-
 ### isnet_prof 命令行参数
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/isnet-int8-kl_divergence-1_3_320_320-vacc/mod])
@@ -95,7 +102,8 @@ options:
 
 ### isnet_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/isnet_prof \
@@ -158,9 +166,10 @@ options:
     p99 latency: 7011
 ```
 
-## Python Sample 
+## Python Sample
 
 ### isnet.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -188,6 +197,7 @@ optional arguments:
 ### isnet.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #测试单张图片
 python3 isnet.py \
@@ -211,7 +221,9 @@ python3 isnet.py \
 ```
 
 ### isnet.py 运行结果示例
+
 在本目录下运行
+
 ```bash
 python3 ../../../evaluation/salient_object_detection/PySODEval/eval.py \
 --dataset-json ../../../evaluation/salient_object_detection/PySODEval/examples/config_dataset.json \
@@ -219,6 +231,7 @@ python3 ../../../evaluation/salient_object_detection/PySODEval/eval.py \
 ```
 
 数据集精度为
+
 ```bash
 All methods have been evaluated:
 Dataset: ECSSD
@@ -226,7 +239,6 @@ Dataset: ECSSD
 |-----------|-------|---------------|---------------|---------------|----------------|----------------|-------------|-------------|---------|---------|---------|-------|-------|
 | Method1   | 0.116 |         0.755 |         0.671 |         0.737 |          0.847 |           0.78 |           1 |         0.7 |   0.845 |   0.751 |   0.835 | 0.789 | 0.647 |
 ```
-
 
 ### isnet_prof.py 命令行参数说明
 
@@ -257,10 +269,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### isnet_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 isnet_prof.py \

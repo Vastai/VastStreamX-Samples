@@ -2,8 +2,8 @@
 
 本目录提供基于 retinaface-resnet50 模型的 人脸检测 sample. 该模型除了检测人脸框，还检测 5个 face landmarks.
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/biubug6/Pytorch_Retinaface)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/face_detection/retinaface) |
@@ -13,16 +13,15 @@
 |  VACC FP16  精度 | "Easy": 94.316, "Medium": 90.814, "Hard": 65.69   |
 |  VACC INT8  精度 | "Easy": 94.199, "Medium": 90.45, "Hard": 62.585   |
 
-
 ## 数据准备
 
 下载模型 retinaface_resnet50-int8-kl_divergence-1_3_640_640-vacc-pipeline 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 widerface_val 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
 ## C++ Sample
 
 ### face_detection 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/retinaface_resnet50-int8-kl_divergence-1_3_640_640-vacc-pipeline/mod])
@@ -39,7 +38,9 @@ options:
 ```
 
 ### face_detection 命令行示例
+
 在build目录下执行
+
 ```bash
 # 单图片测试示例
 ./vaststreamx-samples/bin/face_detection \
@@ -67,6 +68,7 @@ python3 ../evaluation/face_detection/evaluation.py \
 -p ./facedet_out
 
 ```
+
 ### face_detection 命令结果示例
 
 ```bash
@@ -79,6 +81,7 @@ Easy   Val AP: 0.9419949307634238
 Medium Val AP: 0.9045098397938389
 Hard   Val AP: 0.6258506557055097
 ```
+
 ### face_detection_prof 命令行参数说明
 
 ```bash
@@ -99,7 +102,9 @@ options:
 ```
 
 ### face_detection_prof 命令行示例
+
 在build目录里执行
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/face_detection_prof \
@@ -129,6 +134,7 @@ options:
 --input_host 1 \
 --queue_size 0
 ```
+
 ### face_detection_prof 命令结果示例
 
 ```bash
@@ -162,6 +168,7 @@ options:
     p95 latency: 3577
     p99 latency: 3604
 ```
+
 ## Python Sample
 
 ### face_detection.py 命令行参数说明
@@ -190,8 +197,11 @@ optional arguments:
   --output_file OUTPUT_FILE
                         output file
 ```
+
 ### face_detection.py 命令行示例
+
 在本目录下运行
+
 ```bash
 # 单张图片测试示例
 python3 face_detection.py \
@@ -220,6 +230,7 @@ python3 ../../evaluation/face_detection/evaluation.py \
 -p ./facedet_out
 
 ```
+
 ### face_detection.py 命令结果示例
 
 检测结果保存在face_det_result.jpg里
@@ -265,9 +276,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### face_detection_prof.py 命令行示例
+
 在本目录运行
+
 ```bash
 # 测试最大吞吐
 python3 face_detection_prof.py \
@@ -295,7 +307,9 @@ python3 face_detection_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
+
 ### face_detection_prof.py 命令结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

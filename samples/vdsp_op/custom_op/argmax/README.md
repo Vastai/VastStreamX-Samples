@@ -5,6 +5,7 @@ Argmax Op主要用于计算 fp16 的 多通道 planar tensor 在每个plane上�
 ## C++ Sample
 
 ### argmax 命令行参数说明
+
 ```bash
 options:
   -d, --device_id      device id to run (unsigned int [=0])
@@ -14,14 +15,18 @@ options:
 ```
 
 ### argmax 命令行示例
+
 在build 目录下执行
+
 ```bash
 ./vaststreamx-samples/bin/argmax \
 --device_id 0 \
 --elf_file /opt/vastai/vaststreamx/data/elf/planar_argmax \
 --input_shape "[19,512,512]"
 ```
-输出 
+
+输出
+
 ```bash
 output tensor shape:[1,1,512,512]
 ```
@@ -41,7 +46,9 @@ options:
 ```
 
 ### argmax_prof 命令行参数示例
+
 在build目录里执行
+
 ```bash
 ./vaststreamx-samples/bin/argmax_prof \
 --device_ids [0] \
@@ -54,6 +61,7 @@ options:
 ```
 
 ### argmax_prof 命令行输出示例
+
 ```bash
 - number of instances: 4
   devices: [ 0 ]
@@ -70,11 +78,10 @@ options:
     p99 latency: 1340
 ```
 
-
 ## Python Sample
 
-
 ### argmax.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -84,20 +91,23 @@ optional arguments:
   -s SHAPE, --shape SHAPE
                         model input shape
 ```
+
 ### argmax.py 命令行示例
+
 在当前目录执行
+
 ```bash
 python3 argmax.py \
 --device_id 0 \
 --elf_file /opt/vastai/vaststreamx/data/elf/planar_argmax \
 --shape "[19,512,512]"
 ```
-结果将打印出 output shape
 
+结果将打印出 output shape
 
 ### argmax_prof.py 命令行参数说明
 
-```bash 
+```bash
 optional arguments:
   -h, --help            show this help message and exit
   --elf_file ELF_FILE   elf file
@@ -116,6 +126,7 @@ optional arguments:
 ```
 
 ### argmax_prof.py 命令行示例
+
 ```bash
 python3 argmax_prof.py \
 --elf_file /opt/vastai/vaststreamx/data/elf/planar_argmax \
@@ -128,6 +139,7 @@ python3 argmax_prof.py \
 ```
 
 ### argmax_prof.py 命令行结果示例
+
 ```bash
 - number of instances: 4
   device: 0
@@ -142,5 +154,3 @@ python3 argmax_prof.py \
     p95 latency: 1352
     p99 latency: 1363
 ```
-
-

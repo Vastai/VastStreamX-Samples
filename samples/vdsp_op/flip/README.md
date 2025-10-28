@@ -9,9 +9,10 @@ flip_type -- y : 左右翻转
 
 注： flip op 当前仅支持 YUV_NV12格式
 
-## C++ Sample 
+## C++ Sample
 
 ### flip 命令行参数说明
+
 ```bash
 options:
   -d, --device_id      device id to run (unsigned int [=0])
@@ -22,17 +23,20 @@ options:
 ```
 
 ### flip 命令行示例
+
 ```bash
 ./vaststreamx-samples/bin/flip \
 --input_file ../data/images/dog.jpg \
 --flip_type y \
 --output_file flip_result.jpg
 ```
+
 结果保存为 flip_result.jpg
 
-## Python Sample 
+## Python Sample
 
 ### flip.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -47,12 +51,12 @@ optional arguments:
 ```
 
 ### flip.py 命令行示例
+
 ```bash
 python3 flip.py \
 --input_file ../../../data/images/dog.jpg \
 --flip_type x \
 --output_file flip_result.jpg
 ```
+
 结果保存为 flip_result.jpg
-
-

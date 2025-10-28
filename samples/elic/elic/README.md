@@ -1,8 +1,9 @@
 # ELIC Sample
 
-本目录提供基于 elic 模型的图像压缩与解压sample 
+本目录提供基于 elic 模型的图像压缩与解压sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/VincentChandelier/ELiC-ReImplemetation)  [modelzoo](-) |
@@ -11,7 +12,6 @@
 |  官方精度 |  "PSNR":   37.8   |
 |  VACC FP16  精度 | "PSNR":   37.7    |
 |  VACC INT8  精度 | - |
-
 
 ## 数据集准备
 
@@ -94,9 +94,6 @@ python3 elic_inference.py  \
 
 ```
 
-
-
-
 ### dynamic_elic_inference.py 脚本命令行说明 (注意dynamic 最大支持输入图片分辨率 1024x1024)
 
 ```bash
@@ -176,7 +173,6 @@ python3 dynamic_elic_inference.py  \
     Ave PNSR:37.521121727924076
 ```
 
-
 ### elic_no_entropy_inference.py 脚本命令行说明
 
 ```bash
@@ -253,8 +249,8 @@ python3 elic_no_entropy_inference.py  \
     Ave bbp:0.262036203717192  
 ```
 
-
 ### elic_noentropy_prof.py 脚本命令行说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -331,8 +327,8 @@ python ./elic_noentropy_prof.py \
 --queue_size 0
 ```
 
-
 ### elic_noentropy_prof.py 运行结果示例
+
 ```bash
 # 测试最大吞吐
 ##512x512 模型
@@ -397,4 +393,3 @@ python ./elic_noentropy_prof.py \
     p95 latency: 1330551
     p99 latency: 1334871
 ```
-

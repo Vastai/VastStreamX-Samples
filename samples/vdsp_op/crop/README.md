@@ -4,9 +4,10 @@ Crop op 用于裁剪图片，输入一张图与要裁剪的区域，保存裁剪
 
 对 Crop op 的性能测试，请看 buildin_op_prof 目录
 
-## C++ Sample 
+## C++ Sample
 
 ### crop 命令行参数说明
+
 ```bash
 options:
   -d, --device_id      device id to run (unsigned int [=0])
@@ -28,10 +29,10 @@ options:
 
 结果保存于 crop_result.jpg
 
-
-## Python Sample 
+## Python Sample
 
 ### crop.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit

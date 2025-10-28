@@ -1,9 +1,10 @@
 # MobileVit Sample
 
-本目录提供基于 movile_vit 模型的 image classification sample   
+本目录提供基于 movile_vit 模型的 image classification sample
 本Sample 同样支持 swin-transformer 模型，只需将命令行的 movile_vit 模型替换为 swin-transformer 模型, vdsp json文件替换为 swin-transformer 对应的 vdsp json文件即可
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | github  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/mobilevit) |
@@ -13,14 +14,14 @@
 |  VACC FP16  精度 | top1_rate: 63.564 top5_rate: 85.63  |
 |  VACC INT8  精度 |  -    |
 
-
 ## 数据准备
 
 下载模型 mobilevit_s-fp16-none-1_3_224_224-vacc 到 /opt/vastai/vaststreamx/data/models 里  
 下载数据集 ILSVRC2012_img_val 到 /opt/vastai/vaststreamx/data/datasets 里  
 
-需要 odsp_plugin： 
+需要 odsp_plugin：
 下载 odsp_plugin***.tar.gz,然后解压，编译，配置LD_LIBRARY_PATH
+
 ```bash
 mkdir -p /opt/vastai/odsp_plugin
 tar xf odsp_plugin***.tar.gz -C /opt/vastai/odsp_plugin
@@ -33,6 +34,7 @@ export LD_LIBRARY_PATH=/opt/vastai/odsp_plugin/protobuf/lib:$LD_LIBRARY_PATH
 ## C++ sample
 
 ### mobilevit 命令行参数
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/mobilevit_s-fp16-none-1_3_224_224-vacc/mod])
@@ -49,7 +51,8 @@ options:
 
 ### mobilevit 运行示例
 
-在 build 目录里执行   
+在 build 目录里执行
+
 ```bash
 #单张图片示例
 ./vaststreamx-samples/bin/mobilevit \
@@ -89,8 +92,8 @@ Top5:
 [VACC]: top1_rate: 63.564 top5_rate: 85.63
 ```
 
-
 ### mobilevit_prof 命令行参数
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/mobilevit_s-fp16-none-1_3_224_224-vacc/mod])
@@ -109,7 +112,8 @@ options:
 
 ### mobilevit_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/mobilevit_prof \
@@ -172,9 +176,10 @@ options:
     p99 latency: 24152
 ```
 
-## Python Sample 
+## Python Sample
 
 ### mobilevit.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -202,6 +207,7 @@ optional arguments:
 ### mobilevit.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张照片示例
 python3 mobilevit.py \
@@ -269,10 +275,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### mobilevit_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 mobilevit_prof.py \
@@ -300,7 +306,6 @@ python3 mobilevit_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### mobilevit_prof.py 运行结果示例
 
@@ -335,6 +340,3 @@ python3 mobilevit_prof.py \
     p95 latency: 23563
     p99 latency: 23654
 ```
-
-
-

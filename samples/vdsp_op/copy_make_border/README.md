@@ -1,13 +1,13 @@
 # CopyMakeBorder Op
 
-CopyMakeBorder op 实现的是 letterbox功能，其先resize 再 padding 
-
+CopyMakeBorder op 实现的是 letterbox功能，其先resize 再 padding
 
 对 CopyMakeBorder op 的性能测试，请看 buildin_op_prof 目录
 
-## C++ Sample 
+## C++ Sample
 
 ### copy_make_border 命令行参数说明
+
 ```bash
 options:
   -d, --device_id      device id to run (unsigned int [=0])
@@ -16,7 +16,6 @@ options:
       --output_size    output size [width,height] (string [=x])
   -?, --help           print this message
 ```
-
 
 ### copy_make_border 命令行示例
 
@@ -27,7 +26,8 @@ options:
 --output_file copy_make_border_result.jpg \
 --output_size "[640,640]"
 ```
-## Python Sample 
+
+## Python Sample
 
 ### copy_make_border.py 命令行参数说明
 
@@ -43,7 +43,9 @@ optional arguments:
   --output_size OUTPUT_SIZE
                         output size [width,height]
 ```
+
 ### copy_make_border.py 命令行示例
+
 ```bash
 python3 copy_make_border.py \
 --device_id 0 \
@@ -51,5 +53,3 @@ python3 copy_make_border.py \
 --output_file copy_make_border_result.jpg \
 --output_size "[640,640]"
 ```
-
-

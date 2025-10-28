@@ -1,4 +1,5 @@
 # Video Encoder Sample
+
 本目录提供 Video Encoder  sample, 视频编码支持 YUV_NV12 格式的图片输入
 
 数据准备:
@@ -7,6 +8,7 @@
 ## C++ sample
 
 ### video_encode 命令行参数
+
 ```bash
 options:
       --codec_type     codec type (string [=H264])
@@ -20,7 +22,9 @@ options:
 ```
 
 ### video_encode 运行示例
-在 build 目录里执行   
+
+在 build 目录里执行
+
 ```bash
 #h264文件编码示例
 ./vaststreamx-samples/bin/video_encode \
@@ -58,6 +62,7 @@ options:
 ```
 
 ### video_encode_prof 命令行参数
+
 ```bash
 options:
       --codec_type     codec type (string [=H264])
@@ -74,7 +79,8 @@ options:
 
 ### video_encode_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # H264测试最大吞吐
 ./vaststreamx-samples/bin/video_encode_prof \
@@ -233,9 +239,10 @@ options:
     p99 latency: 13898
 ```
 
-## Python Sample 
+## Python Sample
 
 ### video_encode.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -256,6 +263,7 @@ optional arguments:
 ### video_encode.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #h264文件编码示例
 python3 video_encode.py  \
@@ -316,10 +324,10 @@ optional arguments:
                         percentiles of latency
 ```
 
-
 ### video_encode_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # H264测试最大吞吐
 python3 video_encode_prof.py \

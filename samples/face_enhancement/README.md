@@ -1,8 +1,9 @@
 # Face Enhancement sample
 
-本目录提供基于 gpen 模型的 人脸增强 sample. 
+本目录提供基于 gpen 模型的 人脸增强 sample.
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/yangxy/GPEN)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/image_colorization/gpen) |
@@ -12,16 +13,15 @@
 |  VACC FP16  精度 | "PSNR": 26.114 , "SSIM":  0.691  |
 |  VACC INT8  精度 | "PSNR":  25.856 , "SSIM": 0.666  |
 
-
 ## 数据准备
 
 下载模型 gpen-int8-mse-1_3_512_512-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 GPEN 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
 ## C++ sample
 
 ### face_enhancement 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models//gpen-int8-mse-1_3_512_512-vacc/mod])
@@ -37,6 +37,7 @@ options:
 ```
 
 ### face_enhancement 命令行示例
+
 在build目录里执行
 
 ```bash
@@ -62,17 +63,21 @@ mkdir -p gpen_output
 ```
 
 精度测试
+
 ```bash
 python3 ../evaluation/face_enhancement/eval_celeb.py \
 --result ./gpen_output \
 --gt /opt/vastai/vaststreamx/data/datasets/GPEN/hq
 ```
+
 精度输出为
+
 ```bash
 mean psnr: 25.856292241565264, mean ssim: 0.6661125573509248
 ```
 
 ### face_enhancement_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/gpen-int8-mse-1_3_512_512-vacc/mod])
@@ -90,6 +95,7 @@ options:
 ```
 
 ### face_enhancement_prof 运行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/face_enhancement_prof \
@@ -119,6 +125,7 @@ options:
 ```
 
 ### face_enhancement_prof 运行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -151,10 +158,10 @@ options:
     p99 latency: 51536
 ```
 
-
 ## Python sample
 
 ### face_enhancement.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -201,12 +208,15 @@ python3 face_enhancement.py \
 ```
 
 精度测试
+
 ```bash
 python3 ../../evaluation/face_enhancement/eval_celeb.py \
 --result ./gpen_output \
 --gt /opt/vastai/vaststreamx/data/datasets/GPEN/hq
 ```
+
 输出精度为
+
 ```bash
 mean psnr: 25.856292241565264, mean ssim: 0.6661125573509248
 ```
@@ -240,10 +250,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### face_enhancement_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 face_enhancement_prof.py \
@@ -271,7 +281,6 @@ python3 face_enhancement_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### face_enhancement_prof.py 运行结果示例
 
@@ -306,4 +315,3 @@ python3 face_enhancement_prof.py \
     p95 latency: 52273
     p99 latency: 52585
 ```
-

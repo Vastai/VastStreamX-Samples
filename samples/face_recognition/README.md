@@ -1,9 +1,9 @@
 # FACE RECOGNITION SAMPLE
 
-本目录提供基于 facenet 的人脸特征提取 sample 
-
+本目录提供基于 facenet 的人脸特征提取 sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/timesler/facenet-pytorch)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/face_recognize/facenet) |
@@ -13,17 +13,15 @@
 |  VACC FP16  精度 |  "ACC":0.99367, "AUC":0.99959,   "ERR":0.00556   |
 |  VACC INT8  精度 | "ACC":0.99317, "AUC":0.99957,   "ERR":0.00633   |
 
-
-
 ## 数据准备
 
 下载模型 facenet_vggface2-int8-percentile-1_3_160_160-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 lfw_mtcnnpy_160 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-## C++ Sample 
+## C++ Sample
 
 ### face_recognition 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/facenet_vggface2-int8-percentile-1_3_160_160-vacc/mod])
@@ -36,10 +34,13 @@ options:
       --dataset_output_folder    dataset output folder (string [=])
   -?, --help                     print this message
 ```
+
 ### face_recognition 命令行示例
+
 在build目录里执行
 
 单个人脸图片示例
+
 ```bash
 ./vaststreamx-samples/bin/face_recognition \
 -m /opt/vastai/vaststreamx/data/models/facenet_vggface2-int8-percentile-1_3_160_160-vacc/mod \
@@ -47,11 +48,12 @@ options:
 --device_id  0 \
 --input_file ../data/images/face.jpg
 ```
+
 结果将输出 512 维人脸特征
 
+跑人脸数据集示例
+在build 目录下执行
 
-跑人脸数据集示例   
-在build 目录下执行   
 ```bash
 mkdir -p facenet_output
 
@@ -63,10 +65,12 @@ mkdir -p facenet_output
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder facenet_output
 ```
+
 结果保存在 facenet_output 文件夹
 
-测数据集精度    
+测数据集精度
 在build目录下执行
+
 ```bash
 python3 ../evaluation/face_recognition/facenet_eval.py \
 --gt_dir /opt/vastai/vaststreamx/data/datasets/lfw_mtcnnpy_160 \
@@ -76,6 +80,7 @@ python3 ../evaluation/face_recognition/facenet_eval.py \
 ```
 
 精度输出为
+
 ```bash
 Accuracy: 0.99317+-0.00369
 Validation rate: 0.98200+-0.01087 @ FAR=0.00100
@@ -84,6 +89,7 @@ Equal Error Rate (EER): 0.00633
 ```
 
 ### face_recognition_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/facenet_vggface2-int8-percentile-1_3_160_160-vacc/mod])
@@ -103,6 +109,7 @@ options:
 ### face_recognition_prof 命令行示例
 
 在build 目录里执行
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/face_recognition_prof \
@@ -164,9 +171,11 @@ options:
     p95 latency: 1160
     p99 latency: 1166
 ```
+
 ## Python Sample
 
 ### face_recognition.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -187,8 +196,11 @@ optional arguments:
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder
 ```
+
 ### face_recognition.py 命令行示例
+
 在当前目录执行
+
 ```bash
 # 测试单张图片
 python3 face_recognition.py \
@@ -212,7 +224,8 @@ python3 face_recognition.py \
 #结果保存在 facenet_output 文件夹
 ```
 
-测数据集精度    
+测数据集精度
+
 ```bash
 python3 ../../evaluation/face_recognition/facenet_eval.py \
 --gt_dir /opt/vastai/vaststreamx/data/datasets/lfw_mtcnnpy_160 \
@@ -220,7 +233,9 @@ python3 ../../evaluation/face_recognition/facenet_eval.py \
 --input_npz_path /opt/vastai/vaststreamx/data/datasets/lfw_mtcnnpy_160_filelist.txt \
 --out_npz_dir ./facenet_output
 ```
+
 输出精度
+
 ```bash
 Accuracy: 0.99317+-0.00369
 Validation rate: 0.98200+-0.01087 @ FAR=0.00100
@@ -229,6 +244,7 @@ Equal Error Rate (EER): 0.00633
 ```
 
 ### face_recognition_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -256,10 +272,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
-
 ### face_recognition_prof.py 命令行示例
+
 在当前目录执行
+
 ```bash
 # 测试最大吞吐
 python3 face_recognition_prof.py \
@@ -287,6 +303,7 @@ python3 face_recognition_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
+
 ### face_recognition_prof.py 结果示例
 
 ```bash

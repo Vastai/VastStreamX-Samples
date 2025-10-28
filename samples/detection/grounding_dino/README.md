@@ -3,6 +3,7 @@
 本目录提供基于 grounding_dino 模型的 目标检测 sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/IDEA-Research/GroundingDINO)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/grounding_dino) |
@@ -14,11 +15,12 @@
 
 ## 数据准备
 
-下载模型 groundingdino.tar.gz 到 /opt/vastai/vaststreamx/data/models 里 
+下载模型 groundingdino.tar.gz 到 /opt/vastai/vaststreamx/data/models 里
 下载 tokenizer bert-base-uncased 到 /opt/vastai/vaststreamx/data/tokenizer 里  
 下载数据集 det_coco_val 到 /opt/vastai/vaststreamx/data/datasets 里  
 
-## C++ sample     
+## C++ sample
+
 将标签字符串通过python脚本生成 tokens, 并保存到 input_tokens.npz
 
 ```bash
@@ -30,6 +32,7 @@ python3 ../samples/detection/grounding_dino/generate_tokens_for_cpp.py \
 ```
 
 ### grounding_dino 命令行参数说明
+
 ```bash
 options:
       --txtmod_prefix            prefix of the text model suite files (string [=/opt/vastai/vaststreamx/data/models/groundingdino_text_encoder-fp16-none-1_195_1_195_1_195_1_195_195-vacc/mod])
@@ -54,7 +57,9 @@ options:
 ```
 
 ### grounding_dino 运行示例
+
 在build目录执行
+
 ```bash
 # 单张图片测试
 ./vaststreamx-samples/bin/grounding_dino \
@@ -95,8 +100,8 @@ python3 ../evaluation/detection/eval_map.py \
 --txt ./grounding_dino_out
 ```
 
-
 ### grounding_dino 运行结果示例
+
 ```bash
 # 单张图片检测结果
 Detection objects:
@@ -173,6 +178,7 @@ Object class: hair drier, score: 0.201487, bbox: [425.996, 157.176, 445.879, 195
 ```
 
 ### grounding_dino_text_enc_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix     model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/groundingdino_text_encoder-fp16-none-1_195_1_195_1_195_1_195_195-vacc/mod])
@@ -188,7 +194,9 @@ options:
       --test_npz_file    npz_file for test (string [=])
   -?, --help             print this message
 ```
+
 ### grounding_dino_text_enc_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/grounding_dino_text_enc_prof \
@@ -219,6 +227,7 @@ options:
 ```
 
 ### grounding_dino_text_enc_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -251,8 +260,8 @@ options:
     p99 latency: 8729
 ```
 
-
 ### grounding_dino_image_enc_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/groundingdino/img_encoder-fp16-none-1_3_800_1333-vacc/mod])
@@ -268,7 +277,9 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=2])
   -?, --help            print this message
 ```
+
 ### grounding_dino_image_enc_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/grounding_dino_image_enc_prof \
@@ -297,6 +308,7 @@ options:
 ```
 
 ### grounding_dino_image_enc_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -329,9 +341,11 @@ options:
     p95 latency: 445934
     p99 latency: 445934
 ```
+
 ## Python Sample
 
 ### 脚本 grounding_dino.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -370,7 +384,9 @@ optional arguments:
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder path
 ```
+
 ### 脚本 grounding_dino.py 示例
+
 ```bash
 # 单张图片测试
 python3 grounding_dino.py \
@@ -407,7 +423,9 @@ python3 ../../../evaluation/detection/eval_map.py \
 --gt ../../../evaluation/detection/instances_val2017.json \
 --txt ./grounding_dino_out
 ```
+
 ### 脚本 grounding_dino.py 结果示例
+
 ```bash
 # 单张图片测试
 Detection objects:
@@ -483,8 +501,8 @@ Object class: hair drier, score: 0.201487, bbox:[ 426.00,157.18,445.88,195.19 ]
 
 ```
 
-
 ### grounding_dino_text_enc_prof.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -511,7 +529,9 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### grounding_dino_text_enc_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 grounding_dino_text_enc_prof.py \
@@ -542,6 +562,7 @@ python3 grounding_dino_text_enc_prof.py \
 ```
 
 ### grounding_dino_text_enc_prof.py  命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -574,8 +595,8 @@ python3 grounding_dino_text_enc_prof.py \
     p99 latency: 9075
 ```
 
-
 ### grounding_dino_image_enc_prof.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -602,7 +623,9 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### grounding_dino_image_enc_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 grounding_dino_image_enc_prof.py \
@@ -631,6 +654,7 @@ python3 grounding_dino_image_enc_prof.py \
 ```
 
 ### grounding_dino_image_enc_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

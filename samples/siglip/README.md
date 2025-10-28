@@ -1,23 +1,25 @@
-# SIGLIP Sample 
+# SIGLIP Sample
 
 本 sample 提供 siglip 算法的基本用法。
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |--------------|-----------|
 |     来源     | [github](https://huggingface.co/google/siglip-so400m-patch14-384) |
 
 ## 数据准备
+
 下载elf elf.tar.gz 并解压 到 /opt/vastai/vaststreamx/data/ 里  
 tar xvf elf.tar.gz -C /opt/vastai/vaststreamx/data/
 下载模型和数据集 siglip.tgz  并解压到 /opt/vastai/vaststreamx/data/ 里  
 
+## Python Sample
 
-## Python Sample 
 在当前文档所在目录执行
 
 ### siglip_sample.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -39,6 +41,7 @@ optional arguments:
 ```
 
 ### siglip_sample.py 命令行示例
+
 ```bash
 # 测试 单张图片 将vsx 输出结果与 onnx输出结果计算余旋相似度
 python3 siglip_sample.py \
@@ -67,6 +70,7 @@ Minimum Cosine Similarity: 0.9999998807907104
 ```
 
 ### siglip_image_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -94,7 +98,9 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### siglip_image_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 siglip_image_prof.py \
@@ -122,7 +128,9 @@ python3 siglip_image_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
+
 ### siglip_image_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

@@ -2,12 +2,11 @@
 
 本目录提供端到端（文本检测，文本方向分类，文本识别）的 OCR sample
 
-其中 ocr_e2e 是 三个模型同步推理,  ocr_e2e_async是三个模型多线程异步推理       
-    ocr_e2e.py 是 三个模型同步推理,  ocr_e2e_async.py  是三个模型多线程异步推理          
-
-
+其中 ocr_e2e 是 三个模型同步推理,  ocr_e2e_async是三个模型多线程异步推理
+    ocr_e2e.py 是 三个模型同步推理,  ocr_e2e_async.py  是三个模型多线程异步推理
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/main/docs/ppocr/blog/PP-OCRv4_introduction.md)  [modelzoo](-) |
@@ -17,17 +16,16 @@
 |  VACC FP16  精度 | "HMEAN": 47.3 , "ACC": 80.9 |
 |  VACC INT8  精度 | "HMEAN": - , "ACC": - |
 
-
 ## 数据准备
 
 下载模型 ppocr_v4.tar.gz 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 ch4_test_images 到 /opt/vastai/vaststreamx/data/datasets 里
 下载 elf 压缩包到 /opt/vastai/vaststreamx/data/
 
-
 ## C++ sample
 
 ### ocr_e2e 命令行参数说明
+
 ```bash
 options:
       --det_model              text detection model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/det_model_vacc_fp16/mod])
@@ -59,6 +57,7 @@ options:
 在build 目录里执行
 
 单图片示例
+
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
@@ -75,7 +74,9 @@ options:
 --input_file ../data/images/detect.jpg \
 --output_file ocr_e2e_result.jpg
 ```
+
 输出
+
 ```bash
 bbox:[ [659 79] [702 81] [701 100] [ 658 98] ], score: 0.998438, string: 20029
 bbox:[ [636 133] [726 138] [724 159] [ 635 154] ], score: 0.99823, string: 97154197
@@ -87,10 +88,11 @@ bbox:[ [852 452] [904 450] [905 469] [ 853 471] ], score: 0.923828, string: JOIN
 bbox:[ [846 531] [883 529] [884 544] [ 847 546] ], score: 0.746053, string: TUFBLN
 Save file to: /thread_0_ocr_e2e_result.jpg
 ```
+
 并在图片上画出检测框，保存到  thread_0_ocr_e2e_result.jpg
 
-
 测试 三个模型同步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
+
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
@@ -112,8 +114,8 @@ Save file to: /thread_0_ocr_e2e_result.jpg
 Image count: 500, total cost: 27183 ms, throughput: 18.3938 fps. Average latency: 54.366 ms.
 ```
 
-
 ### ocr_e2e_async 命令行参数说明
+
 ```bash
 options:
       --det_model              text detection model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/det_model_vacc_fp16/mod])
@@ -146,6 +148,7 @@ options:
 在build 目录里执行
 
 单图片示例
+
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e_async \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
@@ -165,6 +168,7 @@ options:
 ```
 
 ### ocr_e2e_async 结果示例
+
 ```bash
 bbox:[ [659 79] [702 81] [701 100] [ 658 98] ], score: 0.998438, string: 20029
 bbox:[ [636 133] [726 138] [724 159] [ 635 154] ], score: 0.99823, string: 97154197
@@ -176,7 +180,6 @@ bbox:[ [852 452] [904 450] [905 469] [ 853 471] ], score: 0.923828, string: JOIN
 bbox:[ [846 531] [883 529] [884 544] [ 847 546] ], score: 0.746053, string: TUFBLN
 Save file to: /thread_0_ocr_e2e_async_result.jpg
 ```
-
 
 测试 三个模型多线程异步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
 
@@ -202,6 +205,7 @@ Image count: 500, total cost: 16952 ms, throughput: 29.495 fps. Average latency:
 ```
 
 ### text_det_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod])
@@ -218,6 +222,7 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=1])
   -?, --help            print this message
 ```
+
 ### text_det_prof 命令行示例
 
 ```bash
@@ -285,6 +290,7 @@ options:
 ```
 
 ### text_cls_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/cls_model_vacc_fp16/mod])
@@ -301,6 +307,7 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=1])
   -?, --help            print this message
 ```
+
 ### text_cls_prof 命令行示例
 
 ```bash
@@ -367,6 +374,7 @@ options:
 ```
 
 ### text_rec_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod])
@@ -383,6 +391,7 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=1])
   -?, --help            print this message
 ```
+
 ### text_rec_prof 命令行示例
 
 ```bash
@@ -454,6 +463,7 @@ options:
 ```
 
 ### text_det 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod])
@@ -477,6 +487,7 @@ options:
 
 在build 目录里执行
 单图片示例
+
 ```bash
 ./vaststreamx-samples/bin/text_det \
 -m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
@@ -490,7 +501,9 @@ options:
 --output_file text_det_result.jpg
 
 ```
+
 输出
+
 ```bash
 index:0, score:0.828569,bbox:[ [670 52] [688 52] [688 60] [670 60] ]
 index:1, score:0.821961,bbox:[ [660 80] [701 82] [700 99] [659 97] ]
@@ -503,9 +516,11 @@ index:7, score:0.628097,bbox:[ [1 349] [26 349] [26 360] [1 360] ]
 index:8, score:0.84285,bbox:[ [854 453] [903 452] [903 467] [854 468] ]
 index:9, score:0.760088,bbox:[ [848 532] [881 530] [882 543] [849 545] ]
 ```
+
 并在图片上画出检测框，保存到  text_det_result.jpg
 
 测试数据集
+
 ```bash
 mkdir -p text_det_output
 ./vaststreamx-samples/bin/text_det \
@@ -520,21 +535,26 @@ mkdir -p text_det_output
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder text_det_output
 ```
+
 结果保存在 text_det_output 文件夹里
 
 统计精度
+
 ```bash
 python3 ../evaluation/text_detection/eval.py \
 --test_image_path  /opt/vastai/vaststreamx/data/datasets/ch4_test_images \
 --boxes_npz_dir ./text_det_output \
 --label_file ../data/labels/test_icdar2015_label.txt 
 ```
+
 精度结果
+
 ```
 metric:  {'precision': 0.5459697732997482, 'recall': 0.41742898411169954, 'hmean': 0.4731241473396998}
 ```
 
 ### text_rec 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod])
@@ -558,6 +578,7 @@ options:
 
 在build 目录里执行
 单图片示例
+
 ```bash
 ./vaststreamx-samples/bin/text_rec \
 -m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
@@ -567,13 +588,16 @@ options:
 --input_file ../data/images/word_336.png 
 
 ```
+
 输出
+
 ```bash
 score: 0.973047
 text: SUPER
 ```
 
 测试数据集
+
 ```bash
 ./vaststreamx-samples/bin/text_rec \
 -m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
@@ -586,20 +610,23 @@ text: SUPER
 ```
 
 统计精度
+
 ```bash
 python3 ../evaluation/crnn/crnn_eval.py \
 --gt_file /opt/vastai/vaststreamx/data/datasets/CUTE80/CUTE80_gt.txt \
 --output_file cute80_pred.txt
 ```
+
 精度结果
+
 ```
 right_num = 233 all_num=288, acc = 0.8090277777777778
 ```
 
-##  Python sample 
-
+## Python sample
 
 ### ocr_e2e.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -648,6 +675,7 @@ optional arguments:
 ### ocr_e2e.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张图片示例
 python3 ocr_e2e.py \
@@ -682,8 +710,8 @@ python3 ocr_e2e.py \
 [[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
 ```
 
-
 ### ocr_e2e.py 测试 同步推理 性能与时延
+
 ```bash
 python ocr_e2e.py \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
@@ -703,8 +731,8 @@ python ocr_e2e.py \
 Image count: 500, total cost: 31.75 s, throughput: 15.75 fps, average latency: 0.064 s
 ```
 
-
 ### ocr_e2e_async.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -749,7 +777,9 @@ optional arguments:
   --dataset_output_file DATASET_OUTPUT_FILE
                         dataset output file
 ```
+
 ### ocr_e2e_async.py 命令行示例
+
 ```bash
 # 测试单张图片
 python ocr_e2e_async.py \
@@ -776,6 +806,7 @@ python ocr_e2e_async.py \
 [[854,454], [903,453], [903,468], [854,469]],  [('JOINT-RX', 0.93212890625)]
 [[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
 ```
+
 ### ocr_e2e_async.py 测试多线程异步推理 性能与时延
 
 ```bash
@@ -797,8 +828,6 @@ python ocr_e2e_async.py \
 #测试结果  880MHz 下
 Image count: 500, total cost: 15.59 s, throughput: 32.07 fps, average latency: 2.042 s
 ```
-
-
 
 ### text_det_prof.py 命令行参数说明
 
@@ -830,10 +859,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### text_det_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 text_det_prof.py \
@@ -864,7 +893,6 @@ python3 text_det_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### text_det_prof.py 运行结果示例
 
@@ -930,10 +958,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### text_cls_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 text_cls_prof.py \
@@ -962,7 +990,6 @@ python3 text_cls_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### text_cls_prof.py 运行结果示例
 
@@ -1030,10 +1057,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### text_rec_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 text_rec_prof.py \
@@ -1064,7 +1091,6 @@ python3 text_rec_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### text_rec_prof.py 运行结果示例
 
@@ -1127,10 +1153,10 @@ optional arguments:
                         dataset output folder
 ```
 
-
 ### text_det.py 运行示例
 
 在本目录下运行  
+
 ```bash
 python3 text_det.py \
 -m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
@@ -1160,6 +1186,7 @@ index:9, score:0.7600875937420388,bbox:[[848 532],[881 530],[882 544],[849 546]]
 ```
 
 测试数据集
+
 ```bash
 mkdir -p text_det_output
 python3 text_det.py  \
@@ -1171,6 +1198,7 @@ python3 text_det.py  \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder text_det_output
 ```
+
 结果保存在 text_det_output 文件夹里
 
 ```bash
@@ -1180,12 +1208,15 @@ python3 ../../evaluation/text_detection/eval.py \
 --boxes_npz_dir ./text_det_output \
 --label_file ../../data/labels/test_icdar2015_label.txt 
 ```
+
 精度结果
+
 ```
 metric:  {'precision': 0.5449968533668974, 'recall': 0.4169475204622051, 'hmean': 0.47244953627932357}
 ```
 
 ### text_rec.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -1212,6 +1243,7 @@ optional arguments:
 ### text_rec.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张图片示例
 python3 text_rec.py \

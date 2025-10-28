@@ -2,13 +2,14 @@
 
 scale op 与 resize op 功能类似，区别是 scale op 支持多个 size 输出， 而 resize op 仅支持一个输出
 
-
 对 scale op 的性能测试，请看 buildin_op_prof 目录
 
 scale op 当前仅支持 YUV_NV12 格式
-## C++ Sample 
+
+## C++ Sample
 
 ### scale 命令行参数说明
+
 ```bash
 options:
   -d, --device_id       device id to run (unsigned int [=0])
@@ -32,11 +33,12 @@ options:
 --output_file2 scale_result2.jpg 
 ```
 
-结果保存为 scale_result1.jpg ，scale_result2.jpg 
+结果保存为 scale_result1.jpg ，scale_result2.jpg
 
-## Python Sample 
+## Python Sample
 
 ### scale.py 命令行参数说明
+
 ```bash
   -h, --help            show this help message and exit
   -d DEVICE_ID, --device_id DEVICE_ID
@@ -53,7 +55,6 @@ options:
                         output image
 ```
 
-
 ### scale.py 命令行示例
 
 ```bash
@@ -66,4 +67,4 @@ python3 scale.py \
 --output_file2 scale_result2.jpg 
 ```
 
-结果保存为 scale_result1.jpg ，scale_result2.jpg 
+结果保存为 scale_result1.jpg ，scale_result2.jpg

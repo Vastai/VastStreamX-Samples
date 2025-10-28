@@ -1,25 +1,30 @@
 # image process samples
 
-本目录提供基于vsx ImageProcess API 开发的sample,主要的API有:   
-cvtcolor: 颜色空间转换   
-resize：图片缩放     
-crop: 图片裁剪     
-yuvflip: yuv图片翻转     
-warpaffine: 图片仿射变换     
-resize_copy_make_border:  图片缩放，并在图片外侧添加border    
+本目录提供基于vsx ImageProcess API 开发的sample,主要的API有:
+cvtcolor: 颜色空间转换
+resize：图片缩放
+crop: 图片裁剪
+yuvflip: yuv图片翻转
+warpaffine: 图片仿射变换
+resize_copy_make_border:  图片缩放，并在图片外侧添加border
 batch_crop_resize: 图片根据输入多个rectangle进行多次裁剪，并对裁剪结果resize到统一的size
-scale： 图片根据输入的多个shape，缩放成多个size的图片   
+scale： 图片根据输入的多个shape，缩放成多个size的图片
 
 ## C++ Sample
+
 ### image_process 命令行格式
+
 ```bash
   -d, --device_id      device id to run (unsigned int [=0])
       --input_file     input image file (string [=../data/images/dog.jpg])
       --output_file    output image file (string [=./image_process_result.jpg])
   -?, --help           print this message
 ```
+
 ### image_process 命令示例
+
 在 build 目录里执行  
+
 ```bash
 ./vaststreamx-samples/bin/image_process \
 --device_id 0 \
@@ -50,6 +55,7 @@ images_scale[2] size is ( 800 x 600 )
 ## Python Sample
 
 ### image_process.py 命令行格式
+
 ```bash
   -d DEVICE_ID, --device_id DEVICE_ID
                         device id to run

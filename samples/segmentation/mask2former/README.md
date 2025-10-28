@@ -3,6 +3,7 @@
 本 sample 基于 mask2former 模型实现 目标检测与分割 功能
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/facebookresearch/Mask2Former)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/mask2former) |
@@ -12,16 +13,15 @@
 |  VACC FP16  精度 | Detection  "mAP@.5:.95": 42.1 ;  Segmentation  "mAP@.5:.95":  42.1  |
 |  VACC INT8  精度 |  -  |
 
-
 ## 数据准备
 
 下载模型 mask2former-fp16-none-1_3_1024_1024-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 det_coco_val 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-## C++ Sample 
+## C++ Sample
 
 ### mask2former 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/mask2former-fp16-none-1_3_1024_1024-vacc/mod])
@@ -39,6 +39,7 @@ options:
 ```
 
 ### mask2former 命令行示例
+
 ```bash
 # 测试单张图片，分割结果保存到 mask2former_result.jpg
 ./vaststreamx-samples/bin/mask2former  \
@@ -118,6 +119,7 @@ DONE (t=6.34s).
 ```
 
 ### mask2former_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/mask2former-fp16-none-1_3_1024_1024-vacc/mod])
@@ -133,7 +135,6 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=1])
   -?, --help            print this message
 ```
-
 
 ```bash
 # 测试最大吞吐
@@ -162,7 +163,9 @@ options:
 ```
 
 ### mask2former_prof 命令行结果示例
+
 以下结果为 x86_linux  OCLK=835MHz条件下测试所得
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -196,6 +199,7 @@ options:
 ```
 
 以下结果为 VS1000 aarch64_linux VE1M OCLK=1250MHz条件下测试所得
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -228,10 +232,10 @@ options:
     p99 latency: 2893751
 ```
 
-
 ## Python Sample
 
 ### mask2former.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -290,6 +294,7 @@ python3 ../../../evaluation/coco_seg/coco_seg_eval.py \
 ```
 
 ### mask2former.py 命令行结果示例
+
 ```bash
 #测试单张图片结果
 Object class: person, score: 0.9659856557846069, bbox: [0, 0, 60, 364]
@@ -336,6 +341,7 @@ DONE (t=6.34s).
 ```
 
 ### mask2former_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -362,6 +368,7 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### mask2former_prof.py 命令行示例
 
 ```bash
@@ -392,6 +399,7 @@ python3 mask2former_prof.py \
 ```
 
 ### mask2former_prof.py 命令行结果示例
+
 ```bash
 #测试最大吞吐
 - number of instances: 1

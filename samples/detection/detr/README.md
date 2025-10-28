@@ -3,6 +3,7 @@
 本 目录 提供基于 detr_r50 模型的 目标检测 sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/facebookresearch/detr)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/detr) |
@@ -13,12 +14,14 @@
 |  VACC INT8  精度 | - |
 
 ## 数据准备
+
 下载模型 detr_res50-fp16-none-1_3_1066_800-vacc 到 /opt/vastai/vaststreamx/data/models/
 下载数据集 det_coco_val 到 /opt/vastai/vaststreamx/data/datasets
 
 ## C++ Sample
 
 ### detr 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/detr_res50-fp16-none-1_3_1066_800-vacc/mod])
@@ -34,6 +37,7 @@ options:
       --dataset_output_folder    dataset output folder path (string [=])
   -?, --help                     print this message
 ```
+
 ### detr 命令行示例
 
 ```bash
@@ -111,6 +115,7 @@ options:
 ```
 
 ### detr_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 vaststreamx-samples/bin/detr_prof \
@@ -178,6 +183,7 @@ vaststreamx-samples/bin/detr_prof \
 ## Python Sample
 
 ### detr.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -206,6 +212,7 @@ optional arguments:
 ```
 
 ### detr.py 命令行示例
+
 ```bash
 # 测试单张图片
 python3  detr.py \
@@ -259,10 +266,8 @@ python3 ../../../evaluation/detection/eval_map.py \
 
 ```
 
-
-
-
 ### detr_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -289,7 +294,9 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### detr_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 detr_prof.py \
@@ -319,6 +326,7 @@ python3 detr_prof.py \
 ```
 
 ### detr_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

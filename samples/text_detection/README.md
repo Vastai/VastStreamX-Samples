@@ -1,9 +1,9 @@
-# Text Detection sample 
+# Text Detection sample
 
 本目录提供基于 dbnet 模型的 文字检测  sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_ch/algorithm_det_db.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/text_detection/dbnet) |
@@ -13,17 +13,16 @@
 |  VACC FP16  精度 | 'precision': 0.8096, 'recall': 0.8209, 'hmean': 0.8152  |
 |  VACC INT8  精度 | "precision": 0.837, "recall":  0.8011, "Hmean": 0.8187  |
 
-
 ## 数据准备
 
 下载模型 dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 ch4_test_images 到 /opt/vastai/vaststreamx/data/datasets 里
 下载 elf 压缩包到 /opt/vastai/vaststreamx/data/
 
-
 ## C++ sample
 
 ### dbnet 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod])
@@ -47,6 +46,7 @@ options:
 
 在build 目录里执行
 单图片示例
+
 ```bash
 ./vaststreamx-samples/bin/dbnet \
 -m /opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod \
@@ -59,7 +59,9 @@ options:
 --input_file ../data/images/detect.jpg \
 --output_file dbnet_result.jpg
 ```
+
 输出
+
 ```bash
 index:0, score:0.855256,bbox:[ [660 81] [699 84] [698 97] [659 94] ]
 index:1, score:0.74898,bbox:[ [673 103] [689 103] [689 110] [673 110] ]
@@ -76,9 +78,11 @@ index:11, score:0.916381,bbox:[ [790 334] [866 334] [866 362] [790 362] ]
 index:12, score:0.787945,bbox:[ [854 453] [903 453] [903 467] [854 467] ]
 index:13, score:0.712549,bbox:[ [868 536] [877 536] [877 541] [868 541] ]
 ```
+
 并在图片上画出检测框，保存到  dbnet_result.jpg
 
 测试数据集
+
 ```bash
 mkdir -p dbnet_output
 ./vaststreamx-samples/bin/dbnet \
@@ -93,21 +97,26 @@ mkdir -p dbnet_output
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder dbnet_output
 ```
+
 结果保存在 dbnet_output 文件夹里
 
 统计精度
+
 ```bash
 python3 ../evaluation/text_detection/eval.py \
 --test_image_path  /opt/vastai/vaststreamx/data/datasets/ch4_test_images \
 --boxes_npz_dir ./dbnet_output \
 --label_file ../data/labels/test_icdar2015_label.txt 
 ```
+
 精度结果
+
 ```
 metric:  {'precision': 0.8370221327967807, 'recall': 0.8011555127587867, 'hmean': 0.8186961869618696}
 ```
 
 ### dbnet_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod])
@@ -124,6 +133,7 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=1])
   -?, --help            print this message
 ```
+
 ### dbnet_prof 命令行示例
 
 ```bash
@@ -187,11 +197,10 @@ options:
     p99 latency: 17682
 ```
 
-
-
 ## Python sample 功能测试
 
 ### dbnet.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -219,6 +228,7 @@ optional arguments:
 ### dbnet.py 运行示例
 
 在本目录下运行  
+
 ```bash
 python3 dbnet.py \
 -m /opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod \
@@ -250,8 +260,8 @@ index:12, score:0.7879449234527796,bbox:[[854 454],[903 454],[903 468],[854 468]
 index:13, score:0.7125489371163504,bbox:[[868 536],[877 536],[877 542],[868 542]]
 ```
 
-
 测试数据集
+
 ```bash
 mkdir -p dbnet_output
 python3 dbnet.py  \
@@ -263,6 +273,7 @@ python3 dbnet.py  \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder dbnet_output
 ```
+
 结果保存在 dbnet_output 文件夹里
 
 ```bash
@@ -272,7 +283,9 @@ python3 ../../evaluation/text_detection/eval.py \
 --boxes_npz_dir ./dbnet_output \
 --label_file ../../data/labels/test_icdar2015_label.txt 
 ```
+
 精度结果
+
 ```
 metric:  {'precision': 0.8361809045226131, 'recall': 0.8011555127587867, 'hmean': 0.8182935824932384}
 ```
@@ -307,10 +320,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### dbnet_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 dbnet_prof.py \
@@ -341,7 +354,6 @@ python3 dbnet_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### dbnet_prof.py 运行结果示例
 

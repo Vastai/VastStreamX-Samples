@@ -1,6 +1,7 @@
 # Run Stream Async Sample
 
-本目录提供模型异步推理 sample。异步推理主要流程为：     
+本目录提供模型异步推理 sample。异步推理主要流程为：
+
 - 初始化模型并创建stream
 - 创建接收线程，调用 get_output 获取输出，get_output在没有数据返回时，会阻塞
 - 调用 process_async发送数据
@@ -8,8 +9,8 @@
 - 等待 接收线程结束
 - 调用 wait_until_done 等待 stream 结束。
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/pytorch/vision/blob/v0.9.0/torchvision/models/resnet.py)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/classification/resnet) |
@@ -24,11 +25,10 @@
 下载模型 resnet50-int8-percentile-1_3_224_224-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 ILSVRC2012_img_val 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-
 ## C++ Sample
 
 ### run_stream_async 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod])
@@ -42,8 +42,11 @@ options:
       --dataset_output_file    dataset output file (string [=])
   -?, --help                   print this message
 ```
+
 ### run_stream_async 命令行示例
+
 在build目录下运行
+
 ```bash
 ./vaststreamx-samples/bin/run_stream_async \
 -m /opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod \
@@ -65,7 +68,9 @@ options:
 #统计精度
 python3 ../evaluation/classification/eval_topk.py  cls_result.txt  
 ```
+
 ### run_stream_async 命令行结果示例
+
 ```bash
 # 单张图片结果示例
 Top5:
@@ -79,8 +84,8 @@ Top5:
 [VACC]:  top1_rate: 75.816 top5_rate: 92.796
 ```
 
-
 ### run_stream_async_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod])
@@ -98,7 +103,9 @@ options:
 ```
 
 ### run_stream_async_prof 命令行示例
+
 在build目录下执行
+
 ```bash
 ./vaststreamx-samples/bin/run_stream_async_prof \
 -m /opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod \
@@ -112,7 +119,9 @@ options:
 --input_host 1 \
 --queue_size 1
 ```
+
 ### run_stream_async_prof 命令行结果示例
+
 ```bash
 - number of instances: 2
   devices: [ 0 ]
@@ -132,6 +141,7 @@ options:
 ## Python Sample
 
 ### run_stream_async.py 命令行参数说明
+
 ```bash
   -h, --help            show this help message and exit
   -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
@@ -147,8 +157,11 @@ options:
   --input_file INPUT_FILE
                         input file
 ```
+
 ### run_stream_async.py 命令行示例
+
 在当前目录下执行
+
 ```bash
 python3 run_stream_async.py \
 -m /opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-1_3_224_224-vacc/mod \
@@ -187,7 +200,6 @@ Top5:
 [VACC]:  top1_rate: 75.806 top5_rate: 92.806
 ```
 
-
 ### run_stream_async_prof.py 命令行参数说明
 
 ```bash
@@ -217,7 +229,6 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### run_stream_async_prof.py 命令行示例
 
 ```bash
@@ -235,6 +246,7 @@ python3 run_stream_async_prof.py \
 ```
 
 ### run_stream_async_prof.py 命令行结果示例
+
 ```bash
 - number of instances: 2
   devices: [0]
@@ -250,5 +262,3 @@ python3 run_stream_async_prof.py \
     p95 latency: 10124
     p99 latency: 10157
 ```
-
-

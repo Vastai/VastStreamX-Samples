@@ -1,13 +1,12 @@
-# Test Scripts for CICD 
+# Test Scripts for CICD
 
-## Build Docker Image 
+## Build Docker Image
 
 ```bash
 sudo docker build . -f Dockerfile -t vsx-samples:unit-test 
 ```
 
-
-## Build Cpp Code 
+## Build Cpp Code
 
 ```bash
 
@@ -24,9 +23,7 @@ make install
 
 ```
 
-
-## Run Test Scripts 
-
+## Run Test Scripts
 
 ```bash
 

@@ -2,8 +2,8 @@
 
 本 sample 基于 yolov8 模型实现 目标检测与分割 功能
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/ultralytics/ultralytics)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/yolov8_seg) |
@@ -13,16 +13,15 @@
 |  VACC FP16  精度 | Detection  "mAP@.5:.95": 48.4 ;  Segmentation  "mAP@.5:.95":  38.6  |
 |  VACC INT8  精度 | Detection  "mAP@.5:.95": 48.0 ;  Segmentation  "mAP@.5:.95":  38.3   |
 
-
 ## 数据准备
 
 下载模型 yolov8m-seg-int8-percentile-1_3_640_640-vacc-pipeline 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 det_coco_val 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-## C++ Sample 
+## C++ Sample
 
 ### yolov8_seg 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/linux_models/yolov8m-seg-int8-percentile-1_3_640_640-vacc-pipeline/mod])
@@ -39,7 +38,9 @@ options:
       --dataset_output_folder    dataset output folder (string [=])
   -?, --help                     print this message
 ```
+
 ### yolov8_seg 命令行示例
+
 ```bash
 # 测试单张图片，分割结果保存到 yolov8_seg_result.jpg
 ./vaststreamx-samples/bin/yolov8_seg \
@@ -83,6 +84,7 @@ python3 ../evaluation/yolov8_seg/yolov8_seg_eval.py \
 --output_path yolov8_seg_out \
 --gt ../evaluation/yolov8_seg/instances_val2017.json
 ```
+
 ### yolov8_seg 命令行结果示例
 
 ```bash
@@ -128,9 +130,11 @@ DONE (t=4.68s).
  Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.553
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.674
 ```
+
 分割结果保存于 yolov8_seg_result.jpg
 
 ### yolov8_seg_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov8m-seg-int8-percentile-1_3_640_640-vacc-pipeline/mod])
@@ -148,8 +152,8 @@ options:
   -?, --help            print this message
 ```
 
-
 ### yolov8_seg_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/yolov8_seg_prof \
@@ -175,7 +179,9 @@ options:
 --iterations 100 \
 --queue_size 0
 ```
+
 ### yolov8_seg_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 6
@@ -208,10 +214,10 @@ options:
     p99 latency: 57628
 ```
 
-
 ## Python Sample
 
 ### yolov8_seg.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -239,7 +245,9 @@ optional arguments:
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder
 ```
+
 ### yolov8_seg.py 命令行示例
+
 ```bash
 #测试单张图片
 python3 yolov8_seg.py \
@@ -272,6 +280,7 @@ python3 ../../../evaluation/yolov8_seg/yolov8_seg_eval.py \
 ```
 
 ### yolov8_seg.py 命令行结果示例
+
 ```bash
 #测试单张图片结果
 Object class: bicycle, score: 0.875, bbox: [74.3125, 201.5, 253.875, 499.5]
@@ -317,8 +326,8 @@ DONE (t=4.53s).
 
 ```
 
-
 ### yolov8_seg_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -376,8 +385,8 @@ python3 yolov8_seg_prof.py \
 --queue_size 0
 ```
 
-
 ### yolov8_seg_prof.py 命令行结果示例
+
 ```bash
 #测试最大吞吐
 - number of instances: 6

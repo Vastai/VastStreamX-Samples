@@ -1,9 +1,9 @@
-# 3D Detection Sample 
+# 3D Detection Sample
 
 本sample基于 point_pillar 算法实现 3d 目标检测
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/nutonomy/second.pytorch)  [modelzoo](-) |
@@ -13,15 +13,15 @@
 |  VACC FP16  精度 | - |
 |  VACC INT8  精度 | "Car@0.7":85.2757/73.1001/67.9215, "Pedestrian@0.5":56.8780/51.0442/47.9645, "Cyclist@0.5":78.0941/60.7013/57.5004 |
 
-
 ## 数据准备
+
 下载 pointpillar-int8-percentile-16000_32_10_3_16000_1_16000-vacc 模型到 /opt/vastai/vaststreamx/data/models/
 下载数据集 fov_pointcloud_float16 到 /opt/vastai/vaststreamx/data/datasets
 
-
-## C++ Sample 
+## C++ Sample
 
 ### point_pillar 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefixs            model prefixs of the model suite files (string [=[/opt/vastai/vaststreamx/data/models/pointpillar-int8-max-16000_32_10_3_16000_1_16000-vacc/mod]])
@@ -41,7 +41,6 @@ options:
       --dataset_output_folder    dataset output folder path (string [=])
   -?, --help                     print this message
 ```
-
 
 ### point_pillar 命令行示例
 
@@ -83,6 +82,7 @@ python3 ../evaluation/point_pillar/evaluation.py \
 --out_dir pointpillar_out
 
 ```
+
 ### point_pillar 命令行结果示例
 
 ```bash
@@ -144,7 +144,9 @@ options:
   -q, --queue_size           aync wait queue size (unsigned int [=1])
   -?, --help                 print this message
 ```
+
 ### point_pillar_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/point_pillar_prof \
@@ -221,7 +223,8 @@ options:
 
 ## Python Sample
 
-###  point_pillar.py 参数说明
+### point_pillar.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -254,7 +257,8 @@ optional arguments:
                         dataset output folder path
 ```
 
-###  point_pillar.py 命令示例
+### point_pillar.py 命令示例
+
 ```bash
 # 测试单个输入
 python3  point_pillar.py \
@@ -327,7 +331,8 @@ pedestrian AP: 56.159348 50.777905 47.113194
 cyclist AP: 77.871696 60.811256 57.609837
 ```
 
-###  point_pillar_prof.py 参数说明
+### point_pillar_prof.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -367,7 +372,8 @@ optional arguments:
                         cache input data into host memory
 ```
 
-###  point_pillar_prof.py 命令示例
+### point_pillar_prof.py 命令示例
+
 ```bash
 # 测试最大吞吐
 python3 point_pillar_prof.py \
@@ -408,7 +414,8 @@ python3 point_pillar_prof.py \
 --queue_size 0
 ```
 
-###  point_pillar_prof.py 命令结果示例
+### point_pillar_prof.py 命令结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

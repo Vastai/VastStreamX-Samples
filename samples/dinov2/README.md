@@ -2,8 +2,8 @@
 
 本目录提供基于 dinov2 模型的 sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/facebookresearch/dinov2)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/image_retrieval/dinov2) |
@@ -13,8 +13,6 @@
 |  VACC FP16  精度 | mAP M: 79.6025, H: 58.1765 |
 |  VACC INT8  精度 | - |
 
-
-
 ## 数据准备
 
 下载模型 dinov2_vitl14_reg4-fp16-none-1_3_224_224-vacc 到 /opt/vastai/vaststreamx/data/models 里  
@@ -22,7 +20,9 @@
 下载数据集 oxbuild_images-v1.tgz 到 /opt/vastai/vaststreamx/data/datasets 里  
 
 ## C++ sample
+
 ### dinov2 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix               model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/dinov2-b-fp16-none-1_3_224_224-vacc/mod])
@@ -69,8 +69,8 @@ mAP M: 79.6025, H: 58.1765
 mP@k[ 1 5 10 ], M: [98.5714 94.5238 91.381 ], H: [92.8571 80.0476 70.0476 ]
 ```
 
-
 ### dinov2_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix               model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/dinov2-b-fp16-none-1_3_224_224-vacc/mod])
@@ -89,7 +89,9 @@ options:
 ```
 
 ### dinov2_prof 命令行示例
+
 在build目录执行
+
 ```bash
 #测试最大吞吐
 ./vaststreamx-samples/bin/dinov2_prof  \
@@ -156,10 +158,10 @@ options:
     p99 latency: 39889
 ```
 
-
-## Python Sample 
+## Python Sample
 
 ### dinov2.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -184,6 +186,7 @@ optional arguments:
 ### dinov2.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张照片示例
 python3 dinov2.py \
@@ -203,7 +206,6 @@ python3 dinov2.py \
 --dataset_conf ../../data/labels/gnd_roxford5k.pkl
 ```
 
-
 ### dinov2.py 运行结果示例
 
 ```bash
@@ -215,7 +217,6 @@ output:[-0.0480957   0.734375   -1.0654297  ...  0.39916992  0.20153809
 mAP M: 79.6, H: 58.18
 mP@k[ 1  5 10] M: [98.57 94.52 91.38], H: [92.86 80.05 70.05]
 ```
-
 
 ## Python sample 性能测试
 
@@ -250,10 +251,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### dinov2_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 dinov2_prof.py \

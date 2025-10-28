@@ -3,7 +3,9 @@
 本目录提供基于vsx 开发的 jpeg encode sample。实现在产品卡上将nv12数据编码为jpeg格式。
 
 ## C++ Sample
+
 ### jpeg_encode 命令行格式
+
 ```bash
   -d, --device_id      device id to run (unsigned int [=0])
       --height         image height (unsigned int [=354])
@@ -12,8 +14,11 @@
       --output_file    output image file (string [=./jpeg_encode_result.jpg])
   -?, --help           print this message
 ```
+
 ### jpeg_encode 命令示例
+
 在 build 目录里执行  
+
 ```bash
 ./vaststreamx-samples/bin/jpeg_encode \
 --device_id 0 \
@@ -31,6 +36,7 @@ Encoded data bytes: 25433
 ```
 
 ### jpeg_encode_prof 命令行参数
+
 ```bash
 options:
   -d, --device_ids     device id to run (string [=[0]])
@@ -45,7 +51,8 @@ options:
 
 ### jpeg_encode_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/jpeg_encode_prof \
@@ -100,9 +107,11 @@ options:
     p95 latency: 5453
     p99 latency: 5581
 ```
+
 ## Python Sample
 
 ### jpeg_encode.py 命令行格式
+
 ```bash
   -d DEVICE_ID, --device_id DEVICE_ID
                         device id to run
@@ -134,7 +143,6 @@ python3 jpeg_encode.py \
 Encoded data bytes: 23662
 ```
 
-
 ## Python sample 性能测试
 
 ### jpeg_encode_prof.py 命令行参数说明
@@ -156,10 +164,10 @@ optional arguments:
                         percentiles of latency
 ```
 
-
 ### jpeg_encode_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 jpeg_encode_prof.py \

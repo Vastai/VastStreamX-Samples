@@ -1,4 +1,5 @@
 # Video Writer Sample
+
 本目录提供 Video Writer sample, 视频编码支持 YUV_NV12 格式的图片输入
 
 数据准备:
@@ -7,6 +8,7 @@
 ## C++ sample
 
 ### video_writer 命令行参数
+
 ```bash
 options:
       --codec_type    codec type (string [=H264])
@@ -20,7 +22,9 @@ options:
 ```
 
 ### video_writer 运行示例
-在 build 目录里执行   
+
+在 build 目录里执行  
+
 ```bash
 # h264文件编码示例
 ./vaststreamx-samples/bin/video_writer \
@@ -45,9 +49,10 @@ options:
 # 结果保存为 test_h265.ts, 可以用 PotPlayer 播放器查看 编码得到的视频
 ```
 
-## Python Sample 
+## Python Sample
 
 ### video_writer.py 命令行参数说明
+
 ```bash
 options:
   -h, --help            show this help message and exit
@@ -67,6 +72,7 @@ options:
 ### video_writer.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # h264文件编码示例
 python3 video_writer.py  \

@@ -2,8 +2,8 @@
 
 VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可以参考其中的 Sample 学习如何使用 VaststreamX API。在每个 Sample 目录下有 `README` 文件，用户可以通过 `README` 文件了解 Sample 的功能和用法。
 
-
 ## 支持的模型与开发语言
+
 |   类别             |  模型                                              | C++  | Python |
 |--------------------|---------------------------------------------------|------|--------|
 |  图片分类           | resnet50  vit-base  swin-transformer mobile-vit   | ✓    |  ✓    |
@@ -26,11 +26,11 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 | 视觉基础模型         | dinov2                                             | ✓    |  ✓    |
 |  图像压缩解压        | elic                                                |     |  ✓    |
 
-
-**各模型的精度与性能，请查看对应sample的readme. 在不同的卡或不同的频率下，性能会有差异**    
-各sample的readme里列出的性能数据，除特别指出频率外，均是在 OCLK=835MHz DCLK=650MHz ECLK=200MHz下测试出来的   
+**各模型的精度与性能，请查看对应sample的readme. 在不同的卡或不同的频率下，性能会有差异**
+各sample的readme里列出的性能数据，除特别指出频率外，均是在 OCLK=835MHz DCLK=650MHz ECLK=200MHz下测试出来的
 
 ## 支持的功能
+
 |   类别             |     例子                                                                       | C++  | Python |
 |--------------------|--------------------------------------------------------------------------------|------|--------|
 |   图片处理API      |   CvtColor  Resize Crop WarpAffine ResizeCopyMakeBorder BatchCropResize        | ✓    |  ✓    |
@@ -42,18 +42,17 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 |   AI + 编解码     |  decode + detection  decode + detection + encode                                | ✓    |  ✓    |
 |   卡状态获取      |   card_info                                                                      | ✓    |  ✓    |
 
-
-      
 ## 版本要求
 
-Vastai Compiler: 2.8.0   
-Vaststream SDK: 2.5.0   
+Vastai Compiler: 2.8.0
+Vaststream SDK: 2.5.0
 gcc/g++: 9.4.0  
-python: 3.8.10   
+python: 3.8.10
 Vaststreamx: 2.8.3  
 cmake: 3.22  
 
 ## 依赖项
+
 ```bash
 opencv: 3.4.10
 glog
@@ -71,29 +70,24 @@ cmake ..
 make -j
 make install
 ```
+
 ## 运行 C++ Samples
 
-参考各 sample 的 readme.md 
+参考各 sample 的 readme.md
 
 ## 运行 Python Samples
 
-
 参考各个 sample 目录下的 readme ，执行对应的指令
 
-
-
-
 ## Update
+
 - 2025-10-28
-    - 增加sample: decode_detection_encode_multi 
+  - 增加sample: decode_detection_encode_multi
 
 - 2025-03-11
-    - 增加 UT 与 code style check 
-    - custom op 运行方式 由 execute 转为 run_sync 
+  - 增加 UT 与 code style check
+  - custom op 运行方式 由 execute 转为 run_sync
 
-- 2025-01-20   
-    - 新增模型: grounding_dino  yolo_world dinov2 elic mask2former  
-    - bert_qa 与 market_bot_r50 有bug，暂未修复 
-
-
-
+- 2025-01-20
+  - 新增模型: grounding_dino  yolo_world dinov2 elic mask2former  
+  - bert_qa 与 market_bot_r50 有bug，暂未修复

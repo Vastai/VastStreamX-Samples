@@ -5,6 +5,7 @@
 edsr 三件套的输入是 (h x w) = (256 x 256) ，输出是 (h x w) = (512 x 512)。
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/yulunzhang/RCAN)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/super_resolution/rcan) |
@@ -19,12 +20,10 @@ edsr 三件套的输入是 (h x w) = (256 x 256) ，输出是 (h x w) = (512 x 5
 下载模型 rcan-int8-max-1_3_1080_1920-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 sr4k 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-
-
 ## C++ sample
 
 ### super_resulotion 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/rcan-int8-max-1_3_1080_1920-vacc/mod])
@@ -41,9 +40,11 @@ options:
 ```
 
 ### super_resulotion 命令行示例
+
 在build目录里执行
 
 单张照片示例
+
 ```bash
 ./vaststreamx-samples/bin/super_resolution \
 -m /opt/vastai/vaststreamx/data/models/rcan-int8-max-1_3_1080_1920-vacc/mod \
@@ -53,10 +54,11 @@ options:
 --input_file  ../data/images/hd_1920x1080.png \
 --output_file sr_result.png
 ```
+
 结果将保存为 sr_result.png
 
-
 数据集示例
+
 ```bash
 mkdir -p sr_output
 ./vaststreamx-samples/bin/super_resolution \
@@ -68,22 +70,27 @@ mkdir -p sr_output
 --dataset_root /opt/vastai/vaststreamx/data/datasets/sr4k/ \
 --dataset_output_folder sr_output
 ```
+
 结果将保存在 sr_output 目录里
 
 精度测试
+
 ```bash
 python3 ../evaluation/super_resolution/evaluation.py \
 --gt_dir /opt/vastai/vaststreamx/data/datasets/sr4k/DIV2K_valid_HR \
 --input_filelist /opt/vastai/vaststreamx/data/datasets/sr4k/DIV2K_valid_LR_bicubic_X2_filelist.txt  \
 --output_dir sr_output
 ```
+
 输出精度
+
 ```bash
 #最后一行
 mean psnr: 32.33915235662851, mean ssim: 0.8842343995396744
 ```
 
 ### sr_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/rcan-int8-max-1_3_1080_1920-vacc/mod])
@@ -101,6 +108,7 @@ options:
 ```
 
 ### sr_prof 运行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/sr_prof \
@@ -130,6 +138,7 @@ options:
 ```
 
 ### sr_prof 运行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -162,10 +171,10 @@ options:
     p99 latency: 77112
 ```
 
-
 ## Python sample
 
 ### super_resulotion.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -190,6 +199,7 @@ optional arguments:
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder
 ```
+
 ### super_resulotion.py 命令行示例
 
 ```bash
@@ -215,13 +225,16 @@ python3 super_resolution.py \
 ```
 
 精度测试
+
 ```bash
 python3 ../../evaluation/super_resolution/evaluation.py \
 --gt_dir /opt/vastai/vaststreamx/data/datasets/sr4k/DIV2K_valid_HR \
 --input_filelist /opt/vastai/vaststreamx/data/datasets/sr4k/DIV2K_valid_LR_bicubic_X2_filelist.txt  \
 --output_dir sr_output
 ```
+
 输出精度
+
 ```bash
 #最后一行
 mean psnr: 32.33915235662851, mean ssim: 0.8842343995396744
@@ -258,10 +271,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### sr_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #
 # 测试最大吞吐

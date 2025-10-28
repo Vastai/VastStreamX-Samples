@@ -3,6 +3,7 @@
 本目录提供基于 yolo 模型的 Detection  sample
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/ultralytics/yolov5)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/yolov5) |
@@ -20,6 +21,7 @@
 ## C++ sample
 
 ### detection 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov5m-int8-max-1_3_640_640-vacc-pipeline/mod])
@@ -35,7 +37,9 @@ options:
       --dataset_output_folder    dataset output folder path (string [=])
   -?, --help                     print this message
 ```
+
 ### detection 运行示例
+
 在 build 目录里执行  
 
 ```bash
@@ -70,7 +74,9 @@ python3 ../evaluation/detection/eval_map.py \
 
 
 ```
+
 ### detection 运行结果示例
+
 ```bash
 # 单张图片结果示例，检测框绘制在 result.png 图片里
 Detection objects:
@@ -96,7 +102,9 @@ Object class: truck, score: 0.728027, bbox: [472.8, 72.3, 217.2, 99]
 
 
 ```
+
 ### det_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov5m-int8-max-1_3_640_640-vacc-pipeline/mod])
@@ -113,8 +121,11 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=2])
   -?, --help            print this message
 ```
+
 ### det_prof 运行示例
+
 在 build 目录里执行  
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/det_prof \
@@ -142,6 +153,7 @@ options:
 --input_host 1 \
 --queue_size 0
 ```
+
 ### det_prof 运行结果示例
 
 ```bash
@@ -179,6 +191,7 @@ options:
 ## Python sample 功能测试
 
 ### detection.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -210,6 +223,7 @@ optional arguments:
 ### detection.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 单张图片测试
 python3 detection.py \
@@ -269,7 +283,6 @@ Object class: truck, score: 0.7280, bbox: [472.80, 72.30, 217.20, 99.00]
 
 ```
 
-
 ## Python sample 性能测试
 
 ### det_prof.py 命令行参数说明
@@ -301,10 +314,10 @@ optional arguments:
                         cache input data into host memory
 ```
 
-
 ### det_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 det_prof.py \
@@ -332,8 +345,6 @@ python3 det_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
-
 
 ### det_prof.py 运行结果示例
 

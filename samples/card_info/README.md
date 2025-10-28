@@ -3,7 +3,9 @@
 本 sample 主要展示了如何通过 vaststreamx API 获得常见的卡 状态信息，更多信息 请参考 API文档与头文件
 
 ## C++ Sample
+
 在build 目录下执行
+
 ```bash
 ./vaststreamx-samples/bin/card_info 
 
@@ -30,9 +32,10 @@ Device id 0 status:
         ENC usage rate: 0% .
 ```
 
-
 ## Python Sample
+
 在当前目录执行
+
 ```bash
 python3 card_info.py 
 
@@ -58,6 +61,3 @@ Device id 0 status:
         DEC usage rate: 0.00%.
         NEC usage rate: 0.00%.
 ```
-
-
-

@@ -1,9 +1,10 @@
-# Face alignment sample 
+# Face alignment sample
 
 本目录提供基于 hih 模型的 人脸对齐 sample。  
 该模型输出98个人脸关键点的热力图，经过后处理，输出98个关键点的二维 (x, y) 坐标。
 
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/starhiking/HeatmapInHeatmap)  [modelzoo](-) |
@@ -18,10 +19,10 @@
 下载模型 hih_2s-int8-percentile-1_3_256_256-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 WFLW 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
 ## C++ sample
 
 ### hih 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/hih_2s-int8-percentile-1_3_256_256-vacc/mod])
@@ -36,7 +37,9 @@ options:
 ```
 
 ### hih 运行示例
+
 在 build 目录里执行  
+
 ```bash
 #跑单张图片
 ./vaststreamx-samples/bin/hih \
@@ -54,9 +57,11 @@ options:
 --dataset_root /opt/vastai/vaststreamx/data/datasets/WFLW/test/ \
 --dataset_output_file ./results.txt
 ```
+
 数据集文件名和98个点的坐标将保存在 results.txt 文件中。
 
 ### hih 运行结果示例
+
 ```bash
 #跑单张图片, 结果将打印98个特征点二维坐标
 Face alignment results: 
@@ -67,22 +72,25 @@ Face alignment results:
 (0.101562, 0.587891)
 ... 
 ```
+
 测试数据集精度
+
 ```bash
 python3 ../evaluation/face_alignment/eval_wflw.py \
 --result ./results.txt \
 --gt /opt/vastai/vaststreamx/data/datasets/WFLW/test.txt
 ```
+
 ```bash
 #输出精度：
 Face alignment evaluation result:
 NME %: 0.04248637550034785
 FR_0.1% : 0.032399999999999984
 AUC_0.1: 0.597618
-``` 
-
+```
 
 ### hih_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/hih_2s-int8-percentile-1_3_256_256-vacc/mod])
@@ -100,7 +108,9 @@ options:
 ```
 
 ### hih_prof 运行示例
+
 在 build 目录里执行  
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/hih_prof \
@@ -166,6 +176,7 @@ options:
 ## Python sample
 
 ### hih.py 命令行参数说明
+
 ```bash
   -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
                         model prefix of the model suite files
@@ -188,6 +199,7 @@ options:
 ### hih.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张图片示例
 python3 hih.py \
@@ -205,9 +217,11 @@ python3 hih.py \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/WFLW/test/ \
 --dataset_output_file ./results.txt
 ```
+
 结果将保存在文件 results.txt 内
 
 ### hih 运行结果示例
+
 ```bash
 #跑单张图片, 结果将打印98个特征点二维坐标
 Face alignment results:
@@ -218,12 +232,15 @@ Face alignment results:
  [0.1015625  0.5878906 ]
 ... 
 ```
+
 测试数据集精度
+
 ```bash
 python3 ../../../evaluation/face_alignment/eval_wflw.py \
 --result ./results.txt \
 --gt /opt/vastai/vaststreamx/data/datasets/WFLW/test.txt
 ```
+
 ```bash
 #输出精度
 Face alignment evaluation result:
@@ -260,10 +277,10 @@ AUC_0.1: 0.5976196
                         cache input data into host memory
 ```
 
-
 ### hih_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 # 测试最大吞吐
 python3 hih_prof.py \

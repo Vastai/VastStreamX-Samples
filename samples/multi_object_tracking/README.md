@@ -2,8 +2,8 @@
 
 本目录提供基于vsx  API 开发的 MOT sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/ifzhang/ByteTrack)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/mot/bytetrack) |
@@ -13,17 +13,15 @@
 |  VACC FP16  精度 | "MOTA": 83.7,"IDF1":78.0 |
 |  VACC INT8  精度 | "MOTA": 83.8,"IDF1":77.4 |
 
-
 ## 数据准备
 
 下载模型 bytetrack_m_mot17-int8-percentile-1_3_800_1440-vacc-pipeline 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 mot17 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-
 ## C++ sample
 
 ### bytetracker 命令参数说明
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/bytetrack_m_mot17-int8-percentile-1_3_800_1440-vacc-pipeline/mod])
@@ -42,9 +40,10 @@ options:
 
 ### bytetracker 命令示例
 
-在build目录里运行 
+在build目录里运行
 
 检测单张照片的示例
+
 ```bash
 ./vaststreamx-samples/bin/bytetracker  \
 -m /opt/vastai/vaststreamx/data/models/bytetrack_m_mot17-int8-percentile-1_3_800_1440-vacc-pipeline/mod \
@@ -57,6 +56,7 @@ options:
 ```
 
 检测单张照片的结果
+
 ```bash
 detected object class: person, score: 0.953125, id: 1, bbox: [585.712, 442.463, 85.05, 267.638]
 detected object class: person, score: 0.933594, id: 2, bbox: [633.975, 457.988, 62.775, 189.675]
@@ -80,10 +80,12 @@ detected object class: person, score: 0.765625, id: 19, bbox: [666.037, 450.562,
 detected object class: person, score: 0.751953, id: 20, bbox: [1028.85, 442.8, 32.4, 90.45]
 detected object class: person, score: 0.739746, id: 21, bbox: [1362.3, 433.688, 43.2, 129.6]
 ```
-图片保存为 ./mot_result.jpg 
+
+图片保存为 ./mot_result.jpg
 
 运行mot单个数据集的示例
 在build 目录下执行
+
 ```bash
 mkdir -p ./mot_output
 ./vaststreamx-samples/bin/bytetracker  \
@@ -98,16 +100,20 @@ mkdir -p ./mot_output
 --dataset_root /opt/vastai/vaststreamx/data/datasets/mot17/ \
 --dataset_result_file ./mot_output/MOT17-02-FRCNN.txt 
 ```
-结果保存在 ./mot_output/MOT17-02-FRCNN.txt 
+
+结果保存在 ./mot_output/MOT17-02-FRCNN.txt
 
 测数据集精度
 在build目录下执行
+
 ```bash
 python3 ../evaluation/mot/mot_eval.py \
 -gt /opt/vastai/vaststreamx/data/datasets/mot17/test \
 -r ./mot_output
 ```
+
 精度输出为
+
 ```bash
                 Rcll  Prcn GT    MT    PT   ML   FP    FN  IDs   FM  MOTA  MOTP num_objects
 MOT17-02-FRCNN 79.8% 92.9% 62 58.1% 35.5% 6.5% 6.1% 20.2% 0.8% 1.4% 72.9% 0.175       18581
@@ -146,8 +152,8 @@ OVERALL        78.4% 83.0% 74.3% 86.9%  97.0% 546 366 145 35 3014 14749 517  124
 
 ```
 
-
 ### bytetracker_prof 命令参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/bytetrack_m_mot17-int8-percentile-1_3_800_1440-vacc-pipeline/mod])
@@ -166,7 +172,9 @@ options:
 ```
 
 ### bytetracker_prof 命令示例
+
 在build目录里运行
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/bytetracker_prof \
@@ -195,6 +203,7 @@ options:
 --input_host 1 \
 --queue_size 0
 ```
+
 ### bytetracker_prof 结果示例
 
 ```bash
@@ -233,6 +242,7 @@ options:
 ## Python sample
 
 ### bytetracker.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -271,6 +281,7 @@ optional arguments:
 ### bytetracker.py 运行示例
 
 在本目录下运行
+
 ```bash
 python3 bytetracker.py \
 -m /opt/vastai/vaststreamx/data/models/bytetrack_m_mot17-int8-percentile-1_3_800_1440-vacc-pipeline/mod \
@@ -289,6 +300,7 @@ python3 bytetracker.py \
 ### bytetracker.py 运行结果示例
 
 检测单张照片的结果
+
 ```bash
 Object class: person, score: 0.953125, id: 1, bbox: [585.713, 442.462, 85.050, 267.638]
 Object class: person, score: 0.933594, id: 2, bbox: [633.975, 457.987, 62.775, 189.675]
@@ -312,10 +324,12 @@ Object class: person, score: 0.765625, id: 19, bbox: [666.037, 450.562, 29.362, 
 Object class: person, score: 0.751953, id: 20, bbox: [1028.850, 442.800, 32.400, 90.450]
 Object class: person, score: 0.739746, id: 21, bbox: [1362.300, 433.688, 43.200, 129.600]
 ```
+
 如果指定了输出文件，则可以在输出文件中看到检测框
 
 运行数据集的示例
 在当前目录下执行
+
 ```bash
 mkdir -p mot_output
 python3 bytetracker.py \
@@ -333,18 +347,19 @@ python3 bytetracker.py \
 --dataset_result_file ./mot_output/MOT17-02-FRCNN.txt 
 ```
 
-
-
-结果保存在 ./mot_output/MOT17-02-FRCNN.txt 
+结果保存在 ./mot_output/MOT17-02-FRCNN.txt
 
 测数据集精度
 在build目录下执行
+
 ```bash
 python3 ../../evaluation/mot/mot_eval.py \
 -gt /opt/vastai/vaststreamx/data/datasets/mot17/test \
 -r ./mot_output
 ```
+
 精度输出为
+
 ```bash
                 Rcll  Prcn GT    MT    PT   ML   FP    FN  IDs   FM  MOTA  MOTP num_objects
 MOT17-02-FRCNN 79.8% 92.9% 62 58.1% 35.5% 6.5% 6.1% 20.2% 0.8% 1.4% 72.9% 0.175       18581
@@ -353,8 +368,6 @@ OVERALL        79.8% 92.9% 62 58.1% 35.5% 6.5% 6.1% 20.2% 0.8% 1.4% 72.9% 0.175 
 MOT17-02-FRCNN 58.3% 63.1% 54.2% 79.8% 92.9% 62 36 22  4 1139 3753 148  265 72.9% 0.175 103  35  12       18581
 OVERALL        58.3% 63.1% 54.2% 79.8% 92.9% 62 36 22  4 1139 3753 148  265 72.9% 0.175 103  35  12       18581
 ```
-
-
 
 测试整个mot17数据集精度
 
@@ -384,10 +397,10 @@ MOT17-13-FRCNN 71.4% 74.2% 68.8% 88.6%  95.6% 110  82  19  9  471  1326  80    9
 OVERALL        78.4% 83.0% 74.3% 86.9%  97.0% 546 366 145 35 3016 14751 517  1247 83.7% 0.140 391 166  91      112297
 ```
 
-
 ### bytetracker_prof.py 命令行参数说明
 
 bytetracker_prof.py只测试检测模型，不带跟踪算法
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -414,6 +427,7 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### bytetracker_prof.py 命令行示例
 
 ```bash
@@ -445,6 +459,7 @@ python3 bytetracker_prof.py \
 ```
 
 ### bytetracker_prof.py 命令行结果示例
+
 ```bash
 
 # 测试最大吞吐

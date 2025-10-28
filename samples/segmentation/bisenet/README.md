@@ -1,9 +1,9 @@
-# BiSeNet 
+# BiSeNet
 
 本目录提供基于 bisenet 模型的 人脸分割   sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/zllrunning/face-parsing.PyTorch)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/segmentation/bisenet) |
@@ -13,8 +13,6 @@
 |  VACC FP16  精度 |  "mIOU": 0.733  |
 |  VACC INT8  精度 |  "mIOU": 0.7377   |
 
-
-
 ## 数据准备
 
 下载模型 bisenet-int8-kl_divergence-1_3_512_512-vacc 到 /opt/vastai/vaststreamx/data/models 里
@@ -23,6 +21,7 @@
 ## C++ sample
 
 ### bisenet 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/bisenet-int8-kl_divergence-1_3_512_512-vacc/mod])
@@ -37,11 +36,12 @@ options:
   -?, --help                     print this message
 ```
 
-
 ### bisenet 运行示例
+
 在build目录里执行
 
 单张人脸照片分割示例
+
 ```bash
 ./vaststreamx-samples/bin/bisenet \
 --model_prefix /opt/vastai/vaststreamx/data/models/bisenet-int8-kl_divergence-1_3_512_512-vacc/mod \
@@ -50,9 +50,11 @@ options:
 --input_file ../data/images/face.jpg \
 --output_file bisenet_result.jpg 
 ```
+
 人脸分割结果将展示在 bisenet_result.jpg 里
 
 人脸数据集示例
+
 ```bash
 mkdir -p bisenet_output
 ./vaststreamx-samples/bin/bisenet \
@@ -76,6 +78,7 @@ python3 ../evaluation/bisenet/zllrunning_vamp_eval.py \
 ```
 
 统计精度结果示例
+
 ```bash
 ----------------- Total Performance --------------------
 Overall Acc:     0.9561228425633737
@@ -107,6 +110,7 @@ cloth   : 0.9091955629337264
 ```
 
 ### bisenet_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/bisenet-int8-kl_divergence-1_3_512_512-vacc/mod])
@@ -122,8 +126,11 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=2])
   -?, --help            print this message
 ```
+
 ### bisenet_prof 运行示例
+
 在build目录下执行
+
 ```bash
 #测试最大吞吐
 ./vaststreamx-samples/bin/bisenet_prof  \
@@ -153,7 +160,9 @@ options:
 --queue_size 0
 
 ```
+
 ### bisenet_prof 运行结果示例
+
 ```bash
 #测试最大吞吐
 - number of instances: 2
@@ -190,6 +199,7 @@ options:
 ## Python sample 功能测试
 
 ### bisenet.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -217,6 +227,7 @@ optional arguments:
 ### bisenet.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张照片示例，结果将展示在 bisenet_result.jpg 里
 python3 bisenet.py \
@@ -248,6 +259,7 @@ python3 ../../../evaluation/bisenet/zllrunning_vamp_eval.py \
 ```
 
 统计精度结果示例
+
 ```bash
 ----------------- Total Performance --------------------
 Overall Acc:     0.9561228425633737
@@ -278,10 +290,10 @@ cloth   : 0.9091955629337264
 --------------------------------------------------------
 ```
 
-
 ## Python sample 性能测试
 
 ### bisenet_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -310,10 +322,10 @@ optional arguments:
 
 ```
 
-
 ### bisenet_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #测试最大吞吐
 python3 bisenet_prof.py \
@@ -341,7 +353,6 @@ python3 bisenet_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-
 
 ### bisenet_prof.py 运行结果示例
 

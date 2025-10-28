@@ -1,4 +1,5 @@
 # Video Decode
+
 本目录提供硬解码 Video Decode Sample
 
 数据准备:
@@ -7,6 +8,7 @@
 ## C++ sample
 
 ### video_decode 命令行参数
+
 ```bash
 options:
       --codec_type       codec type (string [=H264])
@@ -17,7 +19,9 @@ options:
 ```
 
 ### video_decode 运行示例
-在 build 目录里执行   
+
+在 build 目录里执行
+
 ```bash
 #decode h264 
 mkdir -p output_h264
@@ -47,8 +51,8 @@ mkdir -p output_av1
 #结果将保存于 output_av1
 ```
 
-
 ### video_decode_prof 命令行参数
+
 ```bash
 options:
       --codec_type     codec type (string [=H264])
@@ -62,7 +66,8 @@ options:
 
 ### video_decode_prof 运行示例
 
-在 build 目录里   
+在 build 目录里
+
 ```bash
 # 测试H264最大吞吐
 ./vaststreamx-samples/bin/video_decode_prof \
@@ -195,9 +200,10 @@ options:
     p99 latency: 11667
 ```
 
-## Python Sample 
+## Python Sample
 
 ### video_decode.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -214,6 +220,7 @@ optional arguments:
 ### video_decode.py 运行示例
 
 在本目录下运行  
+
 ```bash
 
 #decode h264 
@@ -268,6 +275,7 @@ optional arguments:
 ### video_decode_prof.py 运行示例
 
 在本目录下运行
+
 ```bash
 # 测试H264最大吞吐
 python3 video_decode_prof.py \

@@ -2,9 +2,10 @@
 
 本目录展示如何实现  视频 解码 + AI 的功能
 
-## C++ Sample 
+## C++ Sample
 
 ### decode_and_pose 命令参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolov8_pose_int8/mod])

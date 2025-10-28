@@ -2,8 +2,8 @@
 
 本目录提供基于 rt-detr 模型的目标检测 sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/lyuwenyu/RT-DETR)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/rtdetr) |
@@ -14,9 +14,9 @@
 |  VACC INT8  精度 | - |
 
 ## 数据准备
+
 下载模型 rtdetr-fp16-none-1_3_640_640-vacc 到 /opt/vastai/vaststreamx/data/models/
 下载数据集 det_coco_val 到 /opt/vastai/vaststreamx/data/datasets
-
 
 ## C++ Sample
 
@@ -38,7 +38,9 @@ options:
       --dataset_output_folder    dataset output folder path (string [=])
   -?, --help                     print this message
 ```
+
 ### rtdetr 命令行示例
+
 ```bash
 # 测试单张图片
 ./vaststreamx-samples/bin/rtdetr \
@@ -92,7 +94,9 @@ python3 ../evaluation/detection/eval_map.py \
 {'bbox_mAP': 0.451, 'bbox_mAP_50': 0.619, 'bbox_mAP_75': 0.488, 'bbox_mAP_s': 0.268, 'bbox_mAP_m': 0.483, 'bbox_mAP_l': 0.609, 'bbox_mAP_copypaste': '0.451 0.619 0.488 0.268 0.483 0.609'}
 
 ```
+
 ### rtdetr_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/rtdetr-fp16-none-1_3_640_640-vacc/mod])
@@ -110,7 +114,9 @@ options:
   -?, --help            print this message
 
 ```
+
 ### rtdetr_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/rtdetr_prof \
@@ -139,7 +145,9 @@ options:
 --queue_size 0
 
 ```
+
 ### rtdetr_prof 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -175,6 +183,7 @@ options:
 ## Python Sample
 
 ### rtdetr.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -201,7 +210,9 @@ optional arguments:
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder path
 ```
+
 ### rtdetr.py 命令行示例
+
 ```bash
 # 测试单张图片
 python3 rtdetr.py \
@@ -253,8 +264,8 @@ python3 ../../../evaluation/detection/eval_map.py \
 {'bbox_mAP': 0.451, 'bbox_mAP_50': 0.619, 'bbox_mAP_75': 0.488, 'bbox_mAP_s': 0.268, 'bbox_mAP_m': 0.483, 'bbox_mAP_l': 0.609, 'bbox_mAP_copypaste': '0.451 0.619 0.488 0.268 0.483 0.609'}
 ```
 
-
 ### rtdetr_prof.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -283,6 +294,7 @@ optional arguments:
 ```
 
 ### rtdetr_prof.py 命令行示例
+
 ```bash
 # 测试最大吞吐
 python3 rtdetr_prof.py \
@@ -314,8 +326,8 @@ python3 rtdetr_prof.py \
 
 ```
 
-
 ### rtdetr_prof.py 命令行结果示例
+
 ```bash
 # 测试最大吞吐
 

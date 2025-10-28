@@ -2,8 +2,8 @@
 
 本目录提供基于 CRNN 的 OCR sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v2.6.0/doc/doc_ch/algorithm_rec_crnn.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/text_recognition/crnn) |
@@ -13,19 +13,15 @@
 |  VACC FP16  精度 | "ACC": 75.69 |
 |  VACC INT8  精度 | "ACC": 74.3 |
 
-
-
-
 ## 数据准备
 
 下载模型 resnet34_vd-int8-max-1_3_32_100-vacc 到 /opt/vastai/vaststreamx/data/models 里
 下载数据集 CUTE80 到 /opt/vastai/vaststreamx/data/datasets 里
 
-
-
 ## C++ sample
 
 ### crnn 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix           model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod])
@@ -39,10 +35,13 @@ options:
       --dataset_output_file    dataset output file (string [=])
   -?, --help                   print this message
 ```
+
 ### crnn 命令示例
+
 在build 目录下运行
 
 单图片示例
+
 ```bash
 ./vaststreamx-samples/bin/crnn \
 -m /opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod \
@@ -51,12 +50,13 @@ options:
 --label_file ../data/labels/key_37.txt \
 --input_file ../data/images/word_336.png 
 ```
+
 输出如下结果：
+
 ```bash
 score: 0.999219
 text: super
 ```
-
 
 数据集示例
 
@@ -79,11 +79,15 @@ python3 ../evaluation/crnn/crnn_eval.py \
 
 
 ```
+
 精度结果示例
+
 ```bash
 right_num = 214 all_num=288, acc = 0.7430555555555556
 ```
+
 ### crnn_prof 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/resnet34_vd])
@@ -100,6 +104,7 @@ options:
   -q, --queue_size      aync wait queue size (unsigned int [=1])
   -?, --help            print this message
 ```
+
 ### crnn_prof 命令行示例
 
 ```bash
@@ -133,6 +138,7 @@ options:
 ```
 
 ### crnn_prof 结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -166,10 +172,10 @@ options:
     p99 latency: 7794
 ```
 
-##  Python sample 
-
+## Python sample
 
 ### crnn.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -196,6 +202,7 @@ optional arguments:
 ### crnn.py 运行示例
 
 在本目录下运行  
+
 ```bash
 #单张图片示例
 python3 crnn.py \
@@ -266,6 +273,7 @@ optional arguments:
 ### crnn_prof.py 运行示例
 
 在本目录下运行  
+
 ```bash
 
 # 测试最大吞吐
@@ -332,4 +340,4 @@ python3 crnn_prof.py \
     p90 latency: 8311
     p95 latency: 8431
     p99 latency: 8683
-```    
+```

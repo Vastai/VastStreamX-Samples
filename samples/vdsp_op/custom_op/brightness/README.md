@@ -2,19 +2,18 @@
 
 本目录展示 自定义算子 img_brightness_adjust的用法：
 
-1. 定义好自定义算子配置参数所需的结构体 
+1. 定义好自定义算子配置参数所需的结构体
 2. 通过 vsx::CustomOperator 加载 自定义算子
 3. 设置好配置参数并通过 run_sync 调用 自定义算子
-
 
 最后将图片转为bgr_interleave格式，并保存到文件  
 
 自定义算子 img_brightness_adjust 的功能是将图片亮度进行调整，有一个 scale 参数，如果 scale > 1.0 则将对图片增加亮度，否则降低亮度。这个算子支持 yuv_nv12 格式图片输入。
 
-
 ## C++ Sample
 
 ### brightness 命令行参数说明
+
 ```bash
 options:
   -d, --device_id      device id to run (unsigned int [=0])
@@ -24,8 +23,11 @@ options:
       --scale          brightness scale coefficient (float [=2.2])
   -?, --help           print this message
 ```
-### brightness 命令示例     
-在build目录里运行    
+
+### brightness 命令示例
+
+在build目录里运行
+
 ```bash
 ./vaststreamx-samples/bin/brightness  \
 --device_id 0 \
@@ -34,10 +36,11 @@ options:
 --elf_file /opt/vastai/vaststreamx/data/elf/brightness \
 --scale 2.2
 ```
+
 结果保存为 brightness_result.jpg
 
-
 ### brightness_prof 命令行参数说明
+
 ```bash
 options:
       --elf_file       elf_file path (string [=/opt/vastai/vaststreamx/data/elf/brightness])
@@ -50,8 +53,11 @@ options:
       --input_host     cache input data into host memory (bool [=0])
   -?, --help           print this message
 ```
-### brightness_prof 命令示例     
-在build目录里运行    
+
+### brightness_prof 命令示例
+
+在build目录里运行
+
 ```bash
 ./vaststreamx-samples/bin/brightness_prof \
 --elf_file /opt/vastai/vaststreamx/data/elf/brightness \
@@ -63,7 +69,8 @@ options:
 --input_host 1
 ```
 
-### brightness_prof 命令结果示例     
+### brightness_prof 命令结果示例
+
 ```bash
 - number of instances: 8
   devices: [ 0 ]
@@ -82,8 +89,8 @@ options:
 
 ## Python Sample
 
-
 ### brightness.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -96,8 +103,11 @@ optional arguments:
   --elf_file ELF_FILE   output file
   --scale SCALE         brightness scale coefficient
 ```
+
 ### brightness.py 命令行示例
+
 在本文件目录下执行
+
 ```bash
 python3 brightness.py \
 --device_id 0 \
@@ -108,7 +118,6 @@ python3 brightness.py \
 ```
 
 结果保存为 brightness_result.jpg
-
 
 ### brightness_prof.py 命令行参数说明
 
@@ -130,6 +139,7 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
 ```
+
 ### brightness_prof.py 命令行示例
 
 ```bash
@@ -157,5 +167,3 @@ python3 brightness_prof.py \
     p95 latency: 22382
     p99 latency: 26700
 ```
-
-

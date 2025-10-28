@@ -1,9 +1,9 @@
-# 3D Detection Sample 
+# 3D Detection Sample
 
 本sample基于 centerpoint 算法实现 3d 目标检测
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](-)  [modelzoo](-) |
@@ -13,15 +13,15 @@
 |  VACC FP16  精度 | - |
 |  VACC INT8  精度 | "Car@0.7":85.2757/73.1001/67.9215, "Pedestrian@0.5":56.8780/51.0442/47.9645, "Cyclist@0.5":78.0941/60.7013/57.5004 |
 
-
 ## 数据准备
+
 下载 onnx-model_centerpoint_pp_32000_v5-32000_32000-int8-percentile-N-N-2-none 模型到 /opt/vastai/vaststreamx/data/models/
 下载数据集 centerpoint 精度验证数据集 到 /opt/vastai/vaststreamx/data/datasets
 
-
-## C++ Sample 
+## C++ Sample
 
 ### center_point 命令行参数说明
+
 ```bash
 options:
   -m, --model_prefixs            model prefixs of the model suite files (string [=[/opt/vastai/vaststreamx/data/models/pointpillar-int8-max-16000_32_10_3_16000_1_16000-vacc/mod]])
@@ -39,7 +39,6 @@ options:
       --dataset_output_folder    dataset output folder path (string [=])
   -?, --help                     print this message
 ```
-
 
 ### center_point 命令行示例
 
@@ -91,6 +90,7 @@ python eval_runstream.py --dataset_yaml /home/vastai/jgxue/work/object_detection
 注意 OpenPCDet.tar.gz 可通过以下路径下载:
 http://cee-release.vastai.com:32482/customers/centerpoint/OpenPCDet.tar.gz
 ```
+
 ### center_point 命令行结果示例
 
 ```bash
@@ -150,7 +150,9 @@ options:
   -q, --queue_size           aync wait queue size (unsigned int [=1])
   -?, --help                 print this message
 ```
+
 ### center_point_prof 命令行示例
+
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/center_point_prof \
@@ -225,7 +227,8 @@ options:
 
 ## Python Sample
 
-###  center_point.py 参数说明
+### center_point.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -257,7 +260,8 @@ optional arguments:
                         dataset output folder path
 ```
 
-###  center_point.py 命令示例
+### center_point.py 命令示例
+
 ```bash
 # 测试单个输入
 python3  center_point.py \
@@ -324,7 +328,8 @@ label: 5, score: 0.111328, box:[33.9688 25.4219  0.5977  0.6045  0.6348  1.7227 
 #TODO 需要从model_zoo 获取centerpoint 测试精度数据集
 ```
 
-###  center_point_prof.py 参数说明
+### center_point_prof.py 参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -363,7 +368,8 @@ optional arguments:
                         cache input data into host memory
 ```
 
-###  center_point_prof.py 命令示例
+### center_point_prof.py 命令示例
+
 ```bash
 # 测试最大吞吐
 python3 center_point_prof.py \
@@ -402,7 +408,8 @@ python3 center_point_prof.py \
 --queue_size 0
 ```
 
-###  center_point_prof.py 命令结果示例
+### center_point_prof.py 命令结果示例
+
 ```bash
 # 测试最大吞吐 oclk:800MHz
 - number of instances: 1
