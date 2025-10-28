@@ -84,6 +84,9 @@ make install
 
 
 ## Update
+- 2025-10-28
+    - 增加sample: decode_detection_encode_multi 
+
 - 2025-03-11
     - 增加 UT 与 code style check 
     - custom op 运行方式 由 execute 转为 run_sync 
