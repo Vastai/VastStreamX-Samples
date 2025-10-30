@@ -83,9 +83,9 @@ ENV LD_LIBRARY_PATH=/opt/odsp_plugin/vastai/lib:/opt/odsp_plugin/protobuf/lib:$L
 
 
 # install vaststreamx c++
-RUN wget http://cee-release.vastai.com:32482/vaststreamx/2.8.3-set/2.8.3/vaststreamx-2.8.3-8eddef9-Ubuntu18.04-x86_64.bin \
-    && bash ./vaststreamx-2.8.3-8eddef9-Ubuntu18.04-x86_64.bin \
-    && rm vaststreamx-2.8.3-8eddef9-Ubuntu18.04-x86_64.bin
+RUN wget http://10.23.4.235:9011/deploy-framework/vaststreamx/vaststreamx-2.8.9/ubuntu_x86/release_package/vaststreamx-2.8.9-2854fd0-Ubuntu18.04-x86_64.bin \
+    && bash ./vaststreamx-2.8.9-2854fd0-Ubuntu18.04-x86_64.bin \
+    && rm vaststreamx-2.8.9-2854fd0-Ubuntu18.04-x86_64.bin
 
 ENV CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/opt/vastai/vaststreamx/vaststreamx
 ENV LD_LIBRARY_PATH=/opt/vastai/vaststreamx/vaststreamx/lib:$LD_LIBRARY_PATH
@@ -93,10 +93,11 @@ ENV GLOG_minloglevel=2
 ENV GLOG_logtostderr=1
 ENV VSX_DISABLE_DEEPBIND=1 
 
+
 # install vaststreamx python
-RUN wget http://cee-release.vastai.com:32482/vaststreamx/2.8.3-set/2.8.3/python/ubuntu/vaststreamx-2.8.3-cp38-cp38-linux_x86_64.whl \
-    && pip3 install vaststreamx-2.8.3-cp38-cp38-linux_x86_64.whl \
-    && rm vaststreamx-2.8.3-cp38-cp38-linux_x86_64.whl
+RUN wget http://10.23.4.235:9011/deploy-framework/vaststreamx/vaststreamx-2.8.9/ubuntu_x86/release_package/vaststreamx-2.8.9+2854fd0-cp38-cp38-linux_x86_64.whl \
+    && pip3 install vaststreamx-2.8.9+2854fd0-cp38-cp38-linux_x86_64.whl \
+    && rm vaststreamx-2.8.9+2854fd0-cp38-cp38-linux_x86_64.whl
 
 ENV LD_LIBRARY_PATH=/opt/vastai/vaststream/lib:$LD_LIBRARY_PATH
 

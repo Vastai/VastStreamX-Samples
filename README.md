@@ -48,7 +48,7 @@ Vastai Compiler: 2.8.0
 Vaststream SDK: 2.5.0
 gcc/g++: 9.4.0  
 python: 3.8.10
-Vaststreamx: 2.8.3  
+Vaststreamx: 2.8.9  
 cmake: 3.22  
 
 ## 依赖项
