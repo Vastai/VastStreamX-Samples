@@ -37,7 +37,6 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("uri_list", '\0', "input uri list file", false, "");
   args.add<uint32_t>("disable_encoder", '\0', "enable encoder or not", false,
                      0);
-  args.add<uint32_t>("save_output", '\0', "save output or not", false, 0);
   args.parse_check(argc, argv);
   return args;
 }
@@ -54,19 +53,10 @@ int Process(const cmdline::parser& args, std::string input_uri,
               << " for uri:" << input_uri << ", loop: " << inn << std::endl;
     // initialize model
     int batch_size = 1;
-    std::cout << "batch_size:" << batch_size << std::endl;
-    std::cout << "output_path" << args.get<std::string>("output_path")
-              << std::endl;
-    std::cout << "model_prefix:" << args.get<std::string>("model_prefix")
-              << std::endl;
-    std::cout << "vdsp_params:" << args.get<std::string>("vdsp_params")
-              << std::endl;
-
     vsx::Detector detector(args.get<std::string>("model_prefix"),
                            args.get<std::string>("vdsp_params"), batch_size,
                            cur_device_id);
     detector.SetThreshold(args.get<float>("threshold"));
-    std::cout << "run to here \n";
     // open uri
     vsx::VideoCapture cap(input_uri, vsx::FULLSPEED_MODE, cur_device_id, true,
                           false);
@@ -212,20 +202,18 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  if (args.get<uint32_t>("save_output")) {
-    if (args.get<std::string>("output_path").empty()) {
-      std::cerr << "please set output_path \n";
-      return -1;
-    }
-    std::filesystem::path output_path(args.get<std::string>("output_path"));
-    std::error_code ec;
-    std::filesystem::create_directories(output_path, ec);
-    if (ec) {
-      std::cerr << "Failed to create output_path "
-                << args.get<std::string>("output_path")
-                << ", message:" << ec.message() << std::endl;
-      return -1;
-    }
+  if (args.get<std::string>("output_path").empty()) {
+    std::cerr << "please set output_path \n";
+    return -1;
+  }
+  std::filesystem::path output_path(args.get<std::string>("output_path"));
+  std::error_code ec;
+  std::filesystem::create_directories(output_path, ec);
+  if (ec) {
+    std::cerr << "Failed to create output_path "
+              << args.get<std::string>("output_path")
+              << ", message:" << ec.message() << std::endl;
+    return -1;
   }
 
   assert(input_list.size() == num_channels);

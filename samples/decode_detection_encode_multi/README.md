@@ -24,7 +24,6 @@ options:
       --drop               drop num [default:0] (unsigned int [=0])
       --uri_list           input uri list file (string [=])
       --disable_encoder    enable encoder or not (unsigned int [=0])
-      --save_output        save output or not (unsigned int [=0])
   -?, --help               print this message
 ```
 
@@ -40,8 +39,7 @@ options:
 --output_path output_encode_cpp \
 --num_channels 6 \
 --keep 1 \
---drop 0 \
---save_output 1
+--drop 0 
 
 ```
 
@@ -63,7 +61,6 @@ options:
       --drop               drop num [default:0] (unsigned int [=0])
       --uri_list           input uri list file (string [=])
       --disable_encoder    enable encoder or not (unsigned int [=0])
-      --save_output        save output or not (unsigned int [=0])
 ```
 
 ### decode_detection_writer_multi 命令示例
@@ -78,8 +75,7 @@ options:
 --output_path output_writer_cpp \
 --num_channels 6 \
 --keep 1 \
---drop 0 \
---save_output 1
+--drop 0 
 ```
 
 结果是在 output_writer_cpp 文件夹里，生成了 channel_0.ts 到 channel_5.ts 文件，以及 channel_0_detection.txt 到 channel_5_detection.txt 文件。 ts 文件可以用 potplayer 播放
