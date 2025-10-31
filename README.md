@@ -44,10 +44,10 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 
 ## 版本要求
 
-Vastai Compiler: 2.8.0
-Vaststream SDK: 2.5.0
+Vastai Compiler: 2.8.0  
+Vaststream SDK: 2.5.0  
 gcc/g++: 9.4.0  
-python: 3.8.10
+python: 3.8.10  
 Vaststreamx: 2.8.9  
 cmake: 3.22  
 
