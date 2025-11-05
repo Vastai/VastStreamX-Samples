@@ -8,9 +8,9 @@
 import os
 import sys
 
-# current_file_path = os.path.dirname(os.path.abspath(__file__))
-# common_path = os.path.join(current_file_path, "../../../")
-# sys.path.append(common_path)
+current_file_path = os.path.dirname(os.path.abspath(__file__))
+common_path = os.path.join(current_file_path, "../../../")
+sys.path.append(common_path)
 
 from common.yolov8_pose import Yolov8Pose
 from common.model_profiler import ModelProfiler
