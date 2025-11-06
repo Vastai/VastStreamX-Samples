@@ -104,9 +104,6 @@ def argument_parser():
 
 
 def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
-    save_path = os.path.join(args.output_path, f"channel_{index}")
-    if args.save_output:
-        os.makedirs(save_path, exist_ok=True)
     vsx.set_device(cus_device_id)
     for inn in range(loop):
         print(
@@ -126,12 +123,10 @@ def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
         assert ret
 
         frame_rate = int(frame_attr.video_fps / gap)
-        suffix = "h264"
         if frame_attr.codec_info.find("avc1") != -1:
             codec_type = vsx.CODEC_TYPE_H264
         elif frame_attr.codec_info.find("hevc") != -1:
             codec_type = vsx.CODEC_TYPE_HEVC
-            suffix = "h265"
         else:
             print(f"undefined codec_type:{frame_attr.codec_info}")
             exit(-1)
@@ -147,20 +142,16 @@ def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
             )
 
             def encoder_consumer():
-                idx = 0
-                while True:
-                    try:
-                        datas = encoder.recv_data()
-                        if datas is None:
+                with open(args.output_path+f"/channel_{index}.ts","wb") as video_file:
+                    while True:
+                        try:
+                            datas = encoder.recv_data()
+                            if datas is None:
+                                break
+                            video_file.write(datas)
+                        except:
+                            print("receive all for channel ", index)
                             break
-                        filename = os.path.join(save_path, f"frame_{idx:05d}.{suffix}")
-                        if args.save_output:
-                            with open(filename, "wb") as file:
-                                file.write(datas)
-                        idx += 1
-                    except:
-                        print("receive all for channel ", index)
-                        break
 
             consumer = Thread(target=encoder_consumer)
             consumer.start()
@@ -203,7 +194,7 @@ def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
             consumer.join()
 
         if args.save_output:
-            summary = os.path.join(save_path, "detection_summary.txt")
+            summary = os.path.join(args.output_path, f"channel_{index}_detection.txt")
             with open(summary, "w") as f:
                 for frame_idx, objs in enumerate(objs_result):
                     rects = []

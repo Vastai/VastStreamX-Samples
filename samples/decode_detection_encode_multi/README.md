@@ -112,11 +112,11 @@ optional arguments:
 
 ```bash
 python3 decode_detection_encode_multi.py \
--m /root/tools2/va1/build_model/deploy_weights/yolov5s_640/mod \
+-m /opt/vastai/vaststreamx/data/models/yolov5m-int8-percentile-1_3_640_640-vacc-pipeline/mod \
 --vdsp_params ../../data/configs/yolo_div255_yuv_nv12.json \
 --threshold 0.5 \
 -d 0 \
---uri ../../data/videos/output_set.ts \
+--uri ../../data/videos/test.mp4 \
 --output_path output_encoder_py \
 --num_channels 6 \
 --keep 1 \
@@ -156,11 +156,11 @@ optional arguments:
 
 ```bash
 python3 decode_detection_writer_multi.py \
--m /root/tools2/va1/build_model/deploy_weights/yolov5s_640/mod \
+-m /opt/vastai/vaststreamx/data/models/yolov5m-int8-percentile-1_3_640_640-vacc-pipeline/mod \
 --vdsp_params ../../data/configs/yolo_div255_yuv_nv12.json \
 --threshold 0.5 \
 -d 0 \
---uri ../../data/videos/output_set.ts \
+--uri ../../data/videos/test.mp4 \
 --output_path output_writer_py \
 --num_channels 6 \
 --keep 1 \

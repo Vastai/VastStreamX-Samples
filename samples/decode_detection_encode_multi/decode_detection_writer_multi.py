@@ -104,9 +104,6 @@ def argument_parser():
 
 
 def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
-    save_path = os.path.join(args.output_path, f"channel_{index}")
-    if args.save_output:
-        os.makedirs(save_path, exist_ok=True)
     vsx.set_device(cus_device_id)
     for inn in range(loop):
         print(
@@ -126,12 +123,11 @@ def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
         assert ret
 
         frame_rate = int(frame_attr.video_fps / gap)
-        suffix = "h264"
+
         if frame_attr.codec_info.find("avc1") != -1:
             codec_type = vsx.CODEC_TYPE_H264
         elif frame_attr.codec_info.find("hevc") != -1:
             codec_type = vsx.CODEC_TYPE_HEVC
-            suffix = "h265"
         else:
             print(f"undefined codec_type:{frame_attr.codec_info}")
             exit(-1)
@@ -141,7 +137,7 @@ def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
             default_bit_rate = 8000000
             key_frame_interval = frame_rate
             writer = vsx.VideoWriter(
-                args.output_path + f"_{index}.ts",
+                args.output_path + f"/channel_{index}.ts",
                 frame_rate,
                 codec_type,
                 default_bit_rate,
@@ -185,7 +181,7 @@ def process(args, input_uri, cus_device_id, gap, index=0, loop=1):
             writer.release()
 
         if args.save_output:
-            summary = os.path.join(save_path, "detection_summary.txt")
+            summary = os.path.join(args.output_path, f"channel_{index}_detection.txt")
             with open(summary, "w") as f:
                 for frame_idx, objs in enumerate(objs_result):
                     rects = []
