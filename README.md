@@ -6,12 +6,12 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 
 |   类别             |  模型                                              | C++  | Python |
 |--------------------|---------------------------------------------------|------|--------|
-|  图片分类           | resnet50  vit-base  swin-transformer mobile-vit   | ✓    |  ✓    |
-|  目标检测           | yolov5m  detr_r50 grounding_dino  yolo_world      | ✓    |  ✓    |
+|  图片分类           | resnet50 vit-base swin-transformer mobile-vit     | ✓    |  ✓    |
+|  目标检测           | yolov5m detr_r50 grounding_dino yolo_world rtdetr alpr_yolov10n   | ✓    |  ✓    |
 |  人脸分割           | bisenet                                           | ✓    |  ✓    |
-|  文字检测           |  dbnet                                            | ✓    |  ✓    |
+|  文字检测           | dbnet                                            | ✓    |  ✓    |
 |  语义分割           | fcn                                               | ✓    |  ✓    |
-|  实例分割           | yolov8_seg    mask2former                         | ✓    |  ✓    |
+|  实例分割           | yolov8_seg mask2former                            | ✓    |  ✓    |
 |  OCR               | resnet34_vd     ppocr_v4                          | ✓    |  ✓    |
 |  人脸检测           | retinaface_resnet50                               | ✓    |  ✓    |
 |  人脸特征           | facenet                                           | ✓    |  ✓    |
@@ -22,9 +22,11 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 |  动态模型            | yolov5s_dynamic                                   | ✓    |  ✓    |
 | 显著性目标检测        | u2net       isnet                                 | ✓    |  ✓    |
 | 3D目标检测           |  point-pillar                                      | ✓    |  ✓    |
-|  CLIP               | clip                                               | ✓    |  ✓    |
+| 多模态预训练模型      | clip  siglip                                       | ✓    |  ✓    |
 | 视觉基础模型         | dinov2                                             | ✓    |  ✓    |
-|  图像压缩解压        | elic                                                |     |  ✓    |
+|  图像压缩解压        | elic mlic++                                        |     |  ✓    |
+|  人体姿态识别        | yolov8-pose                                         |      | ✓    |
+|   异常检测           |  efficient_ads                                     |      | ✓    |
 
 **各模型的精度与性能，请查看对应sample的readme. 在不同的卡或不同的频率下，性能会有差异**
 各sample的readme里列出的性能数据，除特别指出频率外，均是在 OCLK=835MHz DCLK=650MHz ECLK=200MHz下测试出来的

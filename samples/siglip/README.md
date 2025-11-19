@@ -61,7 +61,7 @@ python3 siglip_sample.py \
 --norm_elf /opt/vastai/vaststreamx/data/elf/normalize \
 --space2depth_elf /opt/vastai/vaststreamx/data/elf/space_to_depth \
 --device_id 0 \
---dataset_root /opt/vastai/vaststreamx/data/datasets/ 
+--dataset_root /opt/vastai/vaststreamx/data/datasets/siglip/data 
 
 # 余旋相似度统计结果
 Average Cosine Similarity: 0.9999999865679674

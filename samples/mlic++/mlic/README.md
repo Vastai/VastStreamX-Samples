@@ -70,25 +70,25 @@ optional arguments:
 ```bash
 # 测试单张图片
 python3 mlic_inference.py  \
---gaha_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_ga_ha_sim_512_768_vacc_runmodel \
+--gaha_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_ga_ha_sim_512_768_vacc_runmodel/mod \
 --gaha_vdsp_params  ../../../data/configs/mlic_compress_gaha_rgbplanar.json \
---hs_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_hs_sim_512_768_vacc_runmodel \
---gs_model_prefix   /opt/vastai/vaststreamx/data/models/mlic/decompress_gs_sim_512_768_vacc_runmodel \
+--hs_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_hs_sim_512_768_vacc_runmodel/mod \
+--gs_model_prefix   /opt/vastai/vaststreamx/data/models/mlic/decompress_gs_sim_512_768_vacc_runmodel/mod \
 --torch_model  /opt/vastai/vaststreamx/data/pre-trained/mlicpp_mse_q5_2960000.pth.tar \
 --device_id  0 \
---input_file  /opt/vastai/vaststreamx/data/dataset/kodak/kodim01.png \
+--input_file  /opt/vastai/vaststreamx/data/datasets/kodak/kodim01.png \
 --output_file  mlic_result.png
 # 结果保存为 mlic_result.png
 
 # 测试数据集
 python3 mlic_inference.py  \
---gaha_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_ga_ha_sim_512_768_vacc_runmodel \
+--gaha_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_ga_ha_sim_512_768_vacc_runmodel/mod \
 --gaha_vdsp_params  ../../../data/configs/mlic_compress_gaha_rgbplanar.json \
---hs_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_hs_sim_512_768_vacc_runmodel \
---gs_model_prefix   /opt/vastai/vaststreamx/data/models/mlic/decompress_gs_sim_512_768_vacc_runmodel \
+--hs_model_prefix  /opt/vastai/vaststreamx/data/models/mlic/compress_hs_sim_512_768_vacc_runmodel/mod \
+--gs_model_prefix   /opt/vastai/vaststreamx/data/models/mlic/decompress_gs_sim_512_768_vacc_runmodel/mod \
 --torch_model  /opt/vastai/vaststreamx/data/pre-trained/mlicpp_mse_q5_2960000.pth.tar \
 --device_id  0 \
---dataset_path /opt/vastai/vaststreamx/data/dataset/kodak \
+--dataset_path /opt/vastai/vaststreamx/data/datasets/kodak \
 --dataset_output_path dataset_outputs
 
 # 结果保存到 dataset_outputs 文件夹，并输出PSNR。压缩与解压时间受CPU影响较大，重点关注psnr值

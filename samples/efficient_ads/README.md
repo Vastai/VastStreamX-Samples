@@ -135,6 +135,8 @@ python3 ./efficient_ads_prof.py \
 
 ### face_detection_prof.py 命令结果示例
 
+本结果在OCLK=1250MHz情况下测试得到
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1

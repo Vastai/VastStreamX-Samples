@@ -14,7 +14,7 @@
 #include "common/utils.hpp"
 #include "opencv2/opencv.hpp"
 
-cmdline::parser ArgumentParser(int argc, char **argv) {
+cmdline::parser ArgumentParser(int argc, char** argv) {
   cmdline::parser args;
   args.add<std::string>("yolov10_model_prefix", '\0',
                         "yolov10 model prefix of the model suite files", false,
@@ -47,7 +47,7 @@ cmdline::parser ArgumentParser(int argc, char **argv) {
   return args;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   auto args = ArgumentParser(argc, argv);
   const int batch_size = 1;
   std::vector<vsx::Image> alpr_images;
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     CHECK(vsx::MakeVsxImage(cv_image, vsx_image, image_format) == 0);
     auto result = detector.Process(vsx_image);
     auto res_shape = result.Shape();
-    const float *res_data = result.Data<float>();
+    const float* res_data = result.Data<float>();
     std::cout << "Detection objects:\n";
     for (int i = 0; i < res_shape[0]; i++) {
       if (res_data[0] < 0) break;
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
       float score = res_data[1];
       std::stringstream istream;
       istream << "Object class: " << class_name << ", score: " << score
-              << ", bbox: [" << res_data[2] << ", " << res_data[3]
+              << ", bbox: [" << res_data[2] << ", " << res_data[3] << ", "
               << res_data[4] << ", " << res_data[5] << "], number: ";
       alpr_images_info.push_back(istream.str());
 
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
                                  args.get<std::string>("hw_config"));
 
     for (size_t i = 0; i < alpr_images.size(); i++) {
-      auto &vsx_image = alpr_images[i];
+      auto& vsx_image = alpr_images[i];
       auto result = text_rec.Process(vsx_image);
       auto result_str = vsx::GetStringFromTensor(result);
       alpr_images_info[i] += result_str;
@@ -128,7 +128,7 @@ int main(int argc, char **argv) {
   }
   // print
   {
-    for (const auto &info : alpr_images_info) std::cout << info << std::endl;
+    for (const auto& info : alpr_images_info) std::cout << info << std::endl;
   }
 
   return 0;

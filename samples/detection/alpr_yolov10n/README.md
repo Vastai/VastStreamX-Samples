@@ -45,3 +45,26 @@ options:
 --input_file ../data/images/double_yellow.jpg \
 --output_file result.png
 ```
+
+### 结果示例
+
+```bash
+Detection objects:
+Object class: 蓝牌, score: 0.5, bbox: [212.109, 232.48474.6094, 37.1094], number: A5331
+Object class: 黄牌, score: 0.5, bbox: [212.109, 232.48474.6094, 37.1094], number: A5331
+Object class: 黄牌(双), score: 0.5, bbox: [212.109, 232.48474.6094, 37.1094], number: 京EA5331
+Object class: 白牌, score: 0.5, bbox: [212.109, 232.48474.6094, 37.1094], number: A5331
+Object class: 绿牌, score: 0.5, bbox: [212.109, 232.48474.6094, 37.1094], number: A5331
+```
+
+./vaststreamx-samples/bin/alpr \
+--yolov10_model_prefix /work/sample-models/deploy_weights/yolov10n_alpr/mod \
+--ocrv4_model_prefix /work/sample-models/deploy_weights/PP-OCRv4_rec_infer/mod \
+--yolov10_vdsp_params ../data/configs/official-yolov10n-vdsp_params.json \
+--ocrv4_vdsp_params ../data/configs/ppocr-v4-rec-vdsp_params.json \
+--device_id 0 \
+--threshold 0.25 \
+--yolov10_label_file ../data/labels/alpr.txt \
+--ocrv4_label_file ../data/labels/ppocr_keys_v1.txt \
+--input_file ../data/images/double_yellow.jpg \
+--output_file result.png
