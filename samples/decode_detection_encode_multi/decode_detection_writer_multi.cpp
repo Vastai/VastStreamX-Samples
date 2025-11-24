@@ -58,7 +58,7 @@ int Process(const cmdline::parser& args, std::string input_uri,
                            cur_device_id);
     detector.SetThreshold(args.get<float>("threshold"));
     // open uri
-    vsx::VideoCapture cap(input_uri, vsx::FULLSPEED_MODE, cur_device_id, true,
+    vsx::VideoCapture cap(input_uri, vsx::FULLSPEED_MODE, cur_device_id, false,
                           false);
     CHECK(cap.isOpened()) << "Failed to open uri: " << input_uri;
 
