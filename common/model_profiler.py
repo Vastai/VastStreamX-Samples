@@ -49,7 +49,8 @@ class ModelProfiler:
             self.long_time_test_ = False
         else:
             self.long_time_test_ = True
-
+        self.warmup(warmup_iters=1)
+        
     def profiling(self):
         threads = []
         for i in range(len(self.models_)):
@@ -169,3 +170,15 @@ class ModelProfiler:
         self.latency_begin_ += ticks
         self.latency_end_ += tocks
         self.merge_lock.release()
+
+    def warmup(self, warmup_iters=1):
+        for idx, model in enumerate(self.models_):
+            vsx.set_device(model.device_id_)
+            infer_data = model.get_test_data(
+                self.config_.data_type,
+                self.config_.input_shape,
+                self.config_.batch_size,
+                self.config_.contexts[idx],
+            )
+            for _ in range(warmup_iters):
+                model.process(infer_data)
