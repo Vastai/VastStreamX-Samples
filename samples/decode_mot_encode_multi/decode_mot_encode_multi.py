@@ -99,7 +99,7 @@ def process(args, input_uri, cus_device_id, index=0, loop=1):
         )
 
         cap = vsx.VideoCapture(
-            input_uri, vsx.CaptureMode.FULLSPEED_MODE, cus_device_id, True
+            input_uri, vsx.CaptureMode.FULLSPEED_MODE, cus_device_id, False
         )
 
         ret, frame, frame_attr = cap.read()

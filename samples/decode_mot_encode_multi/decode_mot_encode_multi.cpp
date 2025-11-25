@@ -67,7 +67,7 @@ int Process(const cmdline::parser& args, std::string input_uri,
                              cur_device_id, detect_thresh, track_buffer,
                              track_thresh, fps);
     // open uri
-    vsx::VideoCapture cap(input_uri, vsx::FULLSPEED_MODE, cur_device_id, true,
+    vsx::VideoCapture cap(input_uri, vsx::FULLSPEED_MODE, cur_device_id, false,
                           false);
     CHECK(cap.isOpened()) << "Failed to open uri: " << input_uri;
 
