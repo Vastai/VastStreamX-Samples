@@ -55,7 +55,7 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 |   jpeg编解码      |  Jpeg_Decode Jpeg_Encode                                                        | ✓    |  ✓    |
 |   h264 h265编解码  | Video_Decode Video_Encode                                                      | ✓    |  ✓    |
 |   视频拉流        |  VideoCapture  video_writer                                                     | ✓    |  ✓    |
-|   AI + 编解码     |  decode + detection  decode + detection + encode                                | ✓    |  ✓    |
+|   AI + 编解码     |  decode + detection  decode + detection + encode  decode + pose decode + mot + encode    | ✓    |  ✓    |
 |   卡状态获取      |   card_info                                                                      | ✓    |  ✓    |
 
 ## 版本要求
@@ -64,7 +64,7 @@ Vastai Compiler: 2.8.0
 Vaststream SDK: 2.5.0  
 gcc/g++: 9.4.0  
 python: 3.8.10  
-Vaststreamx: 2.8.9  
+Vaststreamx: 2.8.16  
 cmake: 3.22  
 
 ## 依赖项
