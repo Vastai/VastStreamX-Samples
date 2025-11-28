@@ -14,7 +14,7 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 
 使用瀚博半导体的AI加速卡测试 VaststreamX Samples 前， 需联系销售代表获取部署软件包。
 
-- 版本号：[VVI-25.11](https://developer.vastaitech.com/downloads/delivery-center?version_uid=484479150992789504)
+- 版本号：[VVI-25.11](https://developer.vastaitech.com/downloads/delivery-center?&version_uid=484479150992789504)
 
 ## 支持的模型与开发语言
 
