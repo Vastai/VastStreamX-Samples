@@ -1,6 +1,20 @@
-# VaststreamX Samples
+<div id=top align="center">
+
+![logo](./data/images/logo.png)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![company](https://img.shields.io/badge/vastaitech.com-blue)](https://www.vastaitech.com/)
+
+</div>
+
+---
 
 VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可以参考其中的 Sample 学习如何使用 VaststreamX API。在每个 Sample 目录下有 `README` 文件，用户可以通过 `README` 文件了解 Sample 的功能和用法。
+
+## 依赖软件
+
+使用瀚博半导体的AI加速卡测试 VaststreamX Samples 前， 需联系销售代表获取部署软件包。
+
+- 版本号：[VVI-25.11](https://developer.vastaitech.com/downloads/delivery-center?version_uid=484479150992789504)
 
 ## 支持的模型与开发语言
 
