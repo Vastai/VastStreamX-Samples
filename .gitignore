@@ -12,3 +12,4 @@ outfile/
 *.html
 core.*
 box_overlaps.c
+Makefile
