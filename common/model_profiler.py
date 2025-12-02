@@ -98,7 +98,7 @@ class ModelProfiler:
         queue_futs = queue.Queue(self.config_.queue_size)
         ticks = []
         tocks = []
-        context = edict(stopped=False, left=0)
+        context = edict(stopped=False, left=0, lock=threading.Lock())
 
         def cunsume_thread_func(context, queue_futs, tocks):
             while not context.stopped or context.left > 0:
@@ -108,7 +108,8 @@ class ModelProfiler:
                     tock = time.time()
                     if self.long_time_test_ is False:
                         tocks.append(tock)
-                    context.left -= 1
+                    with context.lock:
+                       context.left -= 1
                 else:
                     time.sleep(0.00001)
 
@@ -123,7 +124,8 @@ class ModelProfiler:
                 fut = executor.submit(self.process_async, self.models_[idx], infer_data)
                 queue_futs.put(fut)
                 self.iters_left_ -= 1
-                context.left += 1
+                with context.lock:
+                    context.left += 1
                 if self.long_time_test_ is False:
                     ticks.append(tick)
         context.stopped = True
