@@ -90,7 +90,7 @@ python3 elic_inference.py  \
 #结果保存到 dataset_outputs 文件夹，并输出PSNR。压缩与解压时间受CPU影响较大，重点关注psnr值
     Ave Compress time:317.88142522176105 ms
     Ave Decompress time:233.75619451204935 ms
-    Ave PNSR:37.708291421801384
+    Ave PSNR:37.708291421801384
 
 ```
 
@@ -170,7 +170,7 @@ python3 dynamic_elic_inference.py  \
 #结果保存到 dataset_outputs 文件夹，并输出PSNR。压缩与解压时间受CPU影响较大，重点关注psnr值
     Ave Compress time:404.6524564425151 ms
     Ave Decompress time:297.8130678335826 ms
-    Ave PNSR:37.521121727924076
+    Ave PSNR:37.521121727924076
 ```
 
 ### elic_no_entropy_inference.py 脚本命令行说明
@@ -232,7 +232,7 @@ python3 elic_no_entropy_inference.py  \
 
 #结果保存到 dataset_outputs_512x512 文件夹，并输出PSNR
     Ave Compress time:107.34399159749348 ms
-    Ave PNSR:37.706234893066075
+    Ave PSNR:37.706234893066075
     Ave bbp:0.843717660754919
 
 ##1280x2048 模型
@@ -245,7 +245,7 @@ python3 elic_no_entropy_inference.py  \
 
 #结果保存到 dataset_outputs_1280x2048 文件夹，并输出PSNR。压缩与解压时间受CPU影响较大，重点关注psnr值
     Ave Compress time:1303.3234576384227 ms
-    Ave PNSR:43.009992020884276
+    Ave PSNR:43.009992020884276
     Ave bbp:0.262036203717192  
 ```
 

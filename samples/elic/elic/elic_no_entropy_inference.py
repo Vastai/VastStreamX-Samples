@@ -151,7 +151,7 @@ if __name__ == "__main__":
             os.makedirs(args.dataset_output_path, exist_ok=True)
         times = []
         decompress_times = []
-        pnsrs = []
+        psnrs = []
         bbps = []
 
         for file in filepaths:
@@ -209,12 +209,12 @@ if __name__ == "__main__":
             psnr = compute_psnr(com_out["x_hat"], torch.from_numpy(cv_image))
             print(f"psnr:{psnr}, bpp:{bpp.item()}")
             # exit(0)
-            pnsrs.append(psnr)
+            psnrs.append(psnr)
             bbps.append(bpp.item())
 
         average_noentropy_times = sum(times) / float(len(times))
-        average_pnsr = sum(pnsrs) / float(len(pnsrs))
+        average_psnr = sum(psnrs) / float(len(psnrs))
         average_bpp = sum(bbps) / float(len(bbps))
         print(f"    Ave Compress time:{average_noentropy_times*1000} ms")
-        print(f"    Ave PNSR:{average_pnsr}")
+        print(f"    Ave PSNR:{average_psnr}")
         print(f"    Ave bbp:{average_bpp}")
