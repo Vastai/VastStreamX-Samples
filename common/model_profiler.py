@@ -175,12 +175,12 @@ class ModelProfiler:
 
     def warmup(self, warmup_iters=1):
         for idx, model in enumerate(self.models_):
-            vsx.set_device(model.device_id_)
             infer_data = model.get_test_data(
                 self.config_.data_type,
                 self.config_.input_shape,
                 self.config_.batch_size,
                 self.config_.contexts[idx],
             )
+            vsx.set_device(model.device_id_)
             for _ in range(warmup_iters):
                 model.process(infer_data)
