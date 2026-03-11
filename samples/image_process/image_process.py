@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # padding_edges = (top,bottom,left,right)
     vsx_image_resize_copy_make_border = vsx.resize_copy_make_border(
         image=vsx_image_bgr_interleave,
-        resize_type=vsx.ImageResizeType.NEAREST,
+        resize_type=vsx.ImageResizeType.BILINEAR_CV,
         resize_width=512,
         resize_height=512,
         padding_type=vsx.ImagePaddingType.PADDING_TYPE_CONSTANT,

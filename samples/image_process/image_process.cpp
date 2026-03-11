@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
   int resize_width = 512, resize_height = 512;
   vsx::ImagePaddingEdges padding_edges = {114, 114, 44, 44};
   vsx::ResizeCopyMakeBorder(image_bgr_interleave, image_resize_copy_make_border,
-                            vsx::kRESIZE_TYPE_NEAREST, resize_width,
+                            vsx::kRESIZE_TYPE_BILINEAR_CV, resize_width,
                             resize_height, vsx::kPADDING_TYPE_CONSTANT,
                             {128, 128, 0}, &padding_edges);
   std::cout << "image_resize_copy_make_border size is ( "
