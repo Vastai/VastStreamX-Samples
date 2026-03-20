@@ -133,7 +133,7 @@ python3 ./efficient_ads_prof.py \
 --input_host 0
 ```
 
-### face_detection_prof.py 命令结果示例
+### efficient_ads_prof.py 命令结果示例
 
 本结果在OCLK=1250MHz情况下测试得到
 
