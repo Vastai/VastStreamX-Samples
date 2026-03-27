@@ -101,7 +101,7 @@ if __name__ == "__main__":
     for i in range(instance):
         device_id = device_ids[i % len(device_ids)]
         model = Detector(
-            model_prefix, vdsp_params, batch_size, device_id, hw_config=hw_config
+            model_prefix, vdsp_params, batch_size, device_id, hw_config=hw_config, do_postprocess=False
         )
         models.append(model)
         if input_host:

@@ -18,15 +18,20 @@ class Detector(ModelCV):
         device_id=0,
         threshold=0.2,
         hw_config="",
+        do_postprocess=True,
     ) -> None:
         super().__init__(model_prefix, vdsp_config, batch_size, device_id, hw_config)
         self.threshold_ = threshold
+        self.do_postprocess_ = do_postprocess  
 
     def set_threshold(self, threshold):
         self.threshold_ = threshold
-
     def process_impl(self, input):
         outputs = self.stream_.run_sync(input)
+        
+        if not self.do_postprocess_:
+            return outputs
+            
         return [
             self.post_process(output, input[i].width, input[i].height)
             for i, output in enumerate(outputs)
