@@ -71,7 +71,7 @@ options:
       --width          width (unsigned int [=0])
       --height         height (unsigned int [=0])
       --frame_rate     frame rate (unsigned int [=30])
-  -i, --instance       instance number for each device (unsigned int [=1])
+  -i, --instance       model instance number (unsigned int [=1])
       --iterations     iterations count for one profiling (int [=10240])
       --percentiles    percentiles of latency (string [=[50, 90, 95, 99]])
   -?, --help           print this message
@@ -317,7 +317,7 @@ optional arguments:
   --input_file INPUT_FILE
                         input file path
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   --iterations ITERATIONS
                         iterations count for one profiling
   --percentiles PERCENTILES

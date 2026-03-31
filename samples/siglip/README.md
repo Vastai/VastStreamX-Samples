@@ -86,7 +86,7 @@ optional arguments:
   -b BATCH_SIZE, --batch_size BATCH_SIZE
                         profiling batch size of the model
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   -s SHAPE, --shape SHAPE
                         model input shape
   --iterations ITERATIONS

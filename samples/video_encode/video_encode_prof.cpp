@@ -25,7 +25,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<uint32_t>("width", '\0', "width", false, 0);
   args.add<uint32_t>("height", '\0', "height", false, 0);
   args.add<uint32_t>("frame_rate", '\0', "frame rate", false, 30);
-  args.add<uint32_t>("instance", 'i', "instance number for each device", false,
+  args.add<uint32_t>("instance", 'i', "model instance number", false,
                      1);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);

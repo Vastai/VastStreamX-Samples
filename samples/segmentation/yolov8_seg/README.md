@@ -143,7 +143,7 @@ options:
   -d, --device_ids      device id to run (string [=[0]])
       --elf_file        elf file path (string [=/opt/vastai/vaststreamx/data/elf/yolov8_seg_post_proc])
   -b, --batch_size      profiling batch size of the model (unsigned int [=1])
-  -i, --instance        instance number for each device (unsigned int [=1])
+  -i, --instance        model instance number (unsigned int [=1])
   -s, --shape           model input shape (string [=])
       --iterations      iterations count for one profiling (int [=1024])
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
@@ -343,7 +343,7 @@ optional arguments:
   -b BATCH_SIZE, --batch_size BATCH_SIZE
                         profiling batch size of the model
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   -s SHAPE, --shape SHAPE
                         model input shape
   --iterations ITERATIONS

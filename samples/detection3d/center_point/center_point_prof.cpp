@@ -37,7 +37,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<uint32_t>("batch_size", 'b', "profiling batch size of the model",
                      false, 1);
   args.add<uint32_t>("instance", 'i',
-                     "instance number or range for each device", false, 1);
+                     "model instance number", false, 1);
   args.add<std::string>("shape", 's', "model input shape", true);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);

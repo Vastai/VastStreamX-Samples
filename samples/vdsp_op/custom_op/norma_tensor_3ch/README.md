@@ -32,7 +32,7 @@ options:
       --elf_file       elf_file path (string [=/opt/vastai/vaststreamx/data/elf/norma_tensor_3ch])
   -d, --device_ids     device id to run (string [=[0]])
       --shape          input shape [c,h,w] (string [=[3,640,640]])
-  -i, --instance       instance number or range for each device (unsigned int [=1])
+  -i, --instance       model instance number (unsigned int [=1])
       --iterations     iterations count for one profiling (int [=10240])
       --percentiles    percentiles of latency (string [=[50,90,95,99]])
       --input_host     cache input data into host memory (bool [=0])
@@ -108,7 +108,7 @@ optional arguments:
   -d DEVICE_ID, --device_id DEVICE_ID
                         device id to run
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   -s SHAPE, --shape SHAPE
                         model input shape
   --iterations ITERATIONS

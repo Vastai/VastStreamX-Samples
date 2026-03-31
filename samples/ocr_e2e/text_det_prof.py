@@ -53,7 +53,7 @@ def argument_parser():
         "--instance",
         default=1,
         type=int,
-        help="instance number for each device",
+        help="model instance number",
     )
     parser.add_argument(
         "-s",

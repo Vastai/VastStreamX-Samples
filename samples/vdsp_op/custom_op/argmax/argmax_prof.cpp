@@ -23,7 +23,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("shape", '\0', "input shape [c,h,w]", false,
                         "[19,512,512]");
   args.add<uint32_t>("instance", 'i',
-                     "instance number or range for each device", false, 1);
+                     "model instance number", false, 1);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);
   args.add<std::string>("percentiles", '\0', "percentiles of latency", false,

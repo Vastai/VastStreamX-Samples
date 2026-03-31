@@ -25,7 +25,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("elf_file", '\0', "elf file path", false, "");
   args.add<uint32_t>("batch_size", 'b', "profiling batch size of the model",
                      false, 1);
-  args.add<uint32_t>("instance", 'i', "instance number for each device", false,
+  args.add<uint32_t>("instance", 'i', "model instance number", false,
                      1);
   args.add<std::string>("shape", 's', "model input shape", false);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
