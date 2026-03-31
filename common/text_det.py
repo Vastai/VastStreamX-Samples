@@ -54,7 +54,7 @@ class TextDetector(ModelCV):
         self.score_mode_ = score_mode
         self.dilation_kernel_ = np.array([[1, 1], [1, 1]]) if use_dilation else None
         self.vdsp_op = vsx.CustomOperator(
-            op_name="find_contours", elf_file_path=elf_file
+            op_name="find_contours_1out", elf_file_path=elf_file
         )
         self.vdsp_op.set_callback_info(
             [(1, int(376 * 1.5), 500)],
@@ -122,24 +122,40 @@ class TextDetector(ModelCV):
         op_param.pitch = width
         op_param.thresh = self.thresh_
         op_conf_size = ctypes.sizeof(op_param_t)
+        buffer_size = (
+            height * width * 2 * 2
+            + self.max_candidates_ * 5 * 4
+            + 4
+            + 4 * height * (width + 2)
+        )
+
         output_list = self.vdsp_op.run_sync(
             tensors=[tensor],
             config=ctypes.string_at(ctypes.byref(op_param), op_conf_size),
             output_info=[
-                ([height * width * 2], vsx.TypeFlag.INT16),
-                ([self.max_candidates_, 5], vsx.TypeFlag.UINT32),
-                ([1], vsx.TypeFlag.UINT32),
-                ([4, height, width + 2], vsx.TypeFlag.UINT8),
+                ([buffer_size], vsx.TypeFlag.UINT8),
             ],
         )
         outs = [vsx.as_numpy(out) for out in output_list]
+
+        image_data = outs[0][: height * width * 2 * 2].view(np.int16)
+        start = height * width * 2 * 2
+        points_data = (
+            outs[0][start : start + self.max_candidates_ * 5 * 4]
+            .view(np.uint32)
+            .reshape(-1, 5)
+        )
+
+        start += self.max_candidates_ * 5 * 4
+        contours_num_data = outs[0][start : start + 4].squeeze().view(np.uint32)
+        contours_num = contours_num_data[0]
+
         contours = []
-        contours_num = outs[2][0]
         p = 0
         for i in range(contours_num):
-            points = outs[1][i][4]
+            points = points_data[i][4]
             contour = (
-                outs[0][p : p + points * 2].reshape((points, 1, 2)).astype(np.int32)
+                image_data[p : p + points * 2].reshape((points, 1, 2)).astype(np.int32)
             )
             p += points * 2
             contours.append(contour)
