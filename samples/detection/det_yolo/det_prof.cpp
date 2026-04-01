@@ -34,6 +34,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<bool>("input_host", '\0', "cache input data into host memory", false,
                  0);
   args.add<uint32_t>("queue_size", 'q', "aync wait queue size", false, 2);
+  args.add<uint32_t>("warmup_times", '\0', "number of warmup iterations", false, 10);
   args.parse_check(argc, argv);
   return args;
 }
@@ -51,6 +52,7 @@ int main(int argc, char** argv) {
   auto input_host = args.get<bool>("input_host");
   auto queue_size = args.get<uint32_t>("queue_size");
   auto percentiles = vsx::ParseVecUint(args.get<std::string>("percentiles"));
+  auto warmup_iters = args.get<uint32_t>("warmup_times");
 
   std::vector<std::shared_ptr<vsx::Detector>> models;
   models.reserve(instance);
@@ -75,7 +77,7 @@ int main(int argc, char** argv) {
   vsx::ProfilerConfig config = {instance,    iterations,  batch_size,
                                 vsx::kUint8, device_ids,  contexts,
                                 {shape},     percentiles, queue_size};
-  vsx::ModelProfiler<vsx::Detector> profiler(config, models);
+  vsx::ModelProfiler<vsx::Detector> profiler(config, models, warmup_iters);
   std::cout << profiler.Profiling() << std::endl;
   return 0;
 }
