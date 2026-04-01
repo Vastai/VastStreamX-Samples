@@ -24,8 +24,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("device_ids", 'd', "device id to run", false, "[0]");
   args.add<uint32_t>("batch_size", 'b', "profiling batch size of the model",
                      false, 1);
-  args.add<uint32_t>("instance", 'i',
-                     "model instance number", false, 1);
+  args.add<uint32_t>("instance", 'i', "model instance number", false, 1);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 1024);
   args.add<std::string>("percentiles", '\0', "percentiles of latency", false,
@@ -34,6 +33,8 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
                  0);
   args.add<uint32_t>("queue_size", 'q', "aync wait queue size", false, 2);
   args.add<std::string>("test_input_npz", '\0', "test input npz file", true);
+  args.add<uint32_t>("warmup_times", '\0', "number of warmup iterations", false,
+                     10);
   args.parse_check(argc, argv);
   return args;
 }
@@ -50,6 +51,7 @@ int main(int argc, char** argv) {
   auto input_host = args.get<bool>("input_host");
   auto queue_size = args.get<uint32_t>("queue_size");
   auto percentiles = vsx::ParseVecUint(args.get<std::string>("percentiles"));
+  auto warmup_times = args.get<uint32_t>("warmup_times");
 
   std::vector<std::shared_ptr<vsx::ClipText>> models;
   models.reserve(instance);
@@ -84,7 +86,7 @@ int main(int argc, char** argv) {
   vsx::ProfilerConfig config = {instance,     iterations,  batch_size,
                                 vsx::kInt32,  device_ids,  contexts,
                                 input_shapes, percentiles, queue_size};
-  vsx::ModelProfiler<vsx::ClipText> profiler(config, models);
+  vsx::ModelProfiler<vsx::ClipText> profiler(config, models, warmup_times);
   std::cout << profiler.Profiling() << std::endl;
   return 0;
 }

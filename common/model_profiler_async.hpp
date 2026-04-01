@@ -58,8 +58,9 @@ class ModelProfilerAsync {
                            uint32_t, Context, std::vector<TShape>>;
 
   ModelProfilerAsync(const ProfilerConfig& config,
-                     std::vector<std::shared_ptr<T>> models)
-      : config_(&config), models_(models) {
+                     std::vector<std::shared_ptr<T>> models,
+                     int warmup_iters = 10)
+      : config_(&config), models_(models), warmup_iters_(warmup_iters) {
     threads_.reserve(models.size());
     long_time_test_ = config.iterations > 0 ? false : true;
     iters_left_ = config.iterations > 0 ? config.iterations : 1;
@@ -109,6 +110,8 @@ class ModelProfilerAsync {
     ticks.reserve(iters_left_);
     tocks.reserve(iters_left_);
 
+    WarmUpInstance(idx);
+
     BlockingReaderWriterCircularBuffer<int> queue_futs(config_->queue_size);
     std::thread cunsume_thread([&] {
       std::vector<vsx::Tensor> outputs;
@@ -123,6 +126,7 @@ class ModelProfilerAsync {
         queue_futs.wait_dequeue(input_id);
       }
     });
+
     auto infer_data = models_[idx]->GetTestData(
         config_->batch_size, config_->data_type, config_->contexts[idx],
         config_->input_shapes);
@@ -154,6 +158,34 @@ class ModelProfilerAsync {
     merge_mutex.unlock();
   }
 
+  void WarmUpInstance(uint32_t idx) {
+    BlockingReaderWriterCircularBuffer<int> queue_futs(config_->queue_size);
+    bool send_finish_signal = false;
+    std::thread cunsume_thread([&] {
+      do {
+        if (send_finish_signal && queue_futs.size_approx() == 0) {
+          break;
+        }
+        std::vector<vsx::Tensor> outputs;
+        models_[idx]->GetOutput(outputs);
+        int input_id;
+        queue_futs.wait_dequeue(input_id);
+      } while (true);
+    });
+    auto infer_data = models_[idx]->GetTestData(
+        config_->batch_size, config_->data_type, config_->contexts[idx],
+        config_->input_shapes);
+
+    for (int i = 0; i < warmup_iters_; i++) {
+      queue_futs.wait_enqueue(i);
+      models_[idx]->ProcessAsync(infer_data);
+    }
+    send_finish_signal = true;
+    cunsume_thread.join();
+
+    std::cout << "Warmup done for instance " << idx << std::endl;
+  }
+
  private:
   const ProfilerConfig* config_;
   std::vector<std::shared_ptr<T>> models_;
@@ -164,6 +196,7 @@ class ModelProfilerAsync {
   std::vector<time_point> latency_end_;
   std::mutex merge_mutex;
   float long_time_test_ = false;
+  int warmup_iters_ = 10;
 };
 
 }  // namespace vsx
