@@ -168,6 +168,7 @@ options:
       --threshold       threshold for detection (float [=0.001])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=2])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -426,6 +427,8 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### bytetracker_prof.py 命令行示例

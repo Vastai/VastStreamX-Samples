@@ -85,6 +85,12 @@ def argument_parser():
         type=int,
         help="cache input data into host memory",
     )
+    parser.add_argument(
+        "--warmup_times",
+        default=10,
+        type=int,
+        help="number of warmup iterations",
+    )
     args = parser.parse_args()
     return args
 
@@ -101,6 +107,7 @@ if __name__ == "__main__":
     queue_size = args.queue_size
     input_host = args.input_host
     percentiles = ast.literal_eval(args.percentiles)
+    warmup_times = args.warmup_times
 
     models = []
     contexts = []
@@ -131,5 +138,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())

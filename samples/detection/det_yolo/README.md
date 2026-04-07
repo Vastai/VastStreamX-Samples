@@ -118,8 +118,8 @@ options:
       --percentiles     percentiles of latency (string [=[50,90,95,99]])
       --threshold       threshold for detection (float [=0.5])
       --input_host      cache input data into host memory (bool [=0])
-      --warmup_times    number of warmup iterations (unsigned int [=10])
   -q, --queue_size      aync wait queue size (unsigned int [=2])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 

@@ -134,5 +134,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models, warmup_iters=warmup_times)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())
