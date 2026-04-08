@@ -28,9 +28,8 @@ namespace vsx {
 
 using moodycamel::BlockingReaderWriterCircularBuffer;
 typedef std::tuple<cv::Mat, vsx::Tensor> DetPostInputType;
-typedef std::tuple<vsx::Tensor, std::vector<cv::Mat>, std::vector<vsx::Image>>
-    ClsInputType;
-typedef std::tuple<vsx::Tensor, std::vector<vsx::Image>> RecInputType;
+typedef std::tuple<vsx::Tensor, std::vector<cv::Mat>> ClsInputType;
+typedef std::tuple<vsx::Tensor, std::vector<cv::Mat>> RecInputType;
 typedef std::tuple<std::vector<float>, float, std::string> TextObject;
 
 enum StopFlag {
@@ -67,9 +66,10 @@ class OCR_e2e_Async {
         det_post_inputs_(queue_size),
         cls_inputs_(queue_size),
         rec_inputs_(queue_size),
-        rec_outputs_(10),
-        stop_flag_(0) {
-    vsx::GetDevice(device_id_);
+        rec_outputs_(10) {
+    vsx::SetDevice(device_id_);
+    device_id_ = device_id;
+    stop_flag_ = static_cast<int>(StopFlag::INIT_VALUE);
     det_input_format_ = text_det_.GetFusionOpIimageFormat();
 
     det_ticks_.reserve(1024);
@@ -173,7 +173,6 @@ class OCR_e2e_Async {
             [&](DetPostInputType&& post_in) {
               auto cv_mat = std::get<0>(post_in);
               auto det_results = std::get<1>(post_in);
-              std::vector<vsx::Image> vsx_crop_imgs;
               int obj_count = det_results.Shape()[0];
               std::vector<cv::Mat> crop_imgs(obj_count);
               const float* det_res_data = det_results.Data<float>();
@@ -192,13 +191,9 @@ class OCR_e2e_Async {
                 } else {
                   GetMinareaRectCropImage(cv_mat, src_points, crop_imgs[i]);
                 }
-                vsx::Image vsx_cpu_image;
-                vsx::MakeVsxImage(crop_imgs[i], vsx_cpu_image, vsx::RGB_PLANAR);
-                vsx_crop_imgs.push_back(vsx_cpu_image);
               }
               auto result =
-                  std::make_tuple(std::move(det_results), std::move(crop_imgs),
-                                  std::move(vsx_crop_imgs));
+                  std::make_tuple(std::move(det_results), std::move(crop_imgs));
               return result;
             },
             std::move(post_input));
@@ -221,25 +216,28 @@ class OCR_e2e_Async {
         cls_ticks_.push_back(std::chrono::high_resolution_clock::now());
         auto det_results = std::get<0>(cls_input);
         auto crop_imgs = std::get<1>(cls_input);
-        auto vsx_crop_imgs = std::get<2>(cls_input);
         int obj_count = det_results.Shape()[0];
 
         // run cls
         if (use_angle_cls_ && obj_count) {
+          std::vector<vsx::Image> vsx_crop_imgs;
+          auto format = text_cls_.GetFusionOpIimageFormat();
+          for (auto& img_crop : crop_imgs) {
+            vsx::Image vsx_image;
+            vsx::MakeVsxImage(img_crop, vsx_image, format);
+            vsx_crop_imgs.push_back(vsx_image);
+          }
           auto cls_result = text_cls_.Process(vsx_crop_imgs);
           for (size_t i = 0; i < cls_result.size(); i++) {
             const float* cls_data = cls_result[i].Data<float>();
             if (cls_data[1] > cls_data[0] && cls_data[1] > cls_thresh_) {
               cv::rotate(crop_imgs[i], crop_imgs[i], cv::ROTATE_180);
-              vsx::Image vsx_image;
-              vsx::MakeVsxImage(crop_imgs[i], vsx_image, vsx::BGR_INTERLEAVE);
-              vsx_crop_imgs[i] = vsx_image;
             }
           }
         }
         // set rec input
         auto rec_input =
-            std::make_tuple(std::move(det_results), std::move(vsx_crop_imgs));
+            std::make_tuple(std::move(det_results), std::move(crop_imgs));
         rec_inputs_.wait_enqueue(rec_input);
         cls_tocks_.push_back(std::chrono::high_resolution_clock::now());
       } else if (stop_flag_ == static_cast<int>(StopFlag::DET_POST_STOP)) {
@@ -294,11 +292,18 @@ class OCR_e2e_Async {
       if (rec_inputs_.wait_dequeue_timed(rec_input, 10 * 1000)) {
         rec_ticks_.push_back(std::chrono::high_resolution_clock::now());
         vsx::Tensor det_result = std::get<0>(rec_input);
-        std::vector<vsx::Image> vsx_crop_imgs = std::get<1>(rec_input);
+        std::vector<cv::Mat> crop_imgs = std::get<1>(rec_input);
         std::vector<TextObject> results;
-        if (vsx_crop_imgs.size() > 0) {
+        if (crop_imgs.size() > 0) {
           det_results.wait_enqueue(std::move(det_result));
           infer_flags.wait_enqueue(true);
+          auto format = text_rec_.GetFusionOpIimageFormat();
+          std::vector<vsx::Image> vsx_crop_imgs;
+          for (auto& img_crop : crop_imgs) {
+            vsx::Image vsx_image;
+            vsx::MakeVsxImage(img_crop, vsx_image, format);
+            vsx_crop_imgs.push_back(vsx_image);
+          }
           text_rec_.ProcessAsync(vsx_crop_imgs);
         } else {
           infer_flags.wait_enqueue(false);

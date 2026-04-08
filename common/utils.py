@@ -12,10 +12,10 @@ def cv_bgr888_to_nv12(bgr888):
     yuv_image = cv2.cvtColor(bgr888, cv2.COLOR_BGR2YUV_I420)
     height, width = bgr888.shape[:2]
     y = yuv_image[:height, :]
-    u = yuv_image[height : height + height // 4, :]
-    v = yuv_image[height + height // 4 :, :]
-    u = np.reshape(u, (height // 2, width // 2))
-    v = np.reshape(v, (height // 2, width // 2))
+    uv_plane = yuv_image[height:, :].flatten()
+    u_size = (height // 2) * (width // 2)
+    u = uv_plane[:u_size].reshape((height // 2, width // 2))
+    v = uv_plane[u_size:].reshape((height // 2, width // 2))
     uv_plane = np.empty((height // 2, width), dtype=np.uint8)
     uv_plane[:, 0::2] = u
     uv_plane[:, 1::2] = v

@@ -135,7 +135,7 @@ class OCR_e2e_Async:
             try:
                 cv_mat = self.det_inputs.get(timeout=self.get_timeout)
                 vsx_image = utils.cv_bgr888_to_vsximage(
-                    cv_mat, image_format, self.text_det.device_id_
+                    cv_mat, image_format, self.device_id
                 )
                 input_mats.put(cv_mat)
                 self.text_det.process_async(vsx_image)
@@ -148,11 +148,10 @@ class OCR_e2e_Async:
                     break
 
     def det_post_process(self, post_input):
-        vsx.set_device(self.text_cls.device_id_)
+        vsx.set_device(self.device_id)
         cv_mat, [[dt_boxes, dt_scores]] = post_input
         img_crop_list = []
-        vacc_img_crop_list = []
-        format = self.text_cls.get_fusion_op_iimage_format()
+
         for bno in range(len(dt_boxes)):
             tmp_box = copy.deepcopy(dt_boxes[bno])
             if self.det_box_type == "quad":
@@ -160,12 +159,7 @@ class OCR_e2e_Async:
             else:
                 img_crop = self.get_minarea_rect_crop(cv_mat, tmp_box)
             img_crop_list.append(img_crop)
-
-            vacc_img_crop = utils.cv_bgr888_to_vsximage(
-                img_crop, format, self.text_cls.device_id_
-            )
-            vacc_img_crop_list.append(vacc_img_crop)
-        return ([dt_boxes, dt_scores], img_crop_list, vacc_img_crop_list)
+        return ([dt_boxes, dt_scores], img_crop_list)
 
     def detect_post_thread(self):
         vsx.set_device(self.device_id)
@@ -203,22 +197,25 @@ class OCR_e2e_Async:
                         break
 
     def classify_thread(self):
-        vsx.set_device(self.text_det.device_id_)
+        vsx.set_device(self.device_id)
         while True:
             try:
                 cls_input = self.cls_inputs.get(timeout=self.get_timeout)
-                [dt_boxes, dt_scores], img_crop_list, vacc_img_crop_list = cls_input
-                if self.use_angle_cls and self.text_cls and len(vacc_img_crop_list) > 0:
-                    format = self.text_det.get_fusion_op_iimage_format()
+                [dt_boxes, dt_scores], img_crop_list = cls_input
+                if self.use_angle_cls and self.text_cls and len(img_crop_list) > 0:
+                    format = self.text_cls.get_fusion_op_iimage_format()
+                    vacc_img_crop_list = []
+                    for img_crop in img_crop_list:
+                        vacc_img_crop = utils.cv_bgr888_to_vsximage(
+                            img_crop, format, self.device_id
+                        )
+                        vacc_img_crop_list.append(vacc_img_crop)
                     cls_result = self.text_cls.process(vacc_img_crop_list)
                     for rno in range(len(cls_result)):
                         label, score = cls_result[rno]
                         if "180" in label and score > self.cls_thresh:
                             img_crop_list[rno] = cv2.rotate(img_crop_list[rno], 1)
-                            vacc_img_crop_list[rno] = utils.cv_bgr888_to_vsximage(
-                                img_crop_list[rno], format, self.text_det.device_id_
-                            )
-                self.rec_inputs.put(([dt_boxes, dt_scores], vacc_img_crop_list))
+                self.rec_inputs.put(([dt_boxes, dt_scores], img_crop_list))
             except Exception:
                 if self.stop_flag == DET_POST_STOP:
                     self.stop_flag = CLS_STOP
@@ -254,10 +251,17 @@ class OCR_e2e_Async:
         while True:
             try:
                 rec_input = self.rec_inputs.get(timeout=self.get_timeout)
-                [dt_boxes, dt_scores], vacc_img_crop_list = rec_input
-                if len(vacc_img_crop_list) > 0:
+                [dt_boxes, dt_scores], img_crop_list = rec_input
+                if len(img_crop_list) > 0:
                     det_results.put(dt_boxes)
                     infer_flags.put(True)
+                    format = self.text_rec.get_fusion_op_iimage_format()
+                    vacc_img_crop_list = []
+                    for img_crop in img_crop_list:
+                        vacc_img_crop = utils.cv_bgr888_to_vsximage(
+                            img_crop, format, self.device_id
+                        )
+                        vacc_img_crop_list.append(vacc_img_crop)
                     self.text_rec.process_async(vacc_img_crop_list)
                 else:
                     infer_flags.put(False)

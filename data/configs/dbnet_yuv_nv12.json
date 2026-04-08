@@ -1,0 +1,18 @@
+{
+    "OpType": "FUSION_OP_YUV_NV12_CVTCOLOR_RESIZE_NORM_TENSOR",
+    "OpConfig": {
+        "Mean": [
+            0.485107421875,
+            0.4560546875,
+            0.406005859375
+        ],
+        "Std": [
+            0.22900390625,
+            0.2239990234375,
+            0.2249755859375
+        ],
+        "NormaType": "DIV255_MINUSMEAN_DIVSTD",
+        "ColorCvtCode": "YUV2BGR_NV12",
+        "ResizeType": "BILINEAR_CV"
+    }
+}

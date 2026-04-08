@@ -37,14 +37,15 @@ class OCR_e2e {
   std::vector<std::tuple<std::vector<float>, float, std::string>> Process(
       cv::Mat& image, bool do_cls = true) {
     auto img_format = text_det_.GetFusionOpIimageFormat();
+    // make text detection input
     vsx::Image vsx_img;
     vsx::MakeVsxImage(image, vsx_img, img_format);
-    auto det_results = text_det_.Process(vsx_img);
+    auto det_results = text_det_.Process(vsx_img);  // text detection
+    // parse text detection result
     std::vector<std::tuple<std::vector<float>, float, std::string>> results;
     if (det_results.GetSize() == 0) {
       std::cout << "No object detected in image.\n";
     } else {
-      std::vector<vsx::Image> vacc_crop_imgs;
       int obj_count = det_results.Shape()[0];
       std::vector<cv::Mat> crop_imgs(obj_count);
       const float* det_res_data = det_results.Data<float>();
@@ -60,22 +61,31 @@ class OCR_e2e {
         } else {
           GetMinareaRectCropImage(image, src_points, crop_imgs[i]);
         }
-        vsx::Image vsx_cpu_image;
-        vsx::MakeVsxImage(crop_imgs[i], vsx_cpu_image, vsx::RGB_PLANAR);
-        vacc_crop_imgs.push_back(
-            vsx_cpu_image.Clone(vsx::Context::VACC(device_id_)));
       }
       if (use_angle_cls_) {
+        auto cls_input_format = text_cls_.GetFusionOpIimageFormat();
+        std::vector<vsx::Image> vacc_crop_imgs;
+        for (auto& img_crop : crop_imgs) {
+          vsx::Image vsx_image;
+          vsx::MakeVsxImage(img_crop, vsx_image, cls_input_format);
+          vacc_crop_imgs.push_back(vsx_image);
+        }
         auto cls_result = text_cls_.Process(vacc_crop_imgs);
         for (size_t i = 0; i < cls_result.size(); i++) {
           const float* cls_data = cls_result[i].Data<float>();
           if (cls_data[1] > cls_data[0] && cls_data[1] > cls_thresh_) {
             cv::rotate(crop_imgs[i], crop_imgs[i], cv::ROTATE_180);
-            vsx::Image vsx_image;
-            vsx::MakeVsxImage(crop_imgs[i], vsx_image, vsx::BGR_INTERLEAVE);
-            vacc_crop_imgs[i] = vsx_image.Clone(vsx::Context::VACC(device_id_));
           }
         }
+      }
+
+      // make text recognition input and run
+      auto rec_input_format = text_rec_.GetFusionOpIimageFormat();
+      std::vector<vsx::Image> vacc_crop_imgs;
+      for (auto& img_crop : crop_imgs) {
+        vsx::Image vsx_image;
+        vsx::MakeVsxImage(img_crop, vsx_image, rec_input_format);
+        vacc_crop_imgs.push_back(vsx_image);
       }
       auto rec_res = text_rec_.Process(vacc_crop_imgs);
       for (size_t i = 0; i < rec_res.size(); i++) {
