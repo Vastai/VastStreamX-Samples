@@ -2,8 +2,8 @@
 
 本目录提供以及 yolo-world 模型的目标检测 sample
 
-
 ## 模型信息
+
 |    模型信息   |  值       |
 |-----------|-----------|
 |    来源   | [github](https://github.com/AILab-CVC/YOLO-World)  [modelzoo](https://github.com/Vastai/VastModelZOO/tree/main/cv/detection/yolo_world) |
@@ -12,7 +12,6 @@
 |  官方精度 |  "mAP@.5":   45.5 ;     "mAP@.5:.95": 34.6  |
 |  VACC FP16  精度 | "mAP@.5":  45.9 ;  "mAP@.5:.95":  34.8  |
 |  VACC INT8  精度 | - |
-
 
 ## 数据准备
 
@@ -24,6 +23,7 @@
 ## C++ Sample
 
 ### yolo_world 命令参数说明
+
 ```bash
 options:
       --imgmod_prefix          image model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolo_world_image-fp16-none-1_3_1280_1280_1203_512-vacc/mod])
@@ -46,8 +46,6 @@ options:
       --dataset_output_file    dataset output file (string [=yolo_world_dataset_output.json])
   -?, --help                   print this message
 ```
-
-
 
 ### yolo_world 命令运行示例
 
@@ -97,7 +95,9 @@ python3 ../evaluation/yolo_world/eval_lvis.py  \
 --path_ann_file ../evaluation/yolo_world/lvis_v1_minival_inserted_image_name.json
 
 ```
+
 ### yolo_world 命令运行结果示例
+
 ```bash
 # 单张图片测试结果
 Detection objects:
@@ -125,9 +125,10 @@ Object class: canister, score: 0.510268, bbox: [427.734, 109.209, 447.539, 134.4
  Average Recall     (AR) @[ IoU=0.50:0.95 | area=     l | maxDets=300 catIds=all] = 0.669
 
 ```
+
 ### yolo_world_text 模型性能测试
 
-yolo_world_text_prof 命令参数 
+yolo_world_text_prof 命令参数
 
 ```bash
 options:
@@ -142,6 +143,7 @@ options:
       --input_host       cache input data into host memory (bool [=0])
   -q, --queue_size       aync wait queue size (unsigned int [=2])
       --test_npz_file    npz_file for test (string [=])
+      --warmup_times     number of warmup iterations (unsigned int [=10])
   -?, --help             print this message
 ```
 
@@ -177,6 +179,7 @@ options:
 ### yolo_world_text 模型性能测试结果
 
 以下结果为 x86_linux  OCLK=835MHz条件下测试所得
+
 ```bash
 # 测试 yolo_world_text 模型最大吞吐
 - number of instances: 1
@@ -209,7 +212,9 @@ options:
     p95 latency: 2644
     p99 latency: 2699
 ```
+
 以下结果为 VS1000 aarch64_linux VE1M OCLK=1250MHz条件下测试所得
+
 ```bash
 # 测试 yolo_world_text 模型最大吞吐
 - number of instances: 1
@@ -246,6 +251,7 @@ options:
 ### yolo_world_image 模型性能测试
 
 yolo_world_image 命令参数说明
+
 ```bash
 options:
   -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/yolo_world_image-fp16-none-1_3_1280_1280_1203_512-vacc/mod])
@@ -258,10 +264,13 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=1])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 
 ```
+
 yolo_world_image 命令示例
+
 ```bash
 
 # 测试 yolo_world_image 模型最大吞吐
@@ -289,9 +298,12 @@ yolo_world_image 命令示例
 --input_host 1 \
 --queue_size 0
 ```
+
 ### yolo_world_image 模型性能测试结果
+
 以下结果为 x86_linux  OCLK=835MHz条件下测试所得
 后处理时延:350ms左右
+
 ```bash
 # 测试 yolo_world_image 模型最大吞吐
 - number of instances: 1
@@ -326,6 +338,7 @@ yolo_world_image 命令示例
 
 以下结果为 VS1000 aarch64_linux VE1M OCLK=1250MHz条件下测试所得
 后处理时延:120s左右
+
 ```bash
 # 测试 yolo_world_image 模型最大吞吐
 - number of instances: 1
@@ -357,9 +370,11 @@ yolo_world_image 命令示例
     p95 latency: 551595
     p99 latency: 556078
 ```
+
 ## Python Sample
 
 ### yolo_world.py 脚本参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -471,7 +486,39 @@ Object class: canister, score: 0.5103, bbox: [427.73438 109.20937 447.53906 134.
  Average Recall     (AR) @[ IoU=0.50:0.95 | area=     m | maxDets=300 catIds=all] = 0.566
  Average Recall     (AR) @[ IoU=0.50:0.95 | area=     l | maxDets=300 catIds=all] = 0.673
 ```
-### yolo_world_text 模型性能测试
+
+### yolo_world_text 模型性能测试参数说明
+
+```bash
+options:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  --tokenizer_path TOKENIZER_PATH
+                        tokenizer path
+  -d DEVICE_IDS, --device_ids DEVICE_IDS
+                        device ids to run
+  -b BATCH_SIZE, --batch_size BATCH_SIZE
+                        profiling batch size of the model
+  -i INSTANCE, --instance INSTANCE
+                        model instance number
+  --iterations ITERATIONS
+                        iterations count for one profiling
+  --queue_size QUEUE_SIZE
+                        aync wait queue size
+  --percentiles PERCENTILES
+                        percentiles of latency
+  --input_host INPUT_HOST
+                        cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
+```
+
+### yolo_world_text 模型性能测试命令示例
 
 ```bash
 # 测试 yolo_world_text 模型最大吞吐
@@ -500,7 +547,8 @@ python3 yolo_world_text_prof.py \
 --input_host 1 \
 --queue_size 0
 ```
-### yolo_world_text 模型性能测试结果
+
+### yolo_world_text 模型性能测试结果示例
 
 ```bash
 # 测试 yolo_world_text 模型最大吞吐
@@ -535,8 +583,37 @@ python3 yolo_world_text_prof.py \
     p99 latency: 2854
 ```
 
+### yolo_world_image 模型性能测试脚本参数说明
 
-### yolo_world_image 模型性能测试
+```bash
+options:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_IDS, --device_ids DEVICE_IDS
+                        device ids to run
+  -b BATCH_SIZE, --batch_size BATCH_SIZE
+                        profiling batch size of the model
+  -i INSTANCE, --instance INSTANCE
+                        model instance number
+  --iterations ITERATIONS
+                        iterations count for one profiling
+  --queue_size QUEUE_SIZE
+                        aync wait queue size
+  --percentiles PERCENTILES
+                        percentiles of latency
+  --input_host INPUT_HOST
+                        cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
+```
+
+### yolo_world_image 模型性能测试命令示例
+
 ```bash
 # 测试 yolo_world_image 模型最大吞吐
 python3 yolo_world_image_prof.py \
@@ -565,7 +642,7 @@ python3 yolo_world_image_prof.py \
 
 ```
 
-### yolo_world_image 模型性能测试结果
+### yolo_world_image 模型性能测试结果示例
 
 ```bash
 # 测试 yolo_world_image 模型最大吞吐
@@ -599,5 +676,3 @@ python3 yolo_world_image_prof.py \
     p95 latency: 416207
     p99 latency: 418189
 ```
-
-

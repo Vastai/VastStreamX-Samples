@@ -124,6 +124,7 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=2])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -221,7 +222,8 @@ optional arguments:
                         dataset root
   --dataset_output_folder DATASET_OUTPUT_FOLDER
                         dataset output folder
-
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### bisenet.py 运行示例
