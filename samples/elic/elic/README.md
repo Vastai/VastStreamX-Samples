@@ -277,7 +277,8 @@ optional arguments:
   --input_host INPUT_HOST
                         cache input data into host memory
   --patch PATCH         padding patch size (default: 256)
-  
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations  
 ```
 
 ### elic_noentropy_prof.py 脚本命令示例

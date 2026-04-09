@@ -220,6 +220,7 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=1])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -305,6 +306,7 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=1])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -389,6 +391,7 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=1])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -797,6 +800,7 @@ python ocr_e2e_async.py \
 --output_file ocr_res.jpg
 
 #结果示例
+
 [[660,80], [701,83], [700,100], [659,97]],  [('20029', 0.998046875)]
 [[638,135], [723,140], [722,158], [637,152]],  [('97154197', 0.9990234375)]
 [[637,152], [700,156], [699,172], [636,169]],  [('198727', 0.99755859375)]
@@ -805,6 +809,7 @@ python ocr_e2e_async.py \
 [[790,333], [866,336], [865,368], [789,366]],  [('PAIN', 0.99267578125)]
 [[854,454], [903,453], [903,468], [854,469]],  [('JOINT-RX', 0.93212890625)]
 [[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
+save file to thread_0_ocr_res.jpg
 ```
 
 ### ocr_e2e_async.py 测试多线程异步推理 性能与时延
@@ -857,6 +862,8 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### text_det_prof.py 运行示例
@@ -956,6 +963,8 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### text_cls_prof.py 运行示例
@@ -1055,6 +1064,8 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### text_rec_prof.py 运行示例

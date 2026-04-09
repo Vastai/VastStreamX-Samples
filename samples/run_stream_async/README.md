@@ -99,6 +99,7 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=1])
+      --warmup_times    warmup times before profiling (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -227,6 +228,8 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        warmup times before profiling
 ```
 
 ### run_stream_async_prof.py 命令行示例

@@ -176,12 +176,13 @@ class OCR_e2e:
         self.image_format = self.text_det.get_fusion_op_iimage_format()
 
     def process(self, image, cv_image):
+        # text detection
         [dt_boxes, dt_scores] = self.text_det.process(image)
         if dt_boxes is None or dt_boxes.size == 0:
             return None
         img_crop_list = []
-        vacc_img_crop_list = []
 
+        # crop text box from original image according to the detection result
         for bno in range(len(dt_boxes)):
             tmp_box = copy.deepcopy(dt_boxes[bno])
             if args.det_box_type == "quad":
@@ -189,21 +190,30 @@ class OCR_e2e:
             else:
                 img_crop = self.get_minarea_rect_crop(cv_image, tmp_box)
             img_crop_list.append(img_crop)
-            vacc_img_crop = utils.cv_bgr888_to_vsximage(
-                img_crop, self.image_format, self.device_id
-            )
-            vacc_img_crop_list.append(vacc_img_crop)
+
+        # rotate text image according to the classification result
         if self.use_angle_cls and self.text_cls:
-            cls_result = self.text_cls.process(vacc_img_crop_list)
+            cls_input_format = self.text_cls.get_fusion_op_iimage_format()
+            vacc_cls_input_list = []
+            for img_crop in img_crop_list:
+                vacc_img_crop = utils.cv_bgr888_to_vsximage(
+                    img_crop, cls_input_format, self.device_id
+                )
+                vacc_cls_input_list.append(vacc_img_crop)
+            cls_result = self.text_cls.process(vacc_cls_input_list)
             for rno in range(len(cls_result)):
                 label, score = cls_result[rno]
                 if "180" in label and score > self.cls_thresh:
                     img_crop_list[rno] = cv2.rotate(img_crop_list[rno], 1)
-                    vacc_img_crop_list[rno] = utils.cv_bgr888_to_vsximage(
-                        img_crop_list[rno], self.image_format, self.device_id
-                    )
-
-        rec_res = self.text_rec.process(vacc_img_crop_list)
+        # text recognition for each text image
+        vacc_rec_input_list = []
+        rec_input_format = self.text_rec.get_fusion_op_iimage_format()
+        for img_crop in img_crop_list:
+            vacc_img_crop = utils.cv_bgr888_to_vsximage(
+                img_crop, rec_input_format, self.device_id
+            )
+            vacc_rec_input_list.append(vacc_img_crop)
+        rec_res = self.text_rec.process(vacc_rec_input_list)
 
         filter_boxes, filter_rec_res = [], []
         for box, rec_result in zip(dt_boxes, rec_res):

@@ -123,6 +123,12 @@ def argument_parser():
         type=int,
         help="cache input data into host memory",
     )
+    parser.add_argument(
+        "--warmup_times",
+        default=10,
+        type=int,
+        help="number of warmup iterations",
+    )
     args = parser.parse_args()
     return args
 
@@ -144,6 +150,7 @@ if __name__ == "__main__":
     voxel_size = ast.literal_eval(args.voxel_size)
     coors_range = ast.literal_eval(args.coors_range)
     feat_size = ast.literal_eval(args.feat_size)
+    warmup_times = args.warmup_times
 
     assert len(model_prefixs) == len(max_voxel_nums)
     assert len(feat_size) == 4
@@ -201,5 +208,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())

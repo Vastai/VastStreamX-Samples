@@ -37,9 +37,10 @@ class ProfilerResult:
 
 
 class ModelProfiler:
-    def __init__(self, config, models) -> None:
+    def __init__(self, config, models, warmup_iters=10) -> None:
         self.config_ = config
         self.models_ = models
+        self.warmup_iters_ = warmup_iters if warmup_iters > 0 else 1
         self.iters_left_ = config.iterations
         self.merge_lock = threading.Lock()
         self.throughput_ = 0
@@ -49,7 +50,6 @@ class ModelProfiler:
             self.long_time_test_ = False
         else:
             self.long_time_test_ = True
-        self.warmup(warmup_iters=1)
         
     def profiling(self):
         threads = []
@@ -95,6 +95,12 @@ class ModelProfiler:
             self.config_.batch_size,
             self.config_.contexts[idx],
         )
+
+        # warmup
+        for i in range(self.warmup_iters_):
+            self.models_[idx].process(infer_data)
+        print(f"Warmup done for instance {idx}")
+
         queue_futs = queue.Queue(self.config_.queue_size)
         ticks = []
         tocks = []
@@ -152,6 +158,11 @@ class ModelProfiler:
             while True:
                 self.models_[idx].process(infer_data)
 
+        # warmup
+        for i in range(self.warmup_iters_):
+            self.models_[idx].process(infer_data)
+        print(f"Warmup done for instance {idx}")
+        
         ticks = []
         tocks = []
 

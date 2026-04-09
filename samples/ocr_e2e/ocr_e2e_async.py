@@ -161,7 +161,7 @@ def inference_async(ocr_e2e, args, context, thread_index):
                                 t = (i + 1) % len(box)
                                 pt1 = (box[i][0], box[i][1])
                                 pt2 = (box[t][0], box[t][1])
-                                cv2.line(cv_image, pt1, pt2, color=(0, 0, 255))
+                                cv2.line(cv_mat, pt1, pt2, color=(0, 0, 255))
                         direc, filename = os.path.split(args.output_file)
                         outfile = os.path.join(
                             direc, f"thread_{thread_index}_{filename}"
@@ -171,7 +171,6 @@ def inference_async(ocr_e2e, args, context, thread_index):
                 index += 1
             except Exception:
                 break
-
     # one image test
     if args.dataset_filelist == "":
         cv_mat = cv2.imread(args.input_file)
@@ -208,8 +207,8 @@ def inference_async(ocr_e2e, args, context, thread_index):
         ticks.append(time.time())
 
     ocr_e2e.stop()
-    output_thread.join()
 
+    output_thread.join()
     context.merge_lock.acquire()
     context.ticks += ticks
     context.tocks += tocks

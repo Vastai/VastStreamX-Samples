@@ -36,8 +36,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("device_ids", 'd', "device id to run", false, "[0]");
   args.add<uint32_t>("batch_size", 'b', "profiling batch size of the model",
                      false, 1);
-  args.add<uint32_t>("instance", 'i',
-                     "model instance number", false, 1);
+  args.add<uint32_t>("instance", 'i', "model instance number", false, 1);
   args.add<std::string>("shape", 's', "model input shape", true);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);
@@ -46,6 +45,8 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<bool>("input_host", '\0', "cache input data into host memory", false,
                  0);
   args.add<uint32_t>("queue_size", 'q', "aync wait queue size", false, 1);
+  args.add<uint32_t>("warmup_times", '\0', "number of warmup iterations", false,
+                     10);
   args.parse_check(argc, argv);
   return args;
 }
@@ -70,6 +71,7 @@ int main(int argc, char** argv) {
   auto percentiles = vsx::ParseVecUint(args.get<std::string>("percentiles"));
   auto shuffle_enabled = args.get<uint32_t>("shuffle_enabled");
   auto normalize_enabled = args.get<uint32_t>("normalize_enabled");
+  auto warmup_times = args.get<uint32_t>("warmup_times");
   CHECK(max_voxel_nums.size() == model_prefixs.size());
   std::vector<vsx::PPModelConfig> model_configs;
   for (size_t i = 0; i < max_voxel_nums.size(); i++) {
@@ -103,7 +105,7 @@ int main(int argc, char** argv) {
   vsx::ProfilerConfig config = {instance,      iterations,  batch_size,
                                 vsx::kFloat16, device_ids,  contexts,
                                 {shape},       percentiles, queue_size};
-  vsx::ModelProfiler<vsx::Detection3D> profiler(config, models);
+  vsx::ModelProfiler<vsx::Detection3D> profiler(config, models, warmup_times);
   std::cout << profiler.Profiling() << std::endl;
   return 0;
 }
