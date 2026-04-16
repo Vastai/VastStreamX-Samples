@@ -46,4 +46,3 @@ class ModelCV(ModelBase):
     def process_impl(self, input):
         outputs = self.stream_.run_sync(input)
         return [[vsx.as_numpy(o) for o in out] for out in outputs]
-        # return [vsx.as_numpy(out[0]) for out in outputs]

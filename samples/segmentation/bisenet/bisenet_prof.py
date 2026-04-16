@@ -5,7 +5,7 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 common_path = os.path.join(current_file_path, "../../..")
 sys.path.append(common_path)
 
-from common.model_cv import ModelCV
+from common.segmentator import Segmentator
 from common.model_profiler import ModelProfiler
 from easydict import EasyDict as edict
 import argparse
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     for i in range(instance):
         device_id = device_ids[i % len(device_ids)]
-        model = ModelCV(model_prefix, vdsp_params, batch_size, device_id, hw_config)
+        model = Segmentator(model_prefix, vdsp_params, batch_size, device_id, hw_config)
         models.append(model)
         if input_host:
             contexts.append("CPU")
