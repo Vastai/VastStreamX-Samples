@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
       auto cv_image = cv::imread(filename);
       vsx::Image vsx_image;
       CHECK(vsx::MakeVsxImage(cv_image, vsx_image, image_format) == 0);
-      auto result = segment.Process(vsx_image);
+      auto result = segment.Process(vsx_image).Clone();
       std::filesystem::path p(filename);
       std::string basename = p.stem().string();
       auto outfile = dataset_output_folder + "/" + basename + ".npz";

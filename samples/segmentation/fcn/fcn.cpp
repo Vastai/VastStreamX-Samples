@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
       std::cout << filename << std::endl;
       vsx::Image vsx_image;
       CHECK(vsx::MakeVsxImage(filename, vsx_image, image_format) == 0);
-      auto result = segment.Process(vsx_image);
+      auto result = segment.Process(vsx_image).Clone();
       std::stringstream outfile;
       outfile << args.get<std::string>("dataset_output_folder") << "/output_"
               << std::setw(6) << std::setfill('0') << s << ".npz";

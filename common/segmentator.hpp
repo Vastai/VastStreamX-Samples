@@ -30,7 +30,13 @@ class Segmentator : public ModelCV {
         << "Dimension of model output shape is not 4";
   }
 
-  Tensor PostProcess(const Tensor& fp16_tensor) {
+  Tensor PostProcess(const Tensor& in_tensor) {
+    vsx::Tensor fp16_tensor;
+    if (in_tensor.GetContext().dev_type == vsx::Context::kVACC) {
+      fp16_tensor = in_tensor.Clone();
+    } else {
+      fp16_tensor = in_tensor;
+    }
     int out_width = output_shape_[3];
     int out_height = output_shape_[2];
     Tensor out_tensor(TShape({1, out_height, out_width}), Context::CPU(),
@@ -51,6 +57,18 @@ class Segmentator : public ModelCV {
       dst[i] = type;
     }
     return out_tensor;
+  }
+
+ protected:
+  virtual std::vector<vsx::Tensor> ProcessImpl(
+      const std::vector<vsx::Image>& images) {
+    auto outputs = stream_->RunSync(images);
+    std::vector<vsx::Tensor> results;
+    results.reserve(outputs.size());
+    for (const auto& output : outputs) {
+      results.push_back(output[0]);  // not copy to host
+    }
+    return results;
   }
 };
 
