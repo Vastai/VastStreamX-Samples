@@ -18,7 +18,6 @@ options:
       --keep               keep num [default:1] (unsigned int [=1])
       --drop               drop num [default:0] (unsigned int [=0])
       --num_channels       number of channles to decode (unsigned int [=1])
-      --drop_per_frames    drop one frame per frames (unsigned int [=0])
   -?, --help               print this message
 ```
 
@@ -62,8 +61,6 @@ optional arguments:
   --drop DROP           drop num [default:0]
   --num_channels NUM_CHANNELS
                         number of channels to decode
-  --drop_per_frames DROP_PER_FRAMES
-                        drop one frame per frames
 ```
 
 ### decode_and_detection.py 脚本运行示例
