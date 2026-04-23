@@ -15,6 +15,8 @@ options:
   -t, --threshold          threshold for detection (float [=0.1])
       --uri                uri to decode (string [=../data/videos/test.mp4])
       --output_path        output path (string [=])
+      --keep               keep num [default:1] (unsigned int [=1])
+      --drop               drop num [default:0] (unsigned int [=0])
       --num_channels       number of channles to decode (unsigned int [=1])
       --drop_per_frames    drop one frame per frames (unsigned int [=0])
   -?, --help               print this message
@@ -29,6 +31,8 @@ mkdir -p dec_det_out
 --vdsp_params ../data/configs/yolo_div255_yuv_nv12.json \
 --device_id 0 \
 --threshold 0.5 \
+--keep 1 \
+--drop 0 \
 --uri ../data/videos/test.mp4 \
 --output_path dec_det_out \
 --num_channels 1
@@ -53,7 +57,9 @@ optional arguments:
                         threshold for detection
   --uri URI             uri to decode
   --output_path OUTPUT_PATH
-                        output path
+                        output path  
+  --keep KEEP           keep num [default:1]
+  --drop DROP           drop num [default:0]
   --num_channels NUM_CHANNELS
                         number of channels to decode
   --drop_per_frames DROP_PER_FRAMES
@@ -68,6 +74,8 @@ python3 decode_and_detection.py \
 --vdsp_params ../../data/configs/yolo_div255_yuv_nv12.json \
 --device_id 0 \
 --threshold 0.5 \
+--keep 1 \
+--drop 0 \
 --uri ../../data/videos/test.mp4 \
 --output_path dec_det_out \
 --num_channels 1
