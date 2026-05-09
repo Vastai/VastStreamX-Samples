@@ -97,6 +97,14 @@ make install
 
 ## Update
 
+- 2026-05-09, Release version 26.04
+  - Features:
+    - text detection模型后处理算子更新为 find_contours_1out
+    - 性能测试增加warmup参数
+    - 改进fcn & bisenet 模型性能测试脚本
+  - Bug Fix:
+    - 修复text detection模型nv12格式图片输入报错的问题
+  
 - 2025-10-28
   - 增加sample: decode_detection_encode_multi
 
