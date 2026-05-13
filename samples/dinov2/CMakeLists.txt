@@ -1,10 +1,12 @@
 find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
-set(PYBIND11_PATH /opt/conda/envs/python38/lib/python3.8/site-packages/pybind11/)
-# set(PYBIND11_PATH /usr/local/lib/python3.8/dist-packages/pybind11)
-list(APPEND CMAKE_PREFIX_PATH ${PYBIND11_PATH})
-find_package(pybind11 CONFIG REQUIRED)  
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" -m pybind11 --cmakedir
+    OUTPUT_VARIABLE pybind11_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
+find_package(pybind11 CONFIG REQUIRED)
 
 add_executable(dinov2 dinov2.cpp)
 target_include_directories(dinov2 PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
