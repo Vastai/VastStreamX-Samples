@@ -97,6 +97,10 @@ make install
 
 ## Update
 
+- 2026-05-21
+  - Features:
+    - 新增支持 PPOCR-V5 系列模型
+
 - 2026-05-09, Release version 26.04
   - Features:
     - text detection模型后处理算子更新为 find_contours_1out
