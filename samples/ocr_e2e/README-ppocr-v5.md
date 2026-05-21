@@ -1,28 +1,44 @@
-# OCR_e2e SAMPLE
+# PPOCR-V5 Samples
 
-本目录提供端到端（文本检测，文本方向分类，文本识别）的 OCR sample
-
-其中 ocr_e2e 是 三个模型同步推理,  ocr_e2e_async是三个模型多线程异步推理
-    ocr_e2e.py 是 三个模型同步推理,  ocr_e2e_async.py  是三个模型多线程异步推理
+本文介绍 PPOCR-V5 用法以及 text_det & text_rec 模型精度性能测试方法
 
 ## 模型信息
 
+### PPOCR-V5-DET
+
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/main/docs/ppocr/blog/PP-OCRv4_introduction.md)  [modelzoo](-) |
-|  输入 shape |   [ (1,3,736,1280) (1,3,48,320) ]     |
-| INT8量化方式 |   -          |
-|  官方精度 | "HMEAN": - , "ACC": - |
-|  VACC FP16  精度 | "HMEAN": 47.3 , "ACC": 80.9 |
-|  VACC INT8  精度 | "HMEAN": - , "ACC": - |
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v3.5.0/docs/version3.x/algorithm/PP-OCRv5/PP-OCRv5.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_detection/dbnet/source_code/ppocr_v5_det.md)|
+|  输入 shape |   (1,3,960,960)    |
+| INT8量化方式 |   percentile         |
+|  ONNX 精度(fixed shape) | {'precision': 0.7504, 'recall': 0.7922, 'hmean': 0.7707} |
+|  VACC FP16  精度(mobile) | {'precision': 0.7545, 'recall': 0.7995, 'hmean': 0.7763} |
+|  VACC INT8  精度(mobile)  |  - |
+
+### PPOCR-V5-REC
+
+|    模型信息   |  值       |
+|-----------|-----------|
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v3.5.0/docs/version3.x/algorithm/PP-OCRv5/PP-OCRv5.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_recognition/ppocr_v5_rec/README.md)|
+|  输入 shape |    (1,3,48,320)    |
+| INT8量化方式 |   percentile          |
+|  ONNX精度(fixed shape) | {'ExactMatch': 0.7548, 'CharMatch': 0.8759} |
+|  VACC FP16  精度(mobile) | {'ExactMatch': 0.7871, 'CharMatch': 0.8979} |
+|  VACC INT8  精度(mobile)  | - |
 
 ## 数据准备
 
-下载模型 ppocr_v4.tar.gz 到 /opt/vastai/vaststreamx/data/models 里
-下载数据集 ch4_test_images 到 /opt/vastai/vaststreamx/data/datasets 里
-下载 elf 压缩包到 /opt/vastai/vaststreamx/data/
+### PPOCR-V5-DET
 
-## C++ sample
+- 模型，请根据[modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_detection/dbnet/source_code/ppocr_v5_det.md)介绍来转模型
+- 数据集，ppocr-v5.tar.gz
+
+### PPOCR-V5-REC mobile
+
+- 模型，请根据[modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_recognition/ppocr_v5_rec/README.md)介绍来转模型
+- 数据集，ppocr-v5.tar.gz
+
+## C++ Sample
 
 ### ocr_e2e 命令行参数说明
 
@@ -60,16 +76,14 @@ options:
 
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---rec_label_file ../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../data/labels/ppocrv5_dict.txt \
 --rec_drop_score 0.5 \
---use_angle_cls 1 \
 --device_ids [0] \
 --input_file ../data/images/detect.jpg \
 --output_file ocr_e2e_result.jpg
@@ -78,40 +92,39 @@ options:
 输出
 
 ```bash
-bbox:[ [659 79] [702 81] [701 100] [ 658 98] ], score: 0.998438, string: 20029
-bbox:[ [636 133] [726 138] [724 159] [ 635 154] ], score: 0.99823, string: 97154197
-bbox:[ [636 151] [701 154] [700 173] [ 635 170] ], score: 0.998291, string: 198727
-bbox:[ [784 279] [907 282] [907 304] [ 784 301] ], score: 0.986298, string: Freeyourselffrom
-bbox:[ [788 298] [902 298] [902 338] [ 788 338] ], score: 0.994727, string: JOINT
-bbox:[ [787 330] [869 332] [868 370] [ 786 368] ], score: 0.987061, string: PAIN
-bbox:[ [852 452] [904 450] [905 469] [ 853 471] ], score: 0.923828, string: JOINT-RX
-bbox:[ [846 531] [883 529] [884 544] [ 847 546] ], score: 0.746053, string: TUFBLN
-Save file to: /thread_0_ocr_e2e_result.jpg
+Thread 0 get ../data/images/detect.jpg result:
+bbox:[ [653 78] [708 81] [704 100] [ 649 96] ], score: 0.995508, string: 20029
+bbox:[ [633 132] [730 137] [726 159] [ 629 153] ], score: 0.998535, string: 97154197
+bbox:[ [636 150] [668 153] [662 171] [ 630 168] ], score: 0.997721, string: 198
+bbox:[ [665 156] [694 156] [694 169] [ 665 169] ], score: 0.992188, string: 727
+bbox:[ [781 279] [910 282] [909 303] [ 780 300] ], score: 0.990039, string: Freeyourselfrom
+bbox:[ [774 294] [922 291] [925 339] [ 777 342] ], score: 0.989648, string: JOINT
+bbox:[ [777 330] [896 330] [896 371] [ 777 371] ], score: 0.984009, string: PAIN
+bbox:[ [849 452] [908 452] [908 469] [ 849 469] ], score: 0.930969, string: JOINT-RY
+Save file to: ./thread_0_ocr_e2e_result.jpg
 ```
 
 并在图片上画出检测框，保存到  thread_0_ocr_e2e_result.jpg
 
-测试 三个模型同步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
+测试 两个个模型同步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
 
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---rec_label_file ../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../data/labels/ppocrv5_dict.txt \
 --rec_drop_score 0.5 \
---use_angle_cls 1 \
 --device_ids [0] \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_file ppocr_v4_dataset_output.txt
 
-##结果示例  880MHz 下
-Image count: 500, total cost: 27183 ms, throughput: 18.3938 fps. Average latency: 54.366 ms.
+##结果示例  开启dpm 下
+Image count: 500, total cost: 32992 ms, throughput: 15.1552 fps. Average latency: 65.984 ms.
 ```
 
 ### ocr_e2e_async 命令行参数说明
@@ -151,16 +164,14 @@ options:
 
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e_async \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---rec_label_file ../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../data/labels/ppocrv5_dict.txt \
 --rec_drop_score 0.5 \
---use_angle_cls 1 \
 --device_ids [0] \
 --queue_size 1 \
 --input_file ../data/images/detect.jpg \
@@ -170,38 +181,37 @@ options:
 ### ocr_e2e_async 结果示例
 
 ```bash
-bbox:[ [659 79] [702 81] [701 100] [ 658 98] ], score: 0.998438, string: 20029
-bbox:[ [636 133] [726 138] [724 159] [ 635 154] ], score: 0.99823, string: 97154197
-bbox:[ [636 151] [701 154] [700 173] [ 635 170] ], score: 0.998291, string: 198727
-bbox:[ [784 279] [907 282] [907 304] [ 784 301] ], score: 0.986298, string: Freeyourselffrom
-bbox:[ [788 298] [902 298] [902 338] [ 788 338] ], score: 0.994727, string: JOINT
-bbox:[ [787 330] [869 332] [868 370] [ 786 368] ], score: 0.987061, string: PAIN
-bbox:[ [852 452] [904 450] [905 469] [ 853 471] ], score: 0.923828, string: JOINT-RX
-bbox:[ [846 531] [883 529] [884 544] [ 847 546] ], score: 0.746053, string: TUFBLN
-Save file to: /thread_0_ocr_e2e_async_result.jpg
+Thread 0 get ../data/images/detect.jpg result.
+bbox:[ [653 78] [708 81] [704 100] [ 649 96] ], score: 0.995508, string: 20029
+bbox:[ [633 132] [730 137] [726 159] [ 629 153] ], score: 0.998535, string: 97154197
+bbox:[ [636 150] [668 153] [662 171] [ 630 168] ], score: 0.997721, string: 198
+bbox:[ [665 156] [694 156] [694 169] [ 665 169] ], score: 0.992188, string: 727
+bbox:[ [781 279] [910 282] [909 303] [ 780 300] ], score: 0.990039, string: Freeyourselfrom
+bbox:[ [774 294] [922 291] [925 339] [ 777 342] ], score: 0.989648, string: JOINT
+bbox:[ [777 330] [896 330] [896 371] [ 777 371] ], score: 0.984009, string: PAIN
+bbox:[ [849 452] [908 452] [908 469] [ 849 469] ], score: 0.930969, string: JOINT-RY
+Save file to: ./thread_0_ocr_e2e_async_result.jpg
 ```
 
 测试 三个模型多线程异步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
 
 ```bash
 ./vaststreamx-samples/bin/ocr_e2e_async \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---rec_label_file ../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../data/labels/ppocrv5_dict.txt \
 --rec_drop_score 0.5 \
---use_angle_cls 1 \
 --device_ids [0] \
 --queue_size 1 \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/
 
-##结果示例  880MHz 下
-Image count: 500, total cost: 16952 ms, throughput: 29.495 fps. Average latency: 974.576 ms.
+##结果示例  开启dpm 下
+Image count: 500, total cost: 12274 ms, throughput: 40.7365 fps. Average latency: 831.978 ms.
 ```
 
 ### text_det_prof 命令行参数说明
@@ -229,25 +239,28 @@ options:
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/text_det_prof \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../data/configs/dbnet_rgbplanar.json \
 --device_ids [0] \
 --batch_size 1 \
 --instance 1 \
 --iterations 600 \
---shape "[3,736,1280]" \
+--warmup_times 600 \
+--shape "[3,900,900]" \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --input_host 1 \
---queue_size 1
+--queue_size 1 
 
 # 测试最小时延
 ./vaststreamx-samples/bin/text_det_prof \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../data/configs/dbnet_rgbplanar.json \
 --device_ids [0] \
 --batch_size 1 \
 --instance 1 \
 --iterations 300 \
+--warmup_times 600 \
+--shape "[3,900,900]" \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --input_host 1 \
 --queue_size 0
@@ -257,122 +270,38 @@ options:
 ### text_det_prof 命令行结果示例
 
 ```bash
-# 本结果在 OCLK 880MHz 下测试所得
+# 本结果在 dpm下 OCLK 1025MHz 下测试所得
 # 测试最大吞吐
 - number of instances: 1
   devices: [ 0 ]
   queue size: 1
   batch size: 1
-  throughput (qps): 91.4363
+  throughput (qps): 96.897
   latency (us):
-    avg latency: 32636
-    min latency: 19181
-    max latency: 43072
-    p50 latency: 32624
-    p90 latency: 32957
-    p95 latency: 33062
-    p99 latency: 33267
+    avg latency: 30751
+    min latency: 24279
+    max latency: 49591
+    p50 latency: 30770
+    p90 latency: 32501
+    p95 latency: 33559
+    p99 latency: 35731
 
 
+# 本结果在 dpm下 OCLK 1025MHz 下测试所得
 # 测试最小时延
 - number of instances: 1
   devices: [ 0 ]
   queue size: 0
   batch size: 1
-  throughput (qps): 55.3135
+  throughput (qps): 41.5282
   latency (us):
-    avg latency: 18077
-    min latency: 17934
-    max latency: 21011
-    p50 latency: 18059
-    p90 latency: 18146
-    p95 latency: 18157
-    p99 latency: 18530
-```
-
-### text_cls_prof 命令行参数说明
-
-```bash
-options:
-  -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/cls_model_vacc_fp16/mod])
-      --hw_config       hw-config file of the model suite (string [=])
-      --vdsp_params     vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
-  -d, --device_ids      device id to run (string [=[0]])
-      --elf_file        elf file path (string [=])
-  -b, --batch_size      profiling batch size of the model (unsigned int [=1])
-  -i, --instance        model instance number (unsigned int [=1])
-  -s, --shape           model input shape (string [=])
-      --iterations      iterations count for one profiling (int [=1024])
-      --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
-      --input_host      cache input data into host memory (bool [=0])
-  -q, --queue_size      aync wait queue size (unsigned int [=1])
-      --warmup_times    number of warmup iterations (unsigned int [=10])
-  -?, --help            print this message
-```
-
-### text_cls_prof 命令行示例
-
-```bash
-# 测试最大吞吐
-./vaststreamx-samples/bin/text_cls_prof \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---vdsp_params ../data/configs/crnn_rgbplanar.json \
---device_ids [0] \
---batch_size 32 \
---instance 1 \
---iterations 600 \
---shape "[3,48,192]" \
---input_host 1 \
---queue_size 1
-
-
-# 测试最小时延
-./vaststreamx-samples/bin/text_cls_prof \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---vdsp_params ../data/configs/crnn_rgbplanar.json \
---device_ids [0] \
---batch_size 1 \
---instance 1 \
---iterations 6000 \
---input_host 1 \
---queue_size 0
-
-```
-
-### text_cls_prof 命令行结果示例
-
-```bash
-# 本结果在 OCLK 880MHz 下测试所得
-# 测试最大吞吐
-- number of instances: 1
-  devices: [ 0 ]
-  queue size: 1
-  batch size: 32
-  throughput (qps): 1858.37
-  latency (us):
-    avg latency: 51485
-    min latency: 21194
-    max latency: 55351
-    p50 latency: 51543
-    p90 latency: 51660
-    p95 latency: 51676
-    p99 latency: 51706
-
-
-# 测试最小时延
-- number of instances: 1
-  devices: [ 0 ]
-  queue size: 0
-  batch size: 1
-  throughput (qps): 981.215
-  latency (us):
-    avg latency: 1018
-    min latency: 955
-    max latency: 1239
-    p50 latency: 1019
-    p90 latency: 1022
-    p95 latency: 1023
-    p99 latency: 1027
+    avg latency: 24078
+    min latency: 20607
+    max latency: 30254
+    p50 latency: 24059
+    p90 latency: 26024
+    p95 latency: 26378
+    p99 latency: 27389
 ```
 
 ### text_rec_prof 命令行参数说明
@@ -400,14 +329,15 @@ options:
 ```bash
 # 测试最大吞吐
 ./vaststreamx-samples/bin/text_rec_prof \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../data/configs/crnn_rgbplanar.json \
 --device_ids [0] \
---label_file ../data/labels/ocr_rec_dict.txt \
+--label_file ../data/labels/ppocrv5_dict.txt \
 --batch_size 1 \
---instance 4 \
+--instance 3 \
 --shape "[3,48,320]" \
 --iterations 2000 \
+--warmup_times 600 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 1
@@ -415,14 +345,15 @@ options:
 
 # 测试最小时延
 ./vaststreamx-samples/bin/text_rec_prof \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../data/configs/crnn_rgbplanar.json \
 --device_ids [0] \
---label_file ../data/labels/ocr_rec_dict.txt \
+--label_file ../data/labels/ppocrv5_dict.txt \
 --batch_size 1 \
 --instance 1 \
 --shape "[3,48,320]" \
 --iterations 500 \
+--warmup_times 600 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 0
@@ -432,37 +363,39 @@ options:
 ### text_rec_prof 命令行结果示例
 
 ```bash
-# 本结果在 OCLK 880MHz 下测试所得
+# 本结果在 dpm下 OCLK 1025MHz 下测试所得
 # 测试最大吞吐
-- number of instances: 4
+- number of instances: 3
   devices: [ 0 ]
   queue size: 1
   batch size: 1
-  throughput (qps): 252.275
+  throughput (qps): 459.375
   latency (us):
-    avg latency: 47272
-    min latency: 15116
-    max latency: 57007
-    p50 latency: 47450
-    p90 latency: 47558
-    p95 latency: 47585
-    p99 latency: 47667
+    avg latency: 19210
+    min latency: 8526
+    max latency: 31255
+    p50 latency: 19346
+    p90 latency: 24696
+    p95 latency: 25860
+    p99 latency: 27736
 
 
+
+# 本结果在 dpm下 OCLK 1025MHz 下测试所得
 # 测试最小时延
 - number of instances: 1
   devices: [ 0 ]
   queue size: 0
   batch size: 1
-  throughput (qps): 160.751
+  throughput (qps): 117.172
   latency (us):
-    avg latency: 6219
-    min latency: 6201
-    max latency: 6966
-    p50 latency: 6214
-    p90 latency: 6223
-    p95 latency: 6229
-    p99 latency: 6284
+    avg latency: 8533
+    min latency: 7739
+    max latency: 14057
+    p50 latency: 8432
+    p90 latency: 8640
+    p95 latency: 8709
+    p99 latency: 12185
 ```
 
 ### text_det 命令行参数说明
@@ -493,7 +426,7 @@ options:
 
 ```bash
 ./vaststreamx-samples/bin/text_det \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--model_prefix /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../data/configs/dbnet_rgbplanar.json \
 --device_id 0 \
 --threshold 0.3 \
@@ -502,22 +435,25 @@ options:
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --input_file ../data/images/detect.jpg \
 --output_file text_det_result.jpg
-
 ```
 
 输出
 
 ```bash
-index:0, score:0.828569,bbox:[ [670 52] [688 52] [688 60] [670 60] ]
-index:1, score:0.821961,bbox:[ [660 80] [701 82] [700 99] [659 97] ]
-index:2, score:0.821632,bbox:[ [638 134] [723 139] [722 157] [637 152] ]
-index:3, score:0.758833,bbox:[ [637 152] [700 155] [699 172] [636 169] ]
-index:4, score:0.743378,bbox:[ [786 281] [905 284] [905 302] [786 299] ]
-index:5, score:0.901436,bbox:[ [791 301] [899 301] [899 335] [791 335] ]
-index:6, score:0.888345,bbox:[ [790 333] [866 335] [865 367] [789 365] ]
-index:7, score:0.628097,bbox:[ [1 349] [26 349] [26 360] [1 360] ]
-index:8, score:0.84285,bbox:[ [854 453] [903 452] [903 467] [854 468] ]
-index:9, score:0.760088,bbox:[ [848 532] [881 530] [882 543] [849 545] ]
+index:0, score:0.765429,bbox:[ [933 71] [945 71] [945 80] [933 80] ]
+index:1, score:0.819702,bbox:[ [656 78] [705 82] [701 99] [652 96] ]
+index:2, score:0.699494,bbox:[ [634 97] [725 103] [722 116] [632 110] ]
+index:3, score:0.812828,bbox:[ [636 133] [728 138] [724 157] [632 152] ]
+index:4, score:0.787996,bbox:[ [637 150] [666 153] [661 171] [632 168] ]
+index:5, score:0.69045,bbox:[ [666 156] [693 156] [693 168] [666 168] ]
+index:6, score:0.61548,bbox:[ [914 251] [966 252] [966 261] [914 259] ]
+index:7, score:0.781122,bbox:[ [785 282] [906 284] [905 300] [784 298] ]
+index:8, score:0.883249,bbox:[ [782 297] [916 296] [917 336] [784 338] ]
+index:9, score:0.782801,bbox:[ [782 333] [890 333] [890 368] [782 368] ]
+index:10, score:0.67182,bbox:[ [876 339] [932 341] [928 363] [872 361] ]
+index:11, score:0.670831,bbox:[ [924 455] [944 455] [944 461] [924 461] ]
+index:12, score:0.820915,bbox:[ [852 453] [905 453] [905 468] [852 468] ]
+index:13, score:0.749038,bbox:[ [845 534] [884 531] [888 542] [848 545] ]
 ```
 
 并在图片上画出检测框，保存到  text_det_result.jpg
@@ -527,15 +463,15 @@ index:9, score:0.760088,bbox:[ [848 532] [881 530] [882 543] [849 545] ]
 ```bash
 mkdir -p text_det_output
 ./vaststreamx-samples/bin/text_det \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../data/configs/dbnet_rgbplanar.json \
 --device_id 0 \
 --threshold 0.3 \
 --box_unclip_ratio 1.5 \
 --use_polygon_score 0 \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/ \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
 --dataset_output_folder text_det_output
 ```
 
@@ -544,16 +480,15 @@ mkdir -p text_det_output
 统计精度
 
 ```bash
-python3 ../evaluation/text_detection/eval.py \
---test_image_path  /opt/vastai/vaststreamx/data/datasets/ch4_test_images \
---boxes_npz_dir ./text_det_output \
---label_file ../data/labels/test_icdar2015_label.txt 
+python3 ../evaluation/ppocr-v5/det_eval.py \
+--test_image_path  /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test \
+--boxes_npz_dir ./text_det_output 
 ```
 
 精度结果
 
 ```
-metric:  {'precision': 0.5459697732997482, 'recall': 0.41742898411169954, 'hmean': 0.4731241473396998}
+metric:  {'precision': 0.7538, 'recall': 0.7987, 'hmean': 0.7756}
 ```
 
 ### text_rec 命令行参数说明
@@ -584,18 +519,17 @@ options:
 
 ```bash
 ./vaststreamx-samples/bin/text_rec \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
---vdsp_params ../data/configs/crnn_rgbplanar.json \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
+--vdsp_params ../data/configs/ppocr-v4-rec-vdsp_params.json \
 --device_id 0 \
---label_file ../data/labels/ocr_rec_dict.txt \
+--label_file ../data/labels/ppocrv5_dict.txt \
 --input_file ../data/images/word_336.png 
-
 ```
 
 输出
 
 ```bash
-score: 0.973047
+score: 0.957715
 text: SUPER
 ```
 
@@ -603,27 +537,27 @@ text: SUPER
 
 ```bash
 ./vaststreamx-samples/bin/text_rec \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../data/configs/crnn_rgbplanar.json \
 --device_id 0 \
---label_file ../data/labels/ocr_rec_dict.txt \
---dataset_filelist /opt/vastai/vaststreamx/data/datasets/CUTE80/CUTE80_img_filelist.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/CUTE80 \
---dataset_output_file cute80_pred.txt
+--label_file ../data/labels/ppocrv5_dict.txt \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
+--dataset_output_file rec_pred.txt
 ```
 
 统计精度
 
 ```bash
-python3 ../evaluation/crnn/crnn_eval.py \
---gt_file /opt/vastai/vaststreamx/data/datasets/CUTE80/CUTE80_gt.txt \
---output_file cute80_pred.txt
+python3 ../evaluation/ppocr-v5/rec_eval.py \
+--test_image_path /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test \
+--pred_file rec_pred.txt
 ```
 
 精度结果
 
 ```
-right_num = 233 all_num=288, acc = 0.8090277777777778
+metric:  {'ExactMatch': 0.7226, 'CharMatch': 0.861}
 ```
 
 ## Python sample
@@ -682,15 +616,14 @@ optional arguments:
 ```bash
 #单张图片示例
 python3 ocr_e2e.py \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_ids [0] \
---rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
 --input_file ../../data/images/detect.jpg \
 --det_box_type quad \
 --output_file ocr_res.jpg
@@ -703,35 +636,39 @@ python3 ocr_e2e.py \
 
 ```bash
 #单张图片结果示例
-[[660,80], [701,83], [700,100], [659,97]],  [('20029', 0.998046875)]
-[[638,135], [723,140], [722,158], [637,152]],  [('97154197', 0.9990234375)]
-[[637,152], [700,156], [699,172], [636,169]],  [('198727', 0.99755859375)]
-[[786,282], [905,285], [905,302], [786,299]],  [('Free yourself from', 0.96826171875)]
-[[791,301], [899,301], [899,336], [791,336]],  [('JOINT', 0.99462890625)]
-[[790,333], [866,336], [865,368], [789,366]],  [('PAIN', 0.99267578125)]
-[[854,454], [903,453], [903,468], [854,469]],  [('JOINT-RX', 0.93212890625)]
-[[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
+[[656,79], [705,82], [702,100], [652,96]],  [('20029', 0.9951171875)]
+[[635,98], [725,103], [722,116], [633,111]],  [(' ', 0.55224609375)]
+[[635,134], [728,138], [725,157], [632,153]],  [('97154197', 0.99853515625)]
+[[637,151], [667,154], [662,171], [632,168]],  [('198', 0.99755859375)]
+[[667,157], [693,157], [693,169], [667,169]],  [('727', 0.99072265625)]
+[[785,282], [907,284], [906,301], [784,298]],  [('Free yourself from', 0.95947265625)]
+[[782,298], [916,296], [918,336], [784,339]],  [('JOINT', 0.9951171875)]
+[[783,334], [891,334], [891,368], [783,368]],  [('PAIN', 0.9794921875)]
+[[852,454], [905,454], [905,468], [852,468]],  [('JOINT-RY', 0.89990234375)]
+[[846,534], [885,531], [887,543], [849,546]],  [('TUFBAN', 0.56591796875)]
+save file  thread_0_ocr_res.jpg
 ```
+
+并在图片上画出检测框，保存到  thread_0_ocr_res.jpg
 
 ### ocr_e2e.py 测试 同步推理 性能与时延
 
 ```bash
 python ocr_e2e.py \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_ids [0] \
 --det_box_type quad \
---rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_file ppocr_v4_dataset_output.txt
-#测试结果  880MHz 下
-Image count: 500, total cost: 31.75 s, throughput: 15.75 fps, average latency: 0.064 s
+#测试结果  在开启dpm 下
+Image count: 500, total cost: 47.68 s, throughput: 10.49 fps, average latency: 0.095 s
 ```
 
 ### ocr_e2e_async.py 命令行参数说明
@@ -786,29 +723,31 @@ optional arguments:
 ```bash
 # 测试单张图片
 python ocr_e2e_async.py \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_ids [0] \
 --det_box_type quad \
---rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
 --input_file ../../data/images/detect.jpg \
 --output_file ocr_res.jpg
 
 #结果示例
 
-[[660,80], [701,83], [700,100], [659,97]],  [('20029', 0.998046875)]
-[[638,135], [723,140], [722,158], [637,152]],  [('97154197', 0.9990234375)]
-[[637,152], [700,156], [699,172], [636,169]],  [('198727', 0.99755859375)]
-[[786,282], [905,285], [905,302], [786,299]],  [('Free yourself from', 0.96826171875)]
-[[791,301], [899,301], [899,336], [791,336]],  [('JOINT', 0.99462890625)]
-[[790,333], [866,336], [865,368], [789,366]],  [('PAIN', 0.99267578125)]
-[[854,454], [903,453], [903,468], [854,469]],  [('JOINT-RX', 0.93212890625)]
-[[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
+Thread:0,Get ../../data/images/detect.jpg result
+[[656,79], [705,82], [702,100], [652,96]],  [('20029', 0.9951171875)]
+[[635,98], [725,103], [722,116], [633,111]],  [(' ', 0.55224609375)]
+[[635,134], [728,138], [725,157], [632,153]],  [('97154197', 0.99853515625)]
+[[637,151], [667,154], [662,171], [632,168]],  [('198', 0.99755859375)]
+[[667,157], [693,157], [693,169], [667,169]],  [('727', 0.99072265625)]
+[[785,282], [907,284], [906,301], [784,298]],  [('Free yourself from', 0.95947265625)]
+[[782,298], [916,296], [918,336], [784,339]],  [('JOINT', 0.9951171875)]
+[[783,334], [891,334], [891,368], [783,368]],  [('PAIN', 0.9794921875)]
+[[852,454], [905,454], [905,468], [852,468]],  [('JOINT-RY', 0.89990234375)]
+[[846,534], [885,531], [887,543], [849,546]],  [('TUFBAN', 0.56591796875)]
 save file to thread_0_ocr_res.jpg
 ```
 
@@ -817,21 +756,20 @@ save file to thread_0_ocr_res.jpg
 ```bash
 # 测试多线程异步
 python ocr_e2e_async.py \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--use_angle_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_ids [0] \
 --det_box_type quad \
---rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/
 
 #测试结果  880MHz 下
-Image count: 500, total cost: 15.59 s, throughput: 32.07 fps, average latency: 2.042 s
+Image count: 500, total cost: 26.54 s, throughput: 18.84 fps, average latency: 5.275 s
 ```
 
 ### text_det_prof.py 命令行参数说明
@@ -873,14 +811,15 @@ optional arguments:
 ```bash
 # 测试最大吞吐
 python3 text_det_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_ids [0]  \
 --batch_size 1 \
 --instance 1 \
---shape "[3,736,1280]" \
+--shape "[3,960,960]" \
 --iterations 500 \
+--warmup_times 400 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 1
@@ -888,14 +827,15 @@ python3 text_det_prof.py \
 
 # 测试最小时延
 python3 text_det_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_ids [0]  \
 --batch_size 1 \
 --instance 1 \
---shape "[3,736,1280]" \
+--shape "[3,960,960]" \
 --iterations 300 \
+--warmup_times 400 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 0
@@ -904,135 +844,36 @@ python3 text_det_prof.py \
 ### text_det_prof.py 运行结果示例
 
 ```bash
-# 本结果在 OCLK 880MHz 下测试所得
+# 本结果在 dpm下 OCLK 1025MHz 下测试所得
 # 测试最大吞吐
 - number of instances: 1
   devices: [0]
   queue size: 1
   batch size: 1
-  throughput (qps): 91.49
+  throughput (qps): 97.47
   latency (us):
-    avg latency: 32684
-    min latency: 22904
-    max latency: 40960
-    p50 latency: 32699
-    p90 latency: 32874
-    p95 latency: 32904
-    p99 latency: 33375
+    avg latency: 30628
+    min latency: 24158
+    max latency: 42903
+    p50 latency: 30641
+    p90 latency: 32681
+    p95 latency: 33281
+    p99 latency: 34130
 
 # 测试最小时延
 - number of instances: 1
   devices: [0]
   queue size: 0
   batch size: 1
-  throughput (qps): 53.93
+  throughput (qps): 46.25
   latency (us):
-    avg latency: 18540
-    min latency: 18304
-    max latency: 21528
-    p50 latency: 18486
-    p90 latency: 18614
-    p95 latency: 18732
-    p99 latency: 19456
-```
-
-### text_cls_prof.py 命令行参数说明
-
-```bash
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
-                        model prefix of the model suite files
-  --hw_config HW_CONFIG
-                        hw-config file of the model suite
-  --vdsp_params VDSP_PARAMS
-                        vdsp preprocess parameter file
-  -d DEVICE_IDS, --device_ids DEVICE_IDS
-                        device ids to run
-  -b BATCH_SIZE, --batch_size BATCH_SIZE
-                        profiling batch size of the model
-  -i INSTANCE, --instance INSTANCE
-                        model instance number
-  -s SHAPE, --shape SHAPE
-                        model input shape
-  --iterations ITERATIONS
-                        iterations count for one profiling
-  --queue_size QUEUE_SIZE
-                        aync wait queue size
-  --percentiles PERCENTILES
-                        percentiles of latency
-  --input_host INPUT_HOST
-                        cache input data into host memory
-  --warmup_times WARMUP_TIMES
-                        number of warmup iterations
-```
-
-### text_cls_prof.py 运行示例
-
-在本目录下运行  
-
-```bash
-# 测试最大吞吐
-python3 text_cls_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_ids [0]  \
---batch_size 32 \
---instance 1 \
---shape "[3,48,192]" \
---iterations 500 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 1
-
-
-# 测试最小时延
-python3 text_cls_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_ids [0]  \
---batch_size 1 \
---instance 1 \
---shape "[3,48,192]" \
---iterations 4000 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 0
-```
-
-### text_cls_prof.py 运行结果示例
-
-```bash
-# 本结果在 OCLK 880MHz 下测试所得
-# 测试最大吞吐
-- number of instances: 1
-  devices: [0]
-  queue size: 1
-  batch size: 32
-  throughput (qps): 1850.60
-  latency (us):
-    avg latency: 51779
-    min latency: 23549
-    max latency: 53900
-    p50 latency: 51799
-    p90 latency: 51882
-    p95 latency: 51930
-    p99 latency: 52197
-
-# 测试最小时延
-- number of instances: 1
-  devices: [0]
-  queue size: 0
-  batch size: 1
-  throughput (qps): 928.07
-  latency (us):
-    avg latency: 1076
-    min latency: 1015
-    max latency: 1929
-    p50 latency: 1075
-    p90 latency: 1080
-    p95 latency: 1084
-    p99 latency: 1090
+    avg latency: 21617
+    min latency: 17613
+    max latency: 28243
+    p50 latency: 21784
+    p90 latency: 24327
+    p95 latency: 25352
+    p99 latency: 27096
 ```
 
 ### text_rec_prof.py 命令行参数说明
@@ -1075,14 +916,15 @@ optional arguments:
 ```bash
 # 测试最大吞吐
 python3 text_rec_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_ids [0]  \
---batch_size 6 \
---instance 1 \
---label_file ../../data/labels/ocr_rec_dict.txt \
+--batch_size 1 \
+--instance 4 \
+--label_file ../../data/labels/ppocrv5_dict.txt \
 --shape "[3,48,320]" \
---iterations 500 \
+--iterations 3000 \
+--warmup_times 400 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 1
@@ -1090,14 +932,15 @@ python3 text_rec_prof.py \
 
 # 测试最小时延
 python3 text_rec_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_ids [0]  \
 --batch_size 1 \
---instance 1 \
---label_file ../../data/labels/ocr_rec_dict.txt \
+--instance 3 \
+--label_file ../../data/labels/ppocrv5_dict.txt \
 --shape "[3,48,320]" \
 --iterations 500 \
+--warmup_times 400 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 0
@@ -1106,36 +949,36 @@ python3 text_rec_prof.py \
 ### text_rec_prof.py 运行结果示例
 
 ```bash
-# 本结果在 OCLK 880MHz 下测试所得
+# 本结果在 dpm下 OCLK 1025MHz 下测试所得
 # 测试最大吞吐
-- number of instances: 1
+- number of instances: 4
   devices: [0]
   queue size: 1
-  batch size: 6
-  throughput (qps): 275.15
+  batch size: 1
+  throughput (qps): 455.65
   latency (us):
-    avg latency: 65253
-    min latency: 55501
-    max latency: 97562
-    p50 latency: 65184
-    p90 latency: 65263
-    p95 latency: 65348
-    p99 latency: 66766
+    avg latency: 26185
+    min latency: 15351
+    max latency: 47954
+    p50 latency: 25983
+    p90 latency: 31582
+    p95 latency: 33551
+    p99 latency: 36579
 
 # 测试最小时延
-- number of instances: 1
+- number of instances: 3
   devices: [0]
   queue size: 0
   batch size: 1
-  throughput (qps): 105.56
+  throughput (qps): 169.91
   latency (us):
-    avg latency: 9471
-    min latency: 9442
-    max latency: 10652
-    p50 latency: 9453
-    p90 latency: 9492
-    p95 latency: 9531
-    p99 latency: 9784
+    avg latency: 17654
+    min latency: 15814
+    max latency: 27934
+    p50 latency: 17684
+    p90 latency: 18277
+    p95 latency: 19638
+    p99 latency: 23618
 ```
 
 ### text_det.py 命令行参数说明
@@ -1170,7 +1013,7 @@ optional arguments:
 
 ```bash
 python3 text_det.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_id 0 \
@@ -1184,16 +1027,20 @@ python3 text_det.py \
 终端显示 检测到的文字的 bbox 多边形的四个角的坐标，bbox也画在图片上并保存为 text_det_result.jpg
 
 ```bash
-index:0, score:0.8285687764485677,bbox:[[670  53],[688  53],[688  61],[670  61]]
-index:1, score:0.8219611069251751,bbox:[[660  80],[701  83],[700 100],[659  97]]
-index:2, score:0.8216322827082808,bbox:[[638 135],[723 140],[722 158],[637 152]]
-index:3, score:0.7588333656047952,bbox:[[637 152],[700 156],[699 172],[636 169]]
-index:4, score:0.7433777126839491,bbox:[[786 282],[905 285],[905 302],[786 299]]
-index:5, score:0.9014363087964862,bbox:[[791 301],[899 301],[899 336],[791 336]]
-index:6, score:0.8883451347142621,bbox:[[790 333],[866 336],[865 368],[789 366]]
-index:7, score:0.6280966622488839,bbox:[[  1 349],[ 26 349],[ 26 361],[  1 361]]
-index:8, score:0.8428502129119577,bbox:[[854 454],[903 453],[903 468],[854 469]]
-index:9, score:0.7600875937420388,bbox:[[848 532],[881 530],[882 544],[849 546]]
+index:0, score:0.7654287550184461,bbox:[[933  71],[945  71],[945  80],[933  80]]
+index:1, score:0.8197022332085504,bbox:[[656  79],[705  82],[702 100],[652  96]]
+index:2, score:0.699494037222355,bbox:[[635  98],[725 103],[722 116],[633 111]]
+index:3, score:0.8128281873988077,bbox:[[635 134],[728 138],[725 157],[632 153]]
+index:4, score:0.7879960683470998,bbox:[[637 151],[667 154],[662 171],[632 168]]
+index:5, score:0.6904495597904564,bbox:[[667 157],[693 157],[693 169],[667 169]]
+index:6, score:0.6154796412733735,bbox:[[915 251],[967 253],[966 261],[914 259]]
+index:7, score:0.7811218425884657,bbox:[[785 282],[907 284],[906 301],[784 298]]
+index:8, score:0.8832487357679263,bbox:[[782 298],[916 296],[918 336],[784 339]]
+index:9, score:0.7828013907665613,bbox:[[783 334],[891 334],[891 368],[783 368]]
+index:10, score:0.6718201371221584,bbox:[[875 339],[931 342],[929 363],[873 361]]
+index:11, score:0.670831044514974,bbox:[[924 455],[944 455],[944 461],[924 461]]
+index:12, score:0.8209148160872921,bbox:[[852 454],[905 454],[905 468],[852 468]]
+index:13, score:0.749038332984561,bbox:[[846 534],[885 531],[887 543],[849 546]]
 ```
 
 测试数据集
@@ -1201,12 +1048,12 @@ index:9, score:0.7600875937420388,bbox:[[848 532],[881 530],[882 544],[849 546]]
 ```bash
 mkdir -p text_det_output
 python3 text_det.py  \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
 --vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_id 0 \
---dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/ \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
 --dataset_output_folder text_det_output
 ```
 
@@ -1214,16 +1061,15 @@ python3 text_det.py  \
 
 ```bash
 # 用刚才保存的npz文件测试精度
-python3 ../../evaluation/text_detection/eval.py \
---test_image_path  /opt/vastai/vaststreamx/data/datasets/ch4_test_images \
---boxes_npz_dir ./text_det_output \
---label_file ../../data/labels/test_icdar2015_label.txt 
+python3 ../../evaluation/ppocr-v5/det_eval.py \
+--test_image_path  /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test \
+--boxes_npz_dir ./text_det_output 
 ```
 
 精度结果
 
 ```
-metric:  {'precision': 0.5449968533668974, 'recall': 0.4169475204622051, 'hmean': 0.47244953627932357}
+metric:  {'precision': 0.7545, 'recall': 0.7995, 'hmean': 0.7763}
 ```
 
 ### text_rec.py 命令行参数说明
@@ -1258,35 +1104,34 @@ optional arguments:
 ```bash
 #单张图片示例
 python3 text_rec.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_id 0 \
---label_file ../../data/labels/ocr_rec_dict.txt \
+--label_file ../../data/labels/ppocrv5_dict.txt \
 --input_file ../../data/images/word_336.png 
 
 #数据集示例
 python3 text_rec.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_id 0 \
---label_file ../../data/labels/ocr_rec_dict.txt \
---dataset_filelist /opt/vastai/vaststreamx/data/datasets/CUTE80/CUTE80_img_filelist.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/CUTE80 \
---dataset_output_file cute80_pred.txt
+--label_file ../../data/labels/ppocrv5_dict.txt \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
+--dataset_output_file rec_pred.txt
 
 # 统计精度
-python3 ../../evaluation/crnn/crnn_eval.py \
---gt_file /opt/vastai/vaststreamx/data/datasets/CUTE80/CUTE80_gt.txt \
---output_file cute80_pred.txt
+python3 ../../evaluation/ppocr-v5/rec_eval.py \
+--test_image_path /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test \
+--pred_file rec_pred.txt
 ```
 
 ### text_rec.py 运行结果示例
 
 ```bash
 #单张图片结果示例
-[('SUPER', 0.97314453125)]
+[('SUPER', 0.95751953125)]
 
 #统计精度结果示例
-right_num = 233 all_num=288, acc = 0.8090277777777778
-
+metric:  {'ExactMatch': 0.7032, 'CharMatch': 0.8458}
 ```

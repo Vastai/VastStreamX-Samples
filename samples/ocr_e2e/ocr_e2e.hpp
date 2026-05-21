@@ -26,21 +26,26 @@ class OCR_e2e {
       : det_box_type_(det_box_type),
         use_angle_cls_(use_angle_cls),
         cls_thresh_(cls_thresh),
-        rec_drop_score_(rec_drop_score),
-        text_det_(det_model, det_config, det_elf_file, batch_size, device_id),
-        text_cls_(cls_model, cls_config, cls_labels, batch_size, device_id,
-                  hw_config),
-        text_rec_(rec_model, rec_config, batch_size, device_id, rec_label_file,
-                  hw_config) {
+        rec_drop_score_(rec_drop_score) {
+    text_det_ = std::make_shared<vsx::TextDetector>(
+        det_model, det_config, det_elf_file, batch_size, device_id);
+    text_rec_ = std::make_shared<vsx::TextRecognizer>(
+        rec_model, rec_config, batch_size, device_id, rec_label_file,
+        hw_config);
+
+    if (use_angle_cls_) {
+      text_cls_ = std::make_shared<vsx::TextClassifier>(
+          cls_model, cls_config, cls_labels, batch_size, device_id, hw_config);
+    }
     device_id_ = device_id;
   }
   std::vector<std::tuple<std::vector<float>, float, std::string>> Process(
       cv::Mat& image, bool do_cls = true) {
-    auto img_format = text_det_.GetFusionOpIimageFormat();
+    auto img_format = text_det_->GetFusionOpIimageFormat();
     // make text detection input
     vsx::Image vsx_img;
     vsx::MakeVsxImage(image, vsx_img, img_format);
-    auto det_results = text_det_.Process(vsx_img);  // text detection
+    auto det_results = text_det_->Process(vsx_img);  // text detection
     // parse text detection result
     std::vector<std::tuple<std::vector<float>, float, std::string>> results;
     if (det_results.GetSize() == 0) {
@@ -63,14 +68,14 @@ class OCR_e2e {
         }
       }
       if (use_angle_cls_) {
-        auto cls_input_format = text_cls_.GetFusionOpIimageFormat();
+        auto cls_input_format = text_cls_->GetFusionOpIimageFormat();
         std::vector<vsx::Image> vacc_crop_imgs;
         for (auto& img_crop : crop_imgs) {
           vsx::Image vsx_image;
           vsx::MakeVsxImage(img_crop, vsx_image, cls_input_format);
           vacc_crop_imgs.push_back(vsx_image);
         }
-        auto cls_result = text_cls_.Process(vacc_crop_imgs);
+        auto cls_result = text_cls_->Process(vacc_crop_imgs);
         for (size_t i = 0; i < cls_result.size(); i++) {
           const float* cls_data = cls_result[i].Data<float>();
           if (cls_data[1] > cls_data[0] && cls_data[1] > cls_thresh_) {
@@ -80,14 +85,14 @@ class OCR_e2e {
       }
 
       // make text recognition input and run
-      auto rec_input_format = text_rec_.GetFusionOpIimageFormat();
+      auto rec_input_format = text_rec_->GetFusionOpIimageFormat();
       std::vector<vsx::Image> vacc_crop_imgs;
       for (auto& img_crop : crop_imgs) {
         vsx::Image vsx_image;
         vsx::MakeVsxImage(img_crop, vsx_image, rec_input_format);
         vacc_crop_imgs.push_back(vsx_image);
       }
-      auto rec_res = text_rec_.Process(vacc_crop_imgs);
+      auto rec_res = text_rec_->Process(vacc_crop_imgs);
       for (size_t i = 0; i < rec_res.size(); i++) {
         float score = vsx::GetScoreFromTensor(rec_res[i]);
         if (score >= rec_drop_score_) {
@@ -175,9 +180,9 @@ class OCR_e2e {
   bool use_angle_cls_;
   float cls_thresh_;
   float rec_drop_score_;
-  vsx::TextDetector text_det_;
-  vsx::TextClassifier text_cls_;
-  vsx::TextRecognizer text_rec_;
+  std::shared_ptr<vsx::TextDetector> text_det_;
+  std::shared_ptr<vsx::TextClassifier> text_cls_;
+  std::shared_ptr<vsx::TextRecognizer> text_rec_;
   uint32_t device_id_;
 };
 }  // namespace vsx

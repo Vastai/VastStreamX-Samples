@@ -57,11 +57,6 @@ class OCR_e2e_Async {
         use_angle_cls_(use_angle_cls),
         cls_thresh_(cls_thresh),
         rec_drop_score_(rec_drop_score),
-        text_det_(det_model, det_config, det_elf_file, batch_size, device_id),
-        text_cls_(cls_model, cls_config, cls_labels, batch_size, device_id,
-                  hw_config),
-        text_rec_(rec_model, rec_config, batch_size, device_id, rec_label_file,
-                  hw_config),
         det_inputs_(queue_size),
         det_post_inputs_(queue_size),
         cls_inputs_(queue_size),
@@ -69,8 +64,19 @@ class OCR_e2e_Async {
         rec_outputs_(10) {
     vsx::SetDevice(device_id_);
     device_id_ = device_id;
+
+    text_det_ = std::make_shared<vsx::TextDetectorAsync>(
+        det_model, det_config, det_elf_file, batch_size, device_id);
+    if (use_angle_cls_) {
+      text_cls_ = std::make_shared<vsx::TextClassifier>(
+          cls_model, cls_config, cls_labels, batch_size, device_id, hw_config);
+    }
+    text_rec_ = std::make_shared<vsx::TextRecognizerAsync>(
+        rec_model, rec_config, batch_size, device_id, rec_label_file,
+        hw_config);
+
     stop_flag_ = static_cast<int>(StopFlag::INIT_VALUE);
-    det_input_format_ = text_det_.GetFusionOpIimageFormat();
+    det_input_format_ = text_det_->GetFusionOpIimageFormat();
 
     det_ticks_.reserve(1024);
     det_tocks_.reserve(1024);
@@ -116,7 +122,7 @@ class OCR_e2e_Async {
       vsx::SetDevice(device_id_);
       while (true) {
         std::vector<vsx::Tensor> det_results;
-        if (text_det_.GetOutput(det_results)) {
+        if (text_det_->GetOutput(det_results)) {
           cv::Mat cv_mat;
           input_mats.wait_dequeue(cv_mat);
           auto det_post_input = std::make_tuple<cv::Mat, vsx::Tensor>(
@@ -136,11 +142,11 @@ class OCR_e2e_Async {
         vsx::Image vsx_img;
         vsx::MakeVsxImage(cv_mat, vsx_img, det_input_format_);
         input_mats.wait_enqueue(std::move(cv_mat));
-        text_det_.ProcessAsync(vsx_img);
+        text_det_->ProcessAsync(vsx_img);
       } else if (stop_flag_ == static_cast<int>(StopFlag::INPUT_STOP)) {
-        text_det_.CloseInput();
+        text_det_->CloseInput();
         output_thread.join();
-        text_det_.WaitUntilDone();
+        text_det_->WaitUntilDone();
         stop_flag_ = static_cast<int>(StopFlag::DET_STOP);
         break;
       }
@@ -221,13 +227,13 @@ class OCR_e2e_Async {
         // run cls
         if (use_angle_cls_ && obj_count) {
           std::vector<vsx::Image> vsx_crop_imgs;
-          auto format = text_cls_.GetFusionOpIimageFormat();
+          auto format = text_cls_->GetFusionOpIimageFormat();
           for (auto& img_crop : crop_imgs) {
             vsx::Image vsx_image;
             vsx::MakeVsxImage(img_crop, vsx_image, format);
             vsx_crop_imgs.push_back(vsx_image);
           }
-          auto cls_result = text_cls_.Process(vsx_crop_imgs);
+          auto cls_result = text_cls_->Process(vsx_crop_imgs);
           for (size_t i = 0; i < cls_result.size(); i++) {
             const float* cls_data = cls_result[i].Data<float>();
             if (cls_data[1] > cls_data[0] && cls_data[1] > cls_thresh_) {
@@ -262,7 +268,7 @@ class OCR_e2e_Async {
           rec_tocks_.push_back(std::chrono::high_resolution_clock::now());
         } else {
           std::vector<vsx::Tensor> rec_res;
-          if (text_rec_.GetOutput(rec_res)) {
+          if (text_rec_->GetOutput(rec_res)) {
             vsx::Tensor det_result;
             det_results.wait_dequeue(det_result);
             const float* det_res_data = det_result.Data<float>();
@@ -297,22 +303,22 @@ class OCR_e2e_Async {
         if (crop_imgs.size() > 0) {
           det_results.wait_enqueue(std::move(det_result));
           infer_flags.wait_enqueue(true);
-          auto format = text_rec_.GetFusionOpIimageFormat();
+          auto format = text_rec_->GetFusionOpIimageFormat();
           std::vector<vsx::Image> vsx_crop_imgs;
           for (auto& img_crop : crop_imgs) {
             vsx::Image vsx_image;
             vsx::MakeVsxImage(img_crop, vsx_image, format);
             vsx_crop_imgs.push_back(vsx_image);
           }
-          text_rec_.ProcessAsync(vsx_crop_imgs);
+          text_rec_->ProcessAsync(vsx_crop_imgs);
         } else {
           infer_flags.wait_enqueue(false);
         }
       } else if (stop_flag_ == static_cast<int>(StopFlag::CLS_STOP)) {
         infer_flags.wait_enqueue(true);
-        text_rec_.CloseInput();
+        text_rec_->CloseInput();
         output_thread.join();
-        text_rec_.WaitUntilDone();
+        text_rec_->WaitUntilDone();
         stop_flag_ = static_cast<int>(StopFlag::REC_STOP);
         break;
       }
@@ -397,9 +403,9 @@ class OCR_e2e_Async {
   bool use_angle_cls_;
   float cls_thresh_;
   float rec_drop_score_;
-  vsx::TextDetectorAsync text_det_;
-  vsx::TextClassifier text_cls_;
-  vsx::TextRecognizerAsync text_rec_;
+  std::shared_ptr<vsx::TextDetectorAsync> text_det_;
+  std::shared_ptr<vsx::TextClassifier> text_cls_;
+  std::shared_ptr<vsx::TextRecognizerAsync> text_rec_;
   uint32_t device_id_;
 
   BlockingReaderWriterCircularBuffer<cv::Mat> det_inputs_;
