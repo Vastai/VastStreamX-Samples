@@ -65,9 +65,10 @@ class OCR_e2e_Async:
             hw_config,
             elf_file=det_elf_file,
         )
-        self.text_cls = TextClassifier(
-            cls_model, cls_config, cls_label_list, batch_size, device_id, hw_config
-        )
+        if use_angle_cls:
+            self.text_cls = TextClassifier(
+                cls_model, cls_config, cls_label_list, batch_size, device_id, hw_config
+            )
         self.text_rec = TextRecognizerAsync(
             rec_model, rec_config, rec_label_file, batch_size, device_id, hw_config
         )

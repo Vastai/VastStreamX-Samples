@@ -92,7 +92,7 @@ def argument_parser():
         help="text recogniztion drop score threshold",
     )
     parser.add_argument(
-        "--use_angle_cls", type=bool, default=True, help="whether use angle classifier"
+        "--use_angle_cls", type=int, default=1, help="whether use angle classifier"
     )
     parser.add_argument(
         "--hw_config",
@@ -162,9 +162,10 @@ class OCR_e2e:
             hw_config,
             elf_file=det_elf_file,
         )
-        self.text_cls = TextClassifier(
-            cls_model, cls_config, cls_label_list, batch_size, device_id, hw_config
-        )
+        if use_angle_cls:
+            self.text_cls = TextClassifier(
+                cls_model, cls_config, cls_label_list, batch_size, device_id, hw_config
+            )
         self.text_rec = TextRecognizer(
             rec_model, rec_config, rec_label_file, batch_size, device_id, hw_config
         )
@@ -377,6 +378,7 @@ def inference_thread(model, args, context, thread_index):
 if __name__ == "__main__":
     args = argument_parser()
     device_ids = ast.literal_eval(args.device_ids)
+    use_angle_cls = bool(args.use_angle_cls)
 
     models = []
     for id in device_ids:
@@ -393,7 +395,7 @@ if __name__ == "__main__":
             args.rec_vdsp_params,
             args.rec_label_file,
             args.rec_drop_score,
-            args.use_angle_cls,
+            use_angle_cls,
             batch_size=1,
             device_id=id,
             hw_config=args.hw_config,
