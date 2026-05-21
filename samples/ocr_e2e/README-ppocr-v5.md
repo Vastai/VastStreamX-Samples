@@ -470,8 +470,8 @@ mkdir -p text_det_output
 --box_unclip_ratio 1.5 \
 --use_polygon_score 0 \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---dataset_filelist /work/ppocr-v5/det_test_list.txt \
---dataset_root /work/ppocr-v5/ \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
 --dataset_output_folder text_det_output
 ```
 
@@ -481,7 +481,7 @@ mkdir -p text_det_output
 
 ```bash
 python3 ../evaluation/ppocr-v5/det_eval.py \
---test_image_path  /work/ppocr-v5/det_test \
+--test_image_path  /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test \
 --boxes_npz_dir ./text_det_output 
 ```
 
@@ -541,8 +541,8 @@ text: SUPER
 --vdsp_params ../data/configs/crnn_rgbplanar.json \
 --device_id 0 \
 --label_file ../data/labels/ppocrv5_dict.txt \
---dataset_filelist /work/ppocr-v5/rec_test_list.txt \
---dataset_root /work/ppocr-v5/ \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
 --dataset_output_file rec_pred.txt
 ```
 
@@ -550,7 +550,7 @@ text: SUPER
 
 ```bash
 python3 ../evaluation/ppocr-v5/rec_eval.py \
---test_image_path /work/ppocr-v5/rec_test \
+--test_image_path /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test \
 --pred_file rec_pred.txt
 ```
 
@@ -1052,8 +1052,8 @@ python3 text_det.py  \
 --vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --device_id 0 \
---dataset_filelist /work/ppocr-v5/det_test_list.txt \
---dataset_root /work/ppocr-v5/ \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
 --dataset_output_folder text_det_output
 ```
 
@@ -1062,7 +1062,7 @@ python3 text_det.py  \
 ```bash
 # 用刚才保存的npz文件测试精度
 python3 ../../evaluation/ppocr-v5/det_eval.py \
---test_image_path  /work/ppocr-v5/det_test \
+--test_image_path  /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test \
 --boxes_npz_dir ./text_det_output 
 ```
 
@@ -1116,13 +1116,13 @@ python3 text_rec.py \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_id 0 \
 --label_file ../../data/labels/ppocrv5_dict.txt \
---dataset_filelist /work/ppocr-v5/rec_test_list.txt \
---dataset_root /work/ppocr-v5/ \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
 --dataset_output_file rec_pred.txt
 
 # 统计精度
 python3 ../../evaluation/ppocr-v5/rec_eval.py \
---test_image_path /work/ppocr-v5/rec_test \
+--test_image_path /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test \
 --pred_file rec_pred.txt
 ```
 

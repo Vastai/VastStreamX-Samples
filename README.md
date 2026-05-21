@@ -26,7 +26,7 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 |  文字检测           | dbnet                                            | ✓    |  ✓    |
 |  语义分割           | fcn                                               | ✓    |  ✓    |
 |  实例分割           | yolov8_seg mask2former                            | ✓    |  ✓    |
-|  OCR               | resnet34_vd     ppocr_v4                          | ✓    |  ✓    |
+|  OCR               | resnet34_vd     ppocr_v4  ppocr_v5                | ✓    |  ✓    |
 |  人脸检测           | retinaface_resnet50                               | ✓    |  ✓    |
 |  人脸特征           | facenet                                           | ✓    |  ✓    |
 |  图像超分           | rcan       edsr                                   | ✓    |  ✓    |
