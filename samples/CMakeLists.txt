@@ -1,3 +1,4 @@
+add_subdirectory(bert)
 add_subdirectory(classification)
 add_subdirectory(detection)
 add_subdirectory(ocr)
