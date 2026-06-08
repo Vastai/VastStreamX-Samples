@@ -9,7 +9,7 @@
 
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/main/docs/ppocr/blog/PP-OCRv4_introduction.md)  [modelzoo](-) |
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/PP-OCRv4_introduction.md)  [modelzoo]( - ) |
 |  输入 shape |   [ (1,3,736,1280) (1,3,48,320) ]     |
 | INT8量化方式 |   -          |
 |  官方精度 | "HMEAN": - , "ACC": - |
