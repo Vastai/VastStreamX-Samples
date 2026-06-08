@@ -59,23 +59,6 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 |   AI + 编解码     |  decode + detection  decode + detection + encode  decode + pose decode + mot + encode    | ✓    |  ✓    |
 |   卡状态获取      |   card_info                                                                      | ✓    |  ✓    |
 
-## 版本要求
-
-Vastai Compiler: 2.8.0  
-Vaststream SDK: 2.5.0  
-gcc/g++: 9.4.0  
-python: 3.8.10  
-Vaststreamx: 2.8.16  
-cmake: 3.22  
-
-## 依赖项
-
-```bash
-opencv: 3.4.10
-glog
-openblas: 0.3.28
-libtorch: 2.4.0
-```
 
 ## 编译 C++ Samples
 
