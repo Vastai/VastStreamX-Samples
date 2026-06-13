@@ -17,8 +17,7 @@ namespace vsx {
 class TextClassifier : public ModelCV {
  public:
   TextClassifier(const std::string& model_prefix,
-                 const std::string& vdsp_config,
-                 const std::vector<uint32_t>& labels, uint32_t batch_size = 1,
+                 const std::string& vdsp_config, uint32_t batch_size = 1,
                  uint32_t device_id = 0, const std::string& hw_config = "")
       : ModelCV(model_prefix, vdsp_config, batch_size, device_id, hw_config) {
     model_->GetInputShapeByIndex(0, input_shape_);
@@ -55,7 +54,6 @@ class TextClassifier : public ModelCV {
       conf.rgb_letterbox_ext_config.push_back(box);
     }
     auto outputs = stream_->RunSync(images, conf);
-
     std::vector<vsx::Tensor> results;
     results.reserve(outputs.size());
     for (const auto& out : outputs) {

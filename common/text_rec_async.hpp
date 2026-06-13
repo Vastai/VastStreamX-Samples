@@ -112,8 +112,12 @@ class TextRecognizerAsync : public ModelCVAsync {
             std::for_each(conf.begin(), conf.end(),
                           [&](float n) { mean_conf += n; });
             *score = mean_conf / conf.size();
-            CHECK(result.length() <= static_cast<size_t>(L));
-            *len = result.length();
+            // CHECK(result.length() <= static_cast<size_t>(L));
+            if (result.length() > static_cast<size_t>(L)) {
+              *len = L;
+            } else {
+              *len = result.length();
+            }
             // strcpy(text, result.c_str());
             snprintf(text, L, "%s", result.c_str());
           }

@@ -16,6 +16,12 @@ target_link_directories(text_det_prof PUBLIC /opt/vastai/vaststreamx/vaststreamx
 target_link_libraries(text_det_prof PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
 install(TARGETS text_det_prof DESTINATION bin)
 
+add_executable(text_cls text_cls.cpp)
+target_include_directories(text_cls PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
+target_link_directories(text_cls PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
+target_link_libraries(text_cls PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
+install(TARGETS text_cls DESTINATION bin)
+
 add_executable(text_cls_prof text_cls_prof.cpp)
 target_include_directories(text_cls_prof PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
 target_link_directories(text_cls_prof PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
@@ -39,3 +45,29 @@ target_include_directories(ocr_e2e_async PUBLIC /opt/vastai/vaststreamx/vaststre
 target_link_directories(ocr_e2e_async PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
 target_link_libraries(ocr_e2e_async PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
 install(TARGETS ocr_e2e_async DESTINATION bin)
+
+add_executable(ppocr_v5 ppocr_v5.cpp ${CMAKE_SOURCE_DIR}/common/text_det_post/clipper.cpp)
+target_include_directories(ppocr_v5 PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
+target_link_directories(ppocr_v5 PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
+target_link_libraries(ppocr_v5 PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
+install(TARGETS ppocr_v5 DESTINATION bin)
+
+add_executable(ppocr_v5_async ppocr_v5_async.cpp ${CMAKE_SOURCE_DIR}/common/text_det_post/clipper.cpp)
+target_include_directories(ppocr_v5_async PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
+target_link_directories(ppocr_v5_async PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
+target_link_libraries(ppocr_v5_async PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
+install(TARGETS ppocr_v5_async DESTINATION bin)
+
+add_executable(doc_img_orient_cls doc_img_orient_cls.cpp)
+target_include_directories(doc_img_orient_cls PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
+target_link_directories(doc_img_orient_cls PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
+target_link_libraries(doc_img_orient_cls PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
+install(TARGETS doc_img_orient_cls DESTINATION bin)
+
+
+add_executable(doc_img_orient_cls_prof doc_img_orient_cls_prof.cpp)
+target_include_directories(doc_img_orient_cls_prof PUBLIC /opt/vastai/vaststreamx/vaststreamx/include)
+target_link_directories(doc_img_orient_cls_prof PUBLIC /opt/vastai/vaststreamx/vaststreamx/lib)
+target_link_libraries(doc_img_orient_cls_prof PUBLIC common vsx-core glog::glog ${OpenCV_LIBS} stdc++fs)
+install(TARGETS doc_img_orient_cls_prof DESTINATION bin)
+
