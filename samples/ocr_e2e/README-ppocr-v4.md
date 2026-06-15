@@ -7,14 +7,33 @@
 
 ## 模型信息
 
+### Text Detection
+
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/PP-OCRv4_introduction.md)  [modelzoo]( - ) |
-|  输入 shape |   [ (1,3,736,1280) (1,3,48,320) ]     |
-| INT8量化方式 |   -          |
-|  官方精度 | "HMEAN": - , "ACC": - |
-|  VACC FP16  精度 | "HMEAN": 47.3 , "ACC": 80.9 |
-|  VACC INT8  精度 | "HMEAN": - , "ACC": - |
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/PP-OCRv4_introduction.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_detection/dbnet/source_code/ppocr_v4_det.md)|
+|  输入 shape |   (1,3,736,1280)    |
+| INT8量化方式 |   percentile         |
+|  VACC FP16  精度(mobile) | {'precision': 0.5460, 'recall': 0.4174, 'hmean': 0.4731} |
+|  VACC INT8  精度(mobile)  |   {'precision': 0.5402, 'recall': 0.4078, 'hmean': 0.4647} |
+
+### Text Line Orientation Classification
+
+|    模型信息   |  值       |
+|-----------|-----------|
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.7/doc/doc_ch/angle_class.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/develop/cv/text_detection/dbnet/source_code/ppocr_v4_cls.md)|
+|  输入 shape |   (1,3,48,192)    |
+| INT8量化方式 |   percentile         |
+
+### Text Recognition
+
+|    模型信息   |  值       |
+|-----------|-----------|
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v3.5.0/docs/version3.x/algorithm/PP-OCRv5/PP-OCRv5.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_recognition/ppocr_v5_rec/README.md)|
+|  输入 shape |    (1,3,48,320)    |
+| INT8量化方式 |   percentile          |
+|  VACC FP16  精度(mobile) | ACC : 0.8090 |
+|  VACC INT8  精度(mobile)  | ACC : 0.7986 |
 
 ## C++ sample
 
@@ -690,7 +709,9 @@ options:
 
 ## Python sample
 
-### ocr_e2e.py 命令行参数说明
+### PPOCR-V4 E2E Samples
+
+#### ocr_e2e.py 命令行参数说明
 
 ```bash
 optional arguments:
@@ -737,7 +758,7 @@ optional arguments:
                         dataset output file
 ```
 
-### ocr_e2e.py 运行示例
+#### ocr_e2e.py 运行示例
 
 在本目录下运行  
 
@@ -759,7 +780,7 @@ python3 ocr_e2e.py \
 
 ```
 
-### ocr_e2e.py 运行结果示例
+#### ocr_e2e.py 运行结果示例
 
 终端显示 检测到的文字的 bbox 多边形的四个角的坐标，文本内容，识别分数，bbox也画在图片上并保存为 ocr_res.jpg
 
@@ -775,7 +796,7 @@ python3 ocr_e2e.py \
 [[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
 ```
 
-### ocr_e2e.py 测试 同步推理 性能与时延
+#### ocr_e2e.py 测试 同步推理 性能与时延
 
 ```bash
 python ocr_e2e.py \
@@ -796,7 +817,7 @@ python ocr_e2e.py \
 Image count: 500, total cost: 31.75 s, throughput: 15.75 fps, average latency: 0.064 s
 ```
 
-### ocr_e2e_async.py 命令行参数说明
+#### ocr_e2e_async.py 命令行参数说明
 
 ```bash
 optional arguments:
@@ -843,7 +864,7 @@ optional arguments:
                         dataset output file
 ```
 
-### ocr_e2e_async.py 命令行示例
+#### ocr_e2e_async.py 命令行示例
 
 ```bash
 # 测试单张图片
@@ -874,7 +895,7 @@ python ocr_e2e_async.py \
 save file to thread_0_ocr_res.jpg
 ```
 
-### ocr_e2e_async.py 测试多线程异步推理 性能与时延
+#### ocr_e2e_async.py 测试多线程异步推理 性能与时延
 
 ```bash
 # 测试多线程异步
@@ -896,311 +917,9 @@ python ocr_e2e_async.py \
 Image count: 500, total cost: 15.59 s, throughput: 32.07 fps, average latency: 2.042 s
 ```
 
-### text_det_prof.py 命令行参数说明
+### 文本检测模型精度性能测试
 
-```bash
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
-                        model prefix of the model suite files
-  --hw_config HW_CONFIG
-                        hw-config file of the model suite
-  --vdsp_params VDSP_PARAMS
-                        vdsp preprocess parameter file
-  --elf_file ELF_FILE   input file
-  -d DEVICE_IDS, --device_ids DEVICE_IDS
-                        device ids to run
-  -b BATCH_SIZE, --batch_size BATCH_SIZE
-                        profiling batch size of the model
-  -i INSTANCE, --instance INSTANCE
-                        model instance number
-  -s SHAPE, --shape SHAPE
-                        model input shape
-  --iterations ITERATIONS
-                        iterations count for one profiling
-  --queue_size QUEUE_SIZE
-                        aync wait queue size
-  --percentiles PERCENTILES
-                        percentiles of latency
-  --input_host INPUT_HOST
-                        cache input data into host memory
-  --warmup_times WARMUP_TIMES
-                        number of warmup iterations
-```
-
-### text_det_prof.py 运行示例
-
-在本目录下运行  
-
-```bash
-# 测试最大吞吐
-python3 text_det_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
---vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0]  \
---batch_size 1 \
---instance 1 \
---shape "[3,736,1280]" \
---iterations 500 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 1
-
-
-# 测试最小时延
-python3 text_det_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
---vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0]  \
---batch_size 1 \
---instance 1 \
---shape "[3,736,1280]" \
---iterations 300 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 0
-```
-
-### text_det_prof.py 运行结果示例
-
-```bash
-# 本结果在 OCLK 880MHz 下测试所得
-# 测试最大吞吐
-- number of instances: 1
-  devices: [0]
-  queue size: 1
-  batch size: 1
-  throughput (qps): 91.49
-  latency (us):
-    avg latency: 32684
-    min latency: 22904
-    max latency: 40960
-    p50 latency: 32699
-    p90 latency: 32874
-    p95 latency: 32904
-    p99 latency: 33375
-
-# 测试最小时延
-- number of instances: 1
-  devices: [0]
-  queue size: 0
-  batch size: 1
-  throughput (qps): 53.93
-  latency (us):
-    avg latency: 18540
-    min latency: 18304
-    max latency: 21528
-    p50 latency: 18486
-    p90 latency: 18614
-    p95 latency: 18732
-    p99 latency: 19456
-```
-
-### text_cls_prof.py 命令行参数说明
-
-```bash
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
-                        model prefix of the model suite files
-  --hw_config HW_CONFIG
-                        hw-config file of the model suite
-  --vdsp_params VDSP_PARAMS
-                        vdsp preprocess parameter file
-  -d DEVICE_IDS, --device_ids DEVICE_IDS
-                        device ids to run
-  -b BATCH_SIZE, --batch_size BATCH_SIZE
-                        profiling batch size of the model
-  -i INSTANCE, --instance INSTANCE
-                        model instance number
-  -s SHAPE, --shape SHAPE
-                        model input shape
-  --iterations ITERATIONS
-                        iterations count for one profiling
-  --queue_size QUEUE_SIZE
-                        aync wait queue size
-  --percentiles PERCENTILES
-                        percentiles of latency
-  --input_host INPUT_HOST
-                        cache input data into host memory
-  --warmup_times WARMUP_TIMES
-                        number of warmup iterations
-```
-
-### text_cls_prof.py 运行示例
-
-在本目录下运行  
-
-```bash
-# 测试最大吞吐
-python3 text_cls_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_ids [0]  \
---batch_size 32 \
---instance 1 \
---shape "[3,48,192]" \
---iterations 500 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 1
-
-
-# 测试最小时延
-python3 text_cls_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_ids [0]  \
---batch_size 1 \
---instance 1 \
---shape "[3,48,192]" \
---iterations 4000 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 0
-```
-
-### text_cls_prof.py 运行结果示例
-
-```bash
-# 本结果在 OCLK 880MHz 下测试所得
-# 测试最大吞吐
-- number of instances: 1
-  devices: [0]
-  queue size: 1
-  batch size: 32
-  throughput (qps): 1850.60
-  latency (us):
-    avg latency: 51779
-    min latency: 23549
-    max latency: 53900
-    p50 latency: 51799
-    p90 latency: 51882
-    p95 latency: 51930
-    p99 latency: 52197
-
-# 测试最小时延
-- number of instances: 1
-  devices: [0]
-  queue size: 0
-  batch size: 1
-  throughput (qps): 928.07
-  latency (us):
-    avg latency: 1076
-    min latency: 1015
-    max latency: 1929
-    p50 latency: 1075
-    p90 latency: 1080
-    p95 latency: 1084
-    p99 latency: 1090
-```
-
-### text_rec_prof.py 命令行参数说明
-
-```bash
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
-                        model prefix of the model suite files
-  --hw_config HW_CONFIG
-                        hw-config file of the model suite
-  --vdsp_params VDSP_PARAMS
-                        vdsp preprocess parameter file
-  -d DEVICE_IDS, --device_ids DEVICE_IDS
-                        device ids to run
-  -b BATCH_SIZE, --batch_size BATCH_SIZE
-                        profiling batch size of the model
-  -i INSTANCE, --instance INSTANCE
-                        model instance number
-  --label_file LABEL_FILE
-                        label file
-  -s SHAPE, --shape SHAPE
-                        model input shape
-  --iterations ITERATIONS
-                        iterations count for one profiling
-  --queue_size QUEUE_SIZE
-                        aync wait queue size
-  --percentiles PERCENTILES
-                        percentiles of latency
-  --input_host INPUT_HOST
-                        cache input data into host memory
-  --warmup_times WARMUP_TIMES
-                        number of warmup iterations
-```
-
-### text_rec_prof.py 运行示例
-
-在本目录下运行  
-
-```bash
-# 测试最大吞吐
-python3 text_rec_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_ids [0]  \
---batch_size 6 \
---instance 1 \
---label_file ../../data/labels/ocr_rec_dict.txt \
---shape "[3,48,320]" \
---iterations 500 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 1
-
-
-# 测试最小时延
-python3 text_rec_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_ids [0]  \
---batch_size 1 \
---instance 1 \
---label_file ../../data/labels/ocr_rec_dict.txt \
---shape "[3,48,320]" \
---iterations 500 \
---percentiles "[50,90,95,99]" \
---input_host 1 \
---queue_size 0
-```
-
-### text_rec_prof.py 运行结果示例
-
-```bash
-# 本结果在 OCLK 880MHz 下测试所得
-# 测试最大吞吐
-- number of instances: 1
-  devices: [0]
-  queue size: 1
-  batch size: 6
-  throughput (qps): 275.15
-  latency (us):
-    avg latency: 65253
-    min latency: 55501
-    max latency: 97562
-    p50 latency: 65184
-    p90 latency: 65263
-    p95 latency: 65348
-    p99 latency: 66766
-
-# 测试最小时延
-- number of instances: 1
-  devices: [0]
-  queue size: 0
-  batch size: 1
-  throughput (qps): 105.56
-  latency (us):
-    avg latency: 9471
-    min latency: 9442
-    max latency: 10652
-    p50 latency: 9453
-    p90 latency: 9492
-    p95 latency: 9531
-    p99 latency: 9784
-```
-
-### text_det.py 命令行参数说明
+#### text_det.py 命令行参数说明
 
 ```bash
 optional arguments:
@@ -1226,7 +945,7 @@ optional arguments:
                         dataset output folder
 ```
 
-### text_det.py 运行示例
+#### text_det.py 运行示例
 
 在本目录下运行  
 
@@ -1241,7 +960,7 @@ python3 text_det.py \
 
 ```
 
-### text_det.py 运行结果示例
+#### text_det.py 运行结果示例
 
 终端显示 检测到的文字的 bbox 多边形的四个角的坐标，bbox也画在图片上并保存为 text_det_result.jpg
 
@@ -1288,7 +1007,258 @@ python3 ../../evaluation/text_detection/eval.py \
 metric:  {'precision': 0.5449968533668974, 'recall': 0.4169475204622051, 'hmean': 0.47244953627932357}
 ```
 
-### text_rec.py 命令行参数说明
+#### text_det_prof.py 命令行参数说明
+
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  --elf_file ELF_FILE   input file
+  -d DEVICE_IDS, --device_ids DEVICE_IDS
+                        device ids to run
+  -b BATCH_SIZE, --batch_size BATCH_SIZE
+                        profiling batch size of the model
+  -i INSTANCE, --instance INSTANCE
+                        model instance number
+  -s SHAPE, --shape SHAPE
+                        model input shape
+  --iterations ITERATIONS
+                        iterations count for one profiling
+  --queue_size QUEUE_SIZE
+                        aync wait queue size
+  --percentiles PERCENTILES
+                        percentiles of latency
+  --input_host INPUT_HOST
+                        cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
+```
+
+#### text_det_prof.py 运行示例
+
+在本目录下运行  
+
+```bash
+# 测试最大吞吐
+python3 text_det_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--device_ids [0]  \
+--batch_size 1 \
+--instance 1 \
+--shape "[3,736,1280]" \
+--iterations 500 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 1
+
+
+# 测试最小时延
+python3 text_det_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
+--vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--device_ids [0]  \
+--batch_size 1 \
+--instance 1 \
+--shape "[3,736,1280]" \
+--iterations 300 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 0
+```
+
+#### text_det_prof.py 运行结果示例
+
+```bash
+# 本结果在 OCLK 880MHz 下测试所得
+# 测试最大吞吐
+- number of instances: 1
+  devices: [0]
+  queue size: 1
+  batch size: 1
+  throughput (qps): 91.49
+  latency (us):
+    avg latency: 32684
+    min latency: 22904
+    max latency: 40960
+    p50 latency: 32699
+    p90 latency: 32874
+    p95 latency: 32904
+    p99 latency: 33375
+
+# 测试最小时延
+- number of instances: 1
+  devices: [0]
+  queue size: 0
+  batch size: 1
+  throughput (qps): 53.93
+  latency (us):
+    avg latency: 18540
+    min latency: 18304
+    max latency: 21528
+    p50 latency: 18486
+    p90 latency: 18614
+    p95 latency: 18732
+    p99 latency: 19456
+```
+
+### 文本行方向分类模型精度性能测试
+
+#### text_cls.py 命令行参数说明
+
+```bash
+options:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_ID, --device_id DEVICE_ID
+                        device id to run
+  --input_file INPUT_FILE
+                        input file
+  --dataset_val_file DATASET_VAL_FILE
+                        dataset validation file
+  --dataset_root DATASET_ROOT
+                        input dataset root
+```
+
+#### text_cls.py 命令行示例
+
+```bash
+# 测试单张图片
+python3 text_cls.py \
+--model_prefix /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_id 0 \
+--input_file ../../data/images/word.jpg
+
+# 输出
+Image angle: 180, confidence: 1.0000
+
+# 测试数据集
+python3 text_cls.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_id 0 \
+--dataset_val_file /opt/vastai/vaststreamx/data/datasets/textline_orientation_example_data/val.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/textline_orientation_example_data/
+
+# 输出
+Accuracy: 0.9300
+```
+
+#### text_cls_prof.py 命令行参数说明
+
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_IDS, --device_ids DEVICE_IDS
+                        device ids to run
+  -b BATCH_SIZE, --batch_size BATCH_SIZE
+                        profiling batch size of the model
+  -i INSTANCE, --instance INSTANCE
+                        model instance number
+  -s SHAPE, --shape SHAPE
+                        model input shape
+  --iterations ITERATIONS
+                        iterations count for one profiling
+  --queue_size QUEUE_SIZE
+                        aync wait queue size
+  --percentiles PERCENTILES
+                        percentiles of latency
+  --input_host INPUT_HOST
+                        cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
+```
+
+#### text_cls_prof.py 运行示例
+
+在本目录下运行  
+
+```bash
+# 测试最大吞吐
+python3 text_cls_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_ids [0]  \
+--batch_size 32 \
+--instance 1 \
+--shape "[3,48,192]" \
+--iterations 500 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 1
+
+
+# 测试最小时延
+python3 text_cls_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_ids [0]  \
+--batch_size 1 \
+--instance 1 \
+--shape "[3,48,192]" \
+--iterations 4000 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 0
+```
+
+#### text_cls_prof.py 运行结果示例
+
+```bash
+# 本结果在 OCLK 880MHz 下测试所得
+# 测试最大吞吐
+- number of instances: 1
+  devices: [0]
+  queue size: 1
+  batch size: 32
+  throughput (qps): 1850.60
+  latency (us):
+    avg latency: 51779
+    min latency: 23549
+    max latency: 53900
+    p50 latency: 51799
+    p90 latency: 51882
+    p95 latency: 51930
+    p99 latency: 52197
+
+# 测试最小时延
+- number of instances: 1
+  devices: [0]
+  queue size: 0
+  batch size: 1
+  throughput (qps): 928.07
+  latency (us):
+    avg latency: 1076
+    min latency: 1015
+    max latency: 1929
+    p50 latency: 1075
+    p90 latency: 1080
+    p95 latency: 1084
+    p99 latency: 1090
+```
+
+### 文本识别模型精度性能测试
+
+#### text_rec.py 命令行参数说明
 
 ```bash
 optional arguments:
@@ -1313,7 +1283,7 @@ optional arguments:
                         dataset output file
 ```
 
-### text_rec.py 运行示例
+#### text_rec.py 运行示例
 
 在本目录下运行  
 
@@ -1342,7 +1312,7 @@ python3 ../../evaluation/crnn/crnn_eval.py \
 --output_file cute80_pred.txt
 ```
 
-### text_rec.py 运行结果示例
+#### text_rec.py 运行结果示例
 
 ```bash
 #单张图片结果示例
@@ -1351,4 +1321,107 @@ python3 ../../evaluation/crnn/crnn_eval.py \
 #统计精度结果示例
 right_num = 233 all_num=288, acc = 0.8090277777777778
 
+```
+
+#### text_rec_prof.py 命令行参数说明
+
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_IDS, --device_ids DEVICE_IDS
+                        device ids to run
+  -b BATCH_SIZE, --batch_size BATCH_SIZE
+                        profiling batch size of the model
+  -i INSTANCE, --instance INSTANCE
+                        model instance number
+  --label_file LABEL_FILE
+                        label file
+  -s SHAPE, --shape SHAPE
+                        model input shape
+  --iterations ITERATIONS
+                        iterations count for one profiling
+  --queue_size QUEUE_SIZE
+                        aync wait queue size
+  --percentiles PERCENTILES
+                        percentiles of latency
+  --input_host INPUT_HOST
+                        cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
+```
+
+#### text_rec_prof.py 运行示例
+
+在本目录下运行  
+
+```bash
+# 测试最大吞吐
+python3 text_rec_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_ids [0]  \
+--batch_size 6 \
+--instance 1 \
+--label_file ../../data/labels/ocr_rec_dict.txt \
+--shape "[3,48,320]" \
+--iterations 500 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 1
+
+
+# 测试最小时延
+python3 text_rec_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_ids [0]  \
+--batch_size 1 \
+--instance 1 \
+--label_file ../../data/labels/ocr_rec_dict.txt \
+--shape "[3,48,320]" \
+--iterations 500 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 0
+```
+
+#### text_rec_prof.py 运行结果示例
+
+```bash
+# 本结果在 OCLK 880MHz 下测试所得
+# 测试最大吞吐
+- number of instances: 1
+  devices: [0]
+  queue size: 1
+  batch size: 6
+  throughput (qps): 275.15
+  latency (us):
+    avg latency: 65253
+    min latency: 55501
+    max latency: 97562
+    p50 latency: 65184
+    p90 latency: 65263
+    p95 latency: 65348
+    p99 latency: 66766
+
+# 测试最小时延
+- number of instances: 1
+  devices: [0]
+  queue size: 0
+  batch size: 1
+  throughput (qps): 105.56
+  latency (us):
+    avg latency: 9471
+    min latency: 9442
+    max latency: 10652
+    p50 latency: 9453
+    p90 latency: 9492
+    p95 latency: 9531
+    p99 latency: 9784
 ```

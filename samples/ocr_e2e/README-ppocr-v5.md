@@ -4,7 +4,7 @@
 
 ## 模型信息
 
-### PPOCR-V5-DOCUMENT-IMAGE-ORIENTATION-CLASSIFICATION
+### Document Image Orientation Classification
 
 |    模型信息   |  值       |
 |-----------|-----------|
@@ -15,7 +15,7 @@
 |  VACC FP16  精度(mobile) | accuracy: 74.59 |
 |  VACC INT8  精度(mobile)  |  accuracy: 71.65 |
 
-### PPOCR-V5-TEXT-DETECTION
+### Text Detection
 
 |    模型信息   |  值       |
 |-----------|-----------|
@@ -26,7 +26,7 @@
 |  VACC FP16  精度(mobile) | {'precision': 0.7545, 'recall': 0.7995, 'hmean': 0.7763} |
 |  VACC INT8  精度(mobile)  |  - |
 
-### PPOCR-V5-TEXTLINE-ORIENTATION-CLASSIFY
+### Text Line orientation Classification
 
 |    模型信息   |  值       |
 |-----------|-----------|
@@ -37,7 +37,7 @@
 |  VACC FP16  精度(mobile) | 86.50 |
 |  VACC INT8  精度(mobile)  |  84.00 |
 
-### PPOCR-V5-TEXT-RECOGNITION
+### Text Recognition
 
 |    模型信息   |  值       |
 |-----------|-----------|
