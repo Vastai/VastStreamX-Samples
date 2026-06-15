@@ -59,7 +59,6 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 |   AI + 编解码     |  decode + detection  decode + detection + encode  decode + pose decode + mot + encode    | ✓    |  ✓    |
 |   卡状态获取      |   card_info                                                                      | ✓    |  ✓    |
 
-
 ## 编译 C++ Samples
 
 ```bash
@@ -80,6 +79,11 @@ make install
 参考各个 sample 目录下的 readme ，执行对应的指令
 
 ## Update
+
+- 2026-06-15
+  - Features:
+    - PPOCR E2E C++ Sample 使用 vdsp op 实现 crop 与 rotate 操作
+    - PPOCR-V5 新增 文本图片方向分类 模型
 
 - 2026-05-21
   - Features:
