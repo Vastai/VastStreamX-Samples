@@ -248,7 +248,7 @@ Save file to: ./thread_0_ppocr_v5_result.jpg
 --device_ids [0] \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
---dataset_output_file ppocr_v4_dataset_output.txt
+--dataset_output_file ppocr_v5_dataset_output.txt
 
 ##结果示例  开启dpm 下
 Image count: 500, total cost: 30829 ms, throughput: 16.2185 fps. Average latency: 61.658 ms.
@@ -1066,24 +1066,17 @@ options:
 
 ## Python sample
 
-### ppocr_v5.py 命令行参数说明
+### PPOCR-V5 E2E Samples
+
+#### ppocr_v5.py 命令行参数说明
 
 ```bash
-usage: ppocr_v5.py [-h] [--doc_ori_model DOC_ORI_MODEL] [--doc_ori_vdsp_params DOC_ORI_VDSP_PARAMS]
-                   [--doc_ori_label_file DOC_ORI_LABEL_FILE] [--use_doc_ori_cls USE_DOC_ORI_CLS] [--det_model DET_MODEL]
-                   [--det_vdsp_params DET_VDSP_PARAMS] [--det_box_type DET_BOX_TYPE] [--det_elf_file DET_ELF_FILE] [--cls_model CLS_MODEL]
-                   [--cls_vdsp_params CLS_VDSP_PARAMS] [--cls_label_list CLS_LABEL_LIST] [--cls_thresh CLS_THRESH] [--rec_model REC_MODEL]
-                   [--rec_vdsp_params REC_VDSP_PARAMS] [--rec_label_file REC_LABEL_FILE] [--rec_drop_score REC_DROP_SCORE]
-                   [--use_angle_cls USE_ANGLE_CLS] [--hw_config HW_CONFIG] [--device_ids DEVICE_IDS] [--input_file INPUT_FILE]
-                   [--output_file OUTPUT_FILE] [--dataset_filelist DATASET_FILELIST] [--dataset_root DATASET_ROOT]
-                   [--dataset_output_file DATASET_OUTPUT_FILE]
-
 options:
   -h, --help            show this help message and exit
   --doc_ori_model DOC_ORI_MODEL
-                        text detection model prefix of the model suite files
+                        document image orientation classification model prefix of the model suite files
   --doc_ori_vdsp_params DOC_ORI_VDSP_PARAMS
-                        text detection vdsp preprocess parameter file
+                        document image orientation classification model vdsp preprocess parameter file
   --doc_ori_label_file DOC_ORI_LABEL_FILE
                         doc image orientation classification label file
   --use_doc_ori_cls USE_DOC_ORI_CLS
@@ -1096,24 +1089,24 @@ options:
                         det box type, poly or quad
   --det_elf_file DET_ELF_FILE
                         input file
-  --cls_model CLS_MODEL
+  --text_ori_model TEXT_ORI_MODEL
                         text detection model prefix of the model suite files
-  --cls_vdsp_params CLS_VDSP_PARAMS
+  --text_ori_vdsp_params TEXT_ORI_VDSP_PARAMS
                         text detection vdsp preprocess parameter file
-  --cls_label_list CLS_LABEL_LIST
-                        text classification label list
-  --cls_thresh CLS_THRESH
-                        text classification thresh
+  --text_ori_label_list TEXT_ORI_LABEL_LIST
+                        text line orientation classification label list
+  --text_ori_thresh TEXT_ORI_THRESH
+                        text line orientation classification thresh
+  --use_text_ori_cls USE_TEXT_ORI_CLS
+                        whether use text line orientation classifier
   --rec_model REC_MODEL
-                        text detection model prefix of the model suite files
+                        text recognition model prefix of the model suite files
   --rec_vdsp_params REC_VDSP_PARAMS
-                        text detection vdsp preprocess parameter file
+                        text recognition vdsp preprocess parameter file
   --rec_label_file REC_LABEL_FILE
                         text recognizition label file
   --rec_drop_score REC_DROP_SCORE
                         text recogniztion drop score threshold
-  --use_angle_cls USE_ANGLE_CLS
-                        whether use angle classifier
   --hw_config HW_CONFIG
                         hw-config file of the model suite
   --device_ids DEVICE_IDS
@@ -1130,7 +1123,7 @@ options:
                         dataset output file
 ```
 
-### ppocr_v5.py 运行示例
+#### ppocr_v5.py 运行示例
 
 在本目录下运行  
 
@@ -1141,64 +1134,22 @@ python3 ppocr_v5.py \
 --doc_ori_vdsp_params ../../data/configs/doc_ori_rgbplanar.json \
 --doc_ori_label_file ../../data/labels/doc_ori_label.txt \
 --use_doc_ori_cls 1 \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
---cls_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
---cls_thresh 0.9 \
---use_angle_cls 1 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--text_ori_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../../data/labels/ppocrv5_dict.txt \
 --device_ids [0] \
 --input_file ../../data/images/ppocr-rot.jpg \
---det_box_type quad \
 --output_file ocr_res.jpg
 
-
-#单张图片示例, 不判断文档图片方向, 判断文字行方向 
-python3 ppocr_v5.py \
---use_doc_ori_cls 0 \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
---det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
---cls_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
---cls_thresh 0.9 \
---use_angle_cls 1 \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
---rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---rec_label_file ../../data/labels/ppocrv5_dict.txt \
---device_ids [0] \
---input_file ../../data/images/ppocr.jpg \
---det_box_type quad \
---output_file ocr_res.jpg
-
-
-#单张图片示例, 不判断文档图片方向, 不判断文字行方向 
-python3 ppocr_v5.py \
---use_doc_ori_cls 0 \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
---det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---use_angle_cls 0 \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
---rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---rec_label_file ../../data/labels/ppocrv5_dict.txt \
---device_ids [0] \
---input_file ../../data/images/ppocr.jpg \
---det_box_type quad \
---output_file ocr_res.jpg
-
-```
-
-### ocr_e2e.py 运行结果示例
-
-终端显示 检测到的文字的 bbox 多边形的四个角的坐标，文本内容，识别分数，bbox也画在图片上并保存为 ocr_res.jpg
-
-```bash
-#单张图片结果示例
+# 输出
 [[22,32], [308,32], [308,77], [22,77]],  [('纯臻营养护发素', 0.99951171875)]
 [[24,80], [174,80], [174,105], [24,105]],  [('产品信息/参数', 0.99951171875)]
 [[25,110], [333,110], [333,135], [25,135]],  [('（45元/每公斤，100公斤起订）', 0.95068359375)]
@@ -1218,9 +1169,82 @@ python3 ppocr_v5.py \
 save file  thread_0_ocr_res.jpg
 ```
 
-并在图片上画出检测框，保存到  thread_0_ocr_res.jpg
+```bash
+#单张图片示例, 不判断文档图片方向, 判断文字行方向 
+python3 ppocr_v5.py \
+--use_doc_ori_cls 0 \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
+--det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--text_ori_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
+--device_ids [0] \
+--input_file ../../data/images/ppocr.jpg \
+--det_box_type quad \
+--output_file ocr_res.jpg
 
-### ppocr_v5.py 测试 同步推理 性能与时延
+# 输出
+[[22,32], [308,32], [308,77], [22,77]],  [('纯臻营养护发素', 0.99951171875)]
+[[24,79], [174,79], [174,104], [24,104]],  [('产品信息/参数', 0.9951171875)]
+[[26,110], [333,110], [333,135], [26,135]],  [('（45元/每公斤，100公斤起订）', 0.94091796875)]
+[[24,140], [283,141], [283,166], [24,165]],  [('每瓶22元，1000瓶起订）', 0.9833984375)]
+[[24,176], [302,175], [302,196], [24,197]],  [('【品牌】：代加工方式/OEMODM', 0.98583984375)]
+[[24,206], [235,208], [235,229], [24,228]],  [('【品名】：纯臻营养护发素', 0.9873046875)]
+[[413,233], [430,233], [430,303], [413,303]],  [('ODMOEM', 0.9912109375)]
+[[26,239], [243,239], [243,259], [26,259]],  [('【产品编号】：YM-X-3011', 0.98876953125)]
+[[24,270], [181,268], [181,289], [25,291]],  [('【净含量】：220ml', 0.97412109375)]
+[[25,300], [253,302], [253,321], [24,320]],  [('【适用人群】：适合所有肤质', 0.9921875)]
+[[24,331], [345,333], [345,354], [24,353]],  [('【主要成分】：鲸蜡硬脂醇、燕麦β-葡聚', 0.98779296875)]
+[[26,364], [283,364], [283,384], [26,384]],  [('糖、椰油酰胺丙基甜菜碱、泛醌', 0.9755859375)]
+[[367,367], [476,367], [476,388], [367,388]],  [('（成品包材）', 0.994140625)]
+[[26,395], [362,395], [362,416], [26,416]],  [('【主要功能】：可紧致头发磷层，从而达到', 0.990234375)]
+[[27,426], [374,426], [374,447], [27,447]],  [('即时持久改善头发光泽的效果，给干燥的头', 0.9951171875)]
+[[26,457], [137,457], [137,478], [26,478]],  [('发足够的滋养', 0.9970703125)]
+save file  thread_0_ocr_res.jpg
+```
+
+```bash
+#单张图片示例, 不判断文档图片方向, 不判断文字行方向 
+python3 ppocr_v5.py \
+--use_doc_ori_cls 0 \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
+--det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--use_text_ori_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
+--device_ids [0] \
+--input_file ../../data/images/ppocr.jpg \
+--det_box_type quad \
+--output_file ocr_res.jpg
+
+# 输出 
+[[22,32], [308,32], [308,77], [22,77]],  [('纯臻营养护发素', 0.99951171875)]
+[[24,79], [174,79], [174,104], [24,104]],  [('产品信息/参数', 0.9951171875)]
+[[26,110], [333,110], [333,135], [26,135]],  [('（45元/每公斤，100公斤起订）', 0.94091796875)]
+[[24,140], [283,141], [283,166], [24,165]],  [('每瓶22元，1000瓶起订）', 0.9833984375)]
+[[24,176], [302,175], [302,196], [24,197]],  [('【品牌】：代加工方式/OEMODM', 0.98583984375)]
+[[24,206], [235,208], [235,229], [24,228]],  [('【品名】：纯臻营养护发素', 0.9873046875)]
+[[413,233], [430,233], [430,303], [413,303]],  [('ODMOEM', 0.9912109375)]
+[[26,239], [243,239], [243,259], [26,259]],  [('【产品编号】：YM-X-3011', 0.98876953125)]
+[[24,270], [181,268], [181,289], [25,291]],  [('【净含量】：220ml', 0.97412109375)]
+[[25,300], [253,302], [253,321], [24,320]],  [('【适用人群】：适合所有肤质', 0.9921875)]
+[[24,331], [345,333], [345,354], [24,353]],  [('【主要成分】：鲸蜡硬脂醇、燕麦β-葡聚', 0.98779296875)]
+[[26,364], [283,364], [283,384], [26,384]],  [('糖、椰油酰胺丙基甜菜碱、泛醌', 0.9755859375)]
+[[367,367], [476,367], [476,388], [367,388]],  [('（成品包材）', 0.994140625)]
+[[26,395], [362,395], [362,416], [26,416]],  [('【主要功能】：可紧致头发磷层，从而达到', 0.990234375)]
+[[27,426], [374,426], [374,447], [27,447]],  [('即时持久改善头发光泽的效果，给干燥的头', 0.9951171875)]
+[[26,457], [137,457], [137,478], [26,478]],  [('发足够的滋养', 0.9970703125)]
+save file  thread_0_ocr_res.jpg
+```
+
+#### ppocr_v5.py 测试 同步推理 性能与时延
 
 ```bash
 python ppocr_v5.py \
@@ -1229,26 +1253,34 @@ python ppocr_v5.py \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
 --det_box_type quad \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
---cls_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
---cls_thresh 0.9 \
---use_angle_cls 1 \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--text_ori_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../../data/labels/ppocrv5_dict.txt \
---device_ids [0] \
+--device_ids [0,1] \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
---dataset_output_file ppocr_v4_dataset_output.txt
+--dataset_output_file ppocr_v5_dataset_output.txt
 #测试结果  在开启dpm 下
 Image count: 500, total cost: 47.68 s, throughput: 10.49 fps, average latency: 0.095 s
 ```
 
-### ppocr_v5_async.py 命令行参数说明
+#### ppocr_v5_async.py 命令行参数说明
 
 ```bash
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  --doc_ori_model DOC_ORI_MODEL
+                        document image orientation classification model prefix of the model suite files
+  --doc_ori_vdsp_params DOC_ORI_VDSP_PARAMS
+                        document image orientation classification model vdsp preprocess parameter file
+  --doc_ori_label_file DOC_ORI_LABEL_FILE
+                        doc image orientation classification label file
+  --use_doc_ori_cls USE_DOC_ORI_CLS
+                        whether use document image orientation classifier
   --det_model DET_MODEL
                         text detection model prefix of the model suite files
   --det_vdsp_params DET_VDSP_PARAMS
@@ -1257,24 +1289,24 @@ optional arguments:
                         det box type, poly or quad
   --det_elf_file DET_ELF_FILE
                         input file
-  --cls_model CLS_MODEL
+  --text_ori_model TEXT_ORI_MODEL
                         text detection model prefix of the model suite files
-  --cls_vdsp_params CLS_VDSP_PARAMS
+  --text_ori_vdsp_params TEXT_ORI_VDSP_PARAMS
                         text detection vdsp preprocess parameter file
-  --cls_label_list CLS_LABEL_LIST
-                        text classification label list
-  --cls_thresh CLS_THRESH
-                        text classification thresh
+  --text_ori_label_list TEXT_ORI_LABEL_LIST
+                        text line orientation classification label list
+  --text_ori_thresh TEXT_ORI_THRESH
+                        text line orientation classification thresh
+  --use_text_ori_cls USE_TEXT_ORI_CLS
+                        whether use text line orientation classifier
   --rec_model REC_MODEL
-                        text detection model prefix of the model suite files
+                        text recognition model prefix of the model suite files
   --rec_vdsp_params REC_VDSP_PARAMS
-                        text detection vdsp preprocess parameter file
+                        text recognition vdsp preprocess parameter file
   --rec_label_file REC_LABEL_FILE
                         text recognizition label file
   --rec_drop_score REC_DROP_SCORE
                         text recogniztion drop score threshold
-  --use_angle_cls USE_ANGLE_CLS
-                        whether use angle classifier
   --hw_config HW_CONFIG
                         hw-config file of the model suite
   --device_ids DEVICE_IDS
@@ -1291,53 +1323,143 @@ optional arguments:
                         dataset output file
 ```
 
-### ocr_e2e_async.py 命令行示例
+#### ppocr_v5_async.py 命令行示例
 
 ```bash
-# 测试单张图片
-python ocr_e2e_async.py \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
+#单张图片示例, 判断文档图片方向, 判断文字行方向
+python ppocr_v5_async.py \
+--doc_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/doc_ori_fp16_1-3-224-224/mod \
+--doc_ori_vdsp_params ../../data/configs/doc_ori_rgbplanar.json \
+--doc_ori_label_file ../../data/labels/doc_ori_label.txt \
+--use_doc_ori_cls 1 \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---use_angle_cls 0 \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
---rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0] \
 --det_box_type quad \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--text_ori_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../../data/labels/ppocrv5_dict.txt \
---input_file ../../data/images/detect.jpg \
+--device_ids [0] \
+--input_file ../../data/images/ppocr-rot.jpg \
 --output_file ocr_res.jpg
 
-#结果示例
-
-Thread:0,Get ../../data/images/detect.jpg result
-[[656,79], [705,82], [702,100], [652,96]],  [('20029', 0.9951171875)]
-[[635,98], [725,103], [722,116], [633,111]],  [(' ', 0.55224609375)]
-[[635,134], [728,138], [725,157], [632,153]],  [('97154197', 0.99853515625)]
-[[637,151], [667,154], [662,171], [632,168]],  [('198', 0.99755859375)]
-[[667,157], [693,157], [693,169], [667,169]],  [('727', 0.99072265625)]
-[[785,282], [907,284], [906,301], [784,298]],  [('Free yourself from', 0.95947265625)]
-[[782,298], [916,296], [918,336], [784,339]],  [('JOINT', 0.9951171875)]
-[[783,334], [891,334], [891,368], [783,368]],  [('PAIN', 0.9794921875)]
-[[852,454], [905,454], [905,468], [852,468]],  [('JOINT-RY', 0.89990234375)]
-[[846,534], [885,531], [887,543], [849,546]],  [('TUFBAN', 0.56591796875)]
+#输出
+[[22,32], [308,32], [308,77], [22,77]],  [('纯臻营养护发素', 0.99951171875)]
+[[24,80], [174,80], [174,105], [24,105]],  [('产品信息/参数', 0.99951171875)]
+[[25,110], [333,110], [333,135], [25,135]],  [('（45元/每公斤，100公斤起订）', 0.95068359375)]
+[[24,140], [283,142], [283,167], [24,165]],  [('每瓶22元，1000瓶起订）', 0.98486328125)]
+[[24,176], [302,175], [302,196], [24,197]],  [('【品牌】：代加工方式/OEMODM', 0.98583984375)]
+[[24,206], [235,208], [235,229], [24,228]],  [('【品名】：纯臻营养护发素', 0.98828125)]
+[[413,233], [430,233], [430,303], [413,303]],  [('ODMOEM', 0.9912109375)]
+[[26,239], [243,239], [243,259], [26,259]],  [('【产品编号】：YM-X-3011', 0.990234375)]
+[[24,269], [181,268], [181,289], [25,291]],  [('【净含量】：220ml', 0.98095703125)]
+[[25,300], [253,302], [253,321], [24,320]],  [('【适用人群】：适合所有肤质', 0.9921875)]
+[[24,331], [345,333], [345,354], [24,353]],  [('【主要成分】：鲸蜡硬脂醇、燕麦β-葡聚', 0.9873046875)]
+[[26,363], [283,363], [283,384], [26,384]],  [('糖、椰油酰胺丙基甜菜碱、泛醌', 0.96875)]
+[[367,367], [476,367], [476,388], [367,388]],  [('（成品包材）', 0.9873046875)]
+[[25,395], [362,395], [362,416], [25,416]],  [('【主要功能】：可紧致头发磷层，从而达到', 0.99267578125)]
+[[27,426], [374,426], [374,447], [27,447]],  [('即时持久改善头发光泽的效果，给干燥的头', 0.9951171875)]
+[[26,457], [137,457], [137,479], [26,479]],  [('发足够的滋养', 0.99853515625)]
 save file to thread_0_ocr_res.jpg
 ```
 
-### ocr_e2e_async.py 测试多线程异步推理 性能与时延
+```bash
+#单张图片示例, 不判断文档图片方向, 判断文字行方向
+python ppocr_v5_async.py \
+--use_doc_ori_cls 0 \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
+--det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--text_ori_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
+--device_ids [0] \
+--input_file ../../data/images/ppocr.jpg \
+--output_file ocr_res.jpg
+
+# 输出
+[[22,32], [308,32], [308,77], [22,77]],  [('纯臻营养护发素', 0.99951171875)]
+[[24,79], [174,79], [174,104], [24,104]],  [('产品信息/参数', 0.9951171875)]
+[[26,110], [333,110], [333,135], [26,135]],  [('（45元/每公斤，100公斤起订）', 0.94091796875)]
+[[24,140], [283,141], [283,166], [24,165]],  [('每瓶22元，1000瓶起订）', 0.9833984375)]
+[[24,176], [302,175], [302,196], [24,197]],  [('【品牌】：代加工方式/OEMODM', 0.98583984375)]
+[[24,206], [235,208], [235,229], [24,228]],  [('【品名】：纯臻营养护发素', 0.9873046875)]
+[[413,233], [430,233], [430,303], [413,303]],  [('ODMOEM', 0.9912109375)]
+[[26,239], [243,239], [243,259], [26,259]],  [('【产品编号】：YM-X-3011', 0.98876953125)]
+[[24,270], [181,268], [181,289], [25,291]],  [('【净含量】：220ml', 0.97412109375)]
+[[25,300], [253,302], [253,321], [24,320]],  [('【适用人群】：适合所有肤质', 0.9921875)]
+[[24,331], [345,333], [345,354], [24,353]],  [('【主要成分】：鲸蜡硬脂醇、燕麦β-葡聚', 0.98779296875)]
+[[26,364], [283,364], [283,384], [26,384]],  [('糖、椰油酰胺丙基甜菜碱、泛醌', 0.9755859375)]
+[[367,367], [476,367], [476,388], [367,388]],  [('（成品包材）', 0.994140625)]
+[[26,395], [362,395], [362,416], [26,416]],  [('【主要功能】：可紧致头发磷层，从而达到', 0.990234375)]
+[[27,426], [374,426], [374,447], [27,447]],  [('即时持久改善头发光泽的效果，给干燥的头', 0.9951171875)]
+[[26,457], [137,457], [137,478], [26,478]],  [('发足够的滋养', 0.9970703125)]
+save file to thread_0_ocr_res.jpg
+```
+
+```bash
+#单张图片示例, 不判断文档图片方向, 不判断文字行方向
+python ppocr_v5_async.py \
+--use_doc_ori_cls 0 \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
+--det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--use_text_ori_cls 0 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--rec_label_file ../../data/labels/ppocrv5_dict.txt \
+--device_ids [0] \
+--input_file ../../data/images/ppocr.jpg \
+--output_file ocr_res.jpg
+
+# 输出
+[[22,32], [308,32], [308,77], [22,77]],  [('纯臻营养护发素', 0.99951171875)]
+[[24,79], [174,79], [174,104], [24,104]],  [('产品信息/参数', 0.9951171875)]
+[[26,110], [333,110], [333,135], [26,135]],  [('（45元/每公斤，100公斤起订）', 0.94091796875)]
+[[24,140], [283,141], [283,166], [24,165]],  [('每瓶22元，1000瓶起订）', 0.9833984375)]
+[[24,176], [302,175], [302,196], [24,197]],  [('【品牌】：代加工方式/OEMODM', 0.98583984375)]
+[[24,206], [235,208], [235,229], [24,228]],  [('【品名】：纯臻营养护发素', 0.9873046875)]
+[[413,233], [430,233], [430,303], [413,303]],  [('ODMOEM', 0.9912109375)]
+[[26,239], [243,239], [243,259], [26,259]],  [('【产品编号】：YM-X-3011', 0.98876953125)]
+[[24,270], [181,268], [181,289], [25,291]],  [('【净含量】：220ml', 0.97412109375)]
+[[25,300], [253,302], [253,321], [24,320]],  [('【适用人群】：适合所有肤质', 0.9921875)]
+[[24,331], [345,333], [345,354], [24,353]],  [('【主要成分】：鲸蜡硬脂醇、燕麦β-葡聚', 0.98779296875)]
+[[26,364], [283,364], [283,384], [26,384]],  [('糖、椰油酰胺丙基甜菜碱、泛醌', 0.9755859375)]
+[[367,367], [476,367], [476,388], [367,388]],  [('（成品包材）', 0.994140625)]
+[[26,395], [362,395], [362,416], [26,416]],  [('【主要功能】：可紧致头发磷层，从而达到', 0.990234375)]
+[[27,426], [374,426], [374,447], [27,447]],  [('即时持久改善头发光泽的效果，给干燥的头', 0.9951171875)]
+[[26,457], [137,457], [137,478], [26,478]],  [('发足够的滋养', 0.9970703125)]
+save file to thread_0_ocr_res.jpg
+```
+
+#### ppocr_v5_async.py 测试多线程异步推理 性能与时延
 
 ```bash
 # 测试多线程异步
-python ocr_e2e_async.py \
---det_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
+python ppocr_v5_async.py \
+--use_doc_ori_cls 0 \
+--det_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---use_angle_cls 0 \
---rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
---rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0] \
 --det_box_type quad \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--text_ori_vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
+--rec_model /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../../data/labels/ppocrv5_dict.txt \
+--device_ids [0] \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/
 
@@ -1345,7 +1467,9 @@ python ocr_e2e_async.py \
 Image count: 500, total cost: 26.54 s, throughput: 18.84 fps, average latency: 5.275 s
 ```
 
-### doc_img_orient_cls.py 命令行参数说明
+### 文档图片方向分类模型精度性能测试
+
+#### doc_img_orient_cls.py 命令行参数说明
 
 ```bash
 usage: doc_img_orient_cls.py [-h] [-m MODEL_PREFIX] [--hw_config HW_CONFIG] [--vdsp_params VDSP_PARAMS] [-d DEVICE_ID]
@@ -1372,7 +1496,7 @@ options:
                         input dataset root
 ```
 
-### doc_img_orient_cls.py 命令行示例
+#### doc_img_orient_cls.py 命令行示例
 
 ```bash
 # 单张图片
@@ -1399,7 +1523,7 @@ python3 doc_img_orient_cls.py \
 Accuracy: 0.7759
 ```
 
-### doc_img_orient_cls_prof.py 命令行参数说明
+#### doc_img_orient_cls_prof.py 命令行参数说明
 
 ```bash
 usage: doc_img_orient_cls_prof.py [-h] [-m MODEL_PREFIX] [--hw_config HW_CONFIG] [--vdsp_params VDSP_PARAMS] [-d DEVICE_IDS]
@@ -1434,7 +1558,7 @@ options:
                         number of warmup iterations
 ```
 
-### doc_img_orient_cls_prof.py 命令行示例
+#### doc_img_orient_cls_prof.py 命令行示例
 
 ```bash
 # 最大吞吐
@@ -1466,7 +1590,7 @@ python3 doc_img_orient_cls_prof.py \
 --input_host 0
 ```
 
-### doc_img_orient_cls_prof.py 命令行结果示例
+#### doc_img_orient_cls_prof.py 命令行结果示例
 
 ```bash
 # 最大吞吐 OCLK=1200MHz
@@ -1500,7 +1624,99 @@ python3 doc_img_orient_cls_prof.py \
     p99 latency: 1572
 ```
 
-### text_det_prof.py 命令行参数说明
+### 文本检测模型精度性能测试
+
+#### text_det.py 命令行参数说明
+
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_ID, --device_id DEVICE_ID
+                        device id to run
+  --elf_file ELF_FILE   input file
+  --input_file INPUT_FILE
+                        input file
+  --output_file OUTPUT_FILE
+                        output file
+  --dataset_filelist DATASET_FILELIST
+                        input dataset image list
+  --dataset_root DATASET_ROOT
+                        input dataset root
+  --dataset_output_folder DATASET_OUTPUT_FOLDER
+                        dataset output folder
+```
+
+#### text_det.py 运行示例
+
+在本目录下运行  
+
+```bash
+python3 text_det.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
+--vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--device_id 0 \
+--input_file ../../data/images/detect.jpg \
+--output_file text_det_result.jpg
+```
+
+#### text_det.py 运行结果示例
+
+终端显示 检测到的文字的 bbox 多边形的四个角的坐标，bbox也画在图片上并保存为 text_det_result.jpg
+
+```bash
+index:0, score:0.7654287550184461,bbox:[[933  71],[945  71],[945  80],[933  80]]
+index:1, score:0.8197022332085504,bbox:[[656  79],[705  82],[702 100],[652  96]]
+index:2, score:0.699494037222355,bbox:[[635  98],[725 103],[722 116],[633 111]]
+index:3, score:0.8128281873988077,bbox:[[635 134],[728 138],[725 157],[632 153]]
+index:4, score:0.7879960683470998,bbox:[[637 151],[667 154],[662 171],[632 168]]
+index:5, score:0.6904495597904564,bbox:[[667 157],[693 157],[693 169],[667 169]]
+index:6, score:0.6154796412733735,bbox:[[915 251],[967 253],[966 261],[914 259]]
+index:7, score:0.7811218425884657,bbox:[[785 282],[907 284],[906 301],[784 298]]
+index:8, score:0.8832487357679263,bbox:[[782 298],[916 296],[918 336],[784 339]]
+index:9, score:0.7828013907665613,bbox:[[783 334],[891 334],[891 368],[783 368]]
+index:10, score:0.6718201371221584,bbox:[[875 339],[931 342],[929 363],[873 361]]
+index:11, score:0.670831044514974,bbox:[[924 455],[944 455],[944 461],[924 461]]
+index:12, score:0.8209148160872921,bbox:[[852 454],[905 454],[905 468],[852 468]]
+index:13, score:0.749038332984561,bbox:[[846 534],[885 531],[887 543],[849 546]]
+```
+
+测试数据集
+
+```bash
+mkdir -p text_det_output
+python3 text_det.py  \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
+--vdsp_params ../../data/configs/dbnet_rgbplanar.json \
+--elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--device_id 0 \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
+--dataset_output_folder text_det_output
+```
+
+结果保存在 text_det_output 文件夹里
+
+```bash
+# 用刚才保存的npz文件测试精度
+python3 ../../evaluation/ppocr-v5/det_eval.py \
+--test_image_path  /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test \
+--boxes_npz_dir ./text_det_output 
+```
+
+精度结果
+
+```
+metric:  {'precision': 0.7545, 'recall': 0.7995, 'hmean': 0.7763}
+```
+
+#### text_det_prof.py 命令行参数说明
 
 ```bash
 optional arguments:
@@ -1532,7 +1748,7 @@ optional arguments:
                         number of warmup iterations
 ```
 
-### text_det_prof.py 运行示例
+#### text_det_prof.py 运行示例
 
 在本目录下运行  
 
@@ -1569,7 +1785,7 @@ python3 text_det_prof.py \
 --queue_size 0
 ```
 
-### text_det_prof.py 运行结果示例
+#### text_det_prof.py 运行结果示例
 
 ```bash
 # 本结果在 dpm下 OCLK 1025MHz 下测试所得
@@ -1604,7 +1820,221 @@ python3 text_det_prof.py \
     p99 latency: 27096
 ```
 
-### text_rec_prof.py 命令行参数说明
+### 文本行方向分类模型精度性能测试
+
+#### text_cls.py 命令行参数说明
+
+```bash
+options:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_ID, --device_id DEVICE_ID
+                        device id to run
+  --input_file INPUT_FILE
+                        input file
+  --dataset_val_file DATASET_VAL_FILE
+                        dataset validation file
+  --dataset_root DATASET_ROOT
+                        input dataset root
+```
+
+#### text_cls.py 命令行示例
+
+```bash
+# 测试单张图片
+python3 text_cls.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--device_id 0 \
+--input_file ../../data/images/word.jpg
+
+# 输出
+Image angle: 180, confidence: 1.0000
+
+# 测试数据集
+python3 text_cls.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--device_id 0 \
+--dataset_val_file /opt/vastai/vaststreamx/data/datasets/textline_orientation_example_data/val.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/textline_orientation_example_data/
+
+# 输出
+Accuracy: 0.9100
+```
+
+### text_cls_prof.py 命令行参数说明
+
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_IDS, --device_ids DEVICE_IDS
+                        device ids to run
+  -b BATCH_SIZE, --batch_size BATCH_SIZE
+                        profiling batch size of the model
+  -i INSTANCE, --instance INSTANCE
+                        model instance number
+  -s SHAPE, --shape SHAPE
+                        model input shape
+  --iterations ITERATIONS
+                        iterations count for one profiling
+  --queue_size QUEUE_SIZE
+                        aync wait queue size
+  --percentiles PERCENTILES
+                        percentiles of latency
+  --input_host INPUT_HOST
+                        cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
+```
+
+### text_cls_prof.py 运行示例
+
+在本目录下运行  
+
+```bash
+# 测试最大吞吐
+python3 text_cls_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--device_ids [0]  \
+--batch_size 32 \
+--instance 1 \
+--shape "[3,48,192]" \
+--iterations 500 \
+--warmup_times 300 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 1
+
+
+# 测试最小时延
+python3 text_cls_prof.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/textline_ori_fp16_1-3-80-160/mod \
+--vdsp_params ../../data/configs/textline_ori_rgbplanar.json \
+--device_ids [0]  \
+--batch_size 1 \
+--instance 1 \
+--shape "[3,48,192]" \
+--iterations 4000 \
+--percentiles "[50,90,95,99]" \
+--input_host 1 \
+--queue_size 0
+```
+
+### text_cls_prof.py 运行结果示例
+
+```bash
+# 本结果在 OCLK 1200MHz 下测试所得
+# 测试最大吞吐
+- number of instances: 1
+  devices: [0]
+  queue size: 1
+  batch size: 32
+  throughput (qps): 2388.81
+  latency (us):
+    avg latency: 40065
+    min latency: 20987
+    max latency: 43615
+    p50 latency: 40111
+    p90 latency: 40164
+    p95 latency: 40182
+    p99 latency: 40228
+
+# 测试最小时延
+- number of instances: 1
+  devices: [0]
+  queue size: 0
+  batch size: 1
+  throughput (qps): 988.41
+  latency (us):
+    avg latency: 1010
+    min latency: 884
+    max latency: 1945
+    p50 latency: 953
+    p90 latency: 1330
+    p95 latency: 1333
+    p99 latency: 1339
+```
+
+### 文本识别模型精度性能测试
+
+#### text_rec.py 命令行参数说明
+
+```bash
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
+                        model prefix of the model suite files
+  --hw_config HW_CONFIG
+                        hw-config file of the model suite
+  --vdsp_params VDSP_PARAMS
+                        vdsp preprocess parameter file
+  -d DEVICE_ID, --device_id DEVICE_ID
+                        device id to run
+  --label_file LABEL_FILE
+                        label file
+  --input_file INPUT_FILE
+                        input file
+  --dataset_filelist DATASET_FILELIST
+                        dataset filelist
+  --dataset_root DATASET_ROOT
+                        input dataset root
+  --dataset_output_file DATASET_OUTPUT_FILE
+                        dataset output file
+```
+
+#### text_rec.py 运行示例
+
+在本目录下运行  
+
+```bash
+#单张图片示例
+python3 text_rec.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_id 0 \
+--label_file ../../data/labels/ppocrv5_dict.txt \
+--input_file ../../data/images/word_336.png 
+
+#数据集示例
+python3 text_rec.py \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
+--vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--device_id 0 \
+--label_file ../../data/labels/ppocrv5_dict.txt \
+--dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test_list.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
+--dataset_output_file rec_pred.txt
+
+# 统计精度
+python3 ../../evaluation/ppocr-v5/rec_eval.py \
+--test_image_path /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test \
+--pred_file rec_pred.txt
+```
+
+#### text_rec.py 运行结果示例
+
+```bash
+#单张图片结果示例
+[('SUPER', 0.95751953125)]
+
+#统计精度结果示例
+metric:  {'ExactMatch': 0.7032, 'CharMatch': 0.8458}
+```
+
+#### text_rec_prof.py 命令行参数说明
 
 ```bash
 optional arguments:
@@ -1637,14 +2067,14 @@ optional arguments:
                         number of warmup iterations
 ```
 
-### text_rec_prof.py 运行示例
+#### text_rec_prof.py 运行示例
 
 在本目录下运行  
 
 ```bash
 # 测试最大吞吐
 python3 text_rec_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_ids [0]  \
 --batch_size 1 \
@@ -1660,7 +2090,7 @@ python3 text_rec_prof.py \
 
 # 测试最小时延
 python3 text_rec_prof.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-rec-fp16-none-1_3_48_320-vacc/mod \
+-m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
 --vdsp_params ../../data/configs/crnn_rgbplanar.json \
 --device_ids [0]  \
 --batch_size 1 \
@@ -1674,7 +2104,7 @@ python3 text_rec_prof.py \
 --queue_size 0
 ```
 
-### text_rec_prof.py 运行结果示例
+#### text_rec_prof.py 运行结果示例
 
 ```bash
 # 本结果在 dpm下 OCLK 1025MHz 下测试所得
@@ -1707,159 +2137,4 @@ python3 text_rec_prof.py \
     p90 latency: 18277
     p95 latency: 19638
     p99 latency: 23618
-```
-
-### text_det.py 命令行参数说明
-
-```bash
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
-                        model prefix of the model suite files
-  --hw_config HW_CONFIG
-                        hw-config file of the model suite
-  --vdsp_params VDSP_PARAMS
-                        vdsp preprocess parameter file
-  -d DEVICE_ID, --device_id DEVICE_ID
-                        device id to run
-  --elf_file ELF_FILE   input file
-  --input_file INPUT_FILE
-                        input file
-  --output_file OUTPUT_FILE
-                        output file
-  --dataset_filelist DATASET_FILELIST
-                        input dataset image list
-  --dataset_root DATASET_ROOT
-                        input dataset root
-  --dataset_output_folder DATASET_OUTPUT_FOLDER
-                        dataset output folder
-```
-
-### text_det.py 运行示例
-
-在本目录下运行  
-
-```bash
-python3 text_det.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod \
---vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_id 0 \
---input_file ../../data/images/ppocr.jpg \
---output_file text_det_result.jpg
-
-```
-
-### text_det.py 运行结果示例
-
-终端显示 检测到的文字的 bbox 多边形的四个角的坐标，bbox也画在图片上并保存为 text_det_result.jpg
-
-```bash
-index:0, score:0.7654287550184461,bbox:[[933  71],[945  71],[945  80],[933  80]]
-index:1, score:0.8197022332085504,bbox:[[656  79],[705  82],[702 100],[652  96]]
-index:2, score:0.699494037222355,bbox:[[635  98],[725 103],[722 116],[633 111]]
-index:3, score:0.8128281873988077,bbox:[[635 134],[728 138],[725 157],[632 153]]
-index:4, score:0.7879960683470998,bbox:[[637 151],[667 154],[662 171],[632 168]]
-index:5, score:0.6904495597904564,bbox:[[667 157],[693 157],[693 169],[667 169]]
-index:6, score:0.6154796412733735,bbox:[[915 251],[967 253],[966 261],[914 259]]
-index:7, score:0.7811218425884657,bbox:[[785 282],[907 284],[906 301],[784 298]]
-index:8, score:0.8832487357679263,bbox:[[782 298],[916 296],[918 336],[784 339]]
-index:9, score:0.7828013907665613,bbox:[[783 334],[891 334],[891 368],[783 368]]
-index:10, score:0.6718201371221584,bbox:[[875 339],[931 342],[929 363],[873 361]]
-index:11, score:0.670831044514974,bbox:[[924 455],[944 455],[944 461],[924 461]]
-index:12, score:0.8209148160872921,bbox:[[852 454],[905 454],[905 468],[852 468]]
-index:13, score:0.749038332984561,bbox:[[846 534],[885 531],[887 543],[849 546]]
-```
-
-测试数据集
-
-```bash
-mkdir -p text_det_output
-python3 text_det.py  \
--m /opt/vastai/vaststreamx/data/models/ppocr-v5/mobile-det-fp16-none-1_3_960_960-vacc/mod \
---vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_id 0 \
---dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test_list.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
---dataset_output_folder text_det_output
-```
-
-结果保存在 text_det_output 文件夹里
-
-```bash
-# 用刚才保存的npz文件测试精度
-python3 ../../evaluation/ppocr-v5/det_eval.py \
---test_image_path  /opt/vastai/vaststreamx/data/datasets/ppocr-v5/det_test \
---boxes_npz_dir ./text_det_output 
-```
-
-精度结果
-
-```
-metric:  {'precision': 0.7545, 'recall': 0.7995, 'hmean': 0.7763}
-```
-
-### text_rec.py 命令行参数说明
-
-```bash
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
-                        model prefix of the model suite files
-  --hw_config HW_CONFIG
-                        hw-config file of the model suite
-  --vdsp_params VDSP_PARAMS
-                        vdsp preprocess parameter file
-  -d DEVICE_ID, --device_id DEVICE_ID
-                        device id to run
-  --label_file LABEL_FILE
-                        label file
-  --input_file INPUT_FILE
-                        input file
-  --dataset_filelist DATASET_FILELIST
-                        dataset filelist
-  --dataset_root DATASET_ROOT
-                        input dataset root
-  --dataset_output_file DATASET_OUTPUT_FILE
-                        dataset output file
-```
-
-### text_rec.py 运行示例
-
-在本目录下运行  
-
-```bash
-#单张图片示例
-python3 text_rec.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_id 0 \
---label_file ../../data/labels/ppocrv5_dict.txt \
---input_file ../../data/images/word_336.png 
-
-#数据集示例
-python3 text_rec.py \
--m /opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/rec_fp16_1-3-48-320/mod \
---vdsp_params ../../data/configs/crnn_rgbplanar.json \
---device_id 0 \
---label_file ../../data/labels/ppocrv5_dict.txt \
---dataset_filelist /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test_list.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/ \
---dataset_output_file rec_pred.txt
-
-# 统计精度
-python3 ../../evaluation/ppocr-v5/rec_eval.py \
---test_image_path /opt/vastai/vaststreamx/data/datasets/ppocr-v5/rec_test \
---pred_file rec_pred.txt
-```
-
-### text_rec.py 运行结果示例
-
-```bash
-#单张图片结果示例
-[('SUPER', 0.95751953125)]
-
-#统计精度结果示例
-metric:  {'ExactMatch': 0.7032, 'CharMatch': 0.8458}
 ```

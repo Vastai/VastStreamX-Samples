@@ -33,17 +33,6 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   return args;
 }
 
-int get_angle(int index, std::vector<std::vector<int>>& labels) {
-  for (auto& label : labels) {
-    if (label[0] == index) {
-      return label[1];
-    }
-  }
-  std::cerr << "Error: Cann't find index: " << index << " in label file"
-            << std::endl;
-  return -10000;
-}
-
 int main(int argc, char** argv) {
   auto args = ArgumentParser(argc, argv);
   const int batch_size = 1;

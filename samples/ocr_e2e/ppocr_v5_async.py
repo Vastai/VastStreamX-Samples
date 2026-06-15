@@ -15,7 +15,8 @@ sys.path.append(common_path)
 
 import cv2
 import argparse
-from ocr_e2e_async_cls import OCR_e2e_Async
+from ppocr_v5_async_cls import PPOCR_v5_Async
+import common.utils as utils
 
 import vaststreamx as vsx
 import threading
@@ -29,8 +30,26 @@ import ast
 def argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--doc_ori_model",
+        default="",
+        help="document image orientation classification model prefix of the model suite files",
+    )
+    parser.add_argument(
+        "--doc_ori_vdsp_params",
+        default="",
+        help="document image orientation classification model vdsp preprocess parameter file",
+    )
+    parser.add_argument(
+        "--doc_ori_label_file",
+        default="",
+        help="doc image orientation classification label file",
+    )
+    parser.add_argument(
+        "--use_doc_ori_cls", type=int, default=1, help="whether use document image orientation classifier"
+    )
+    parser.add_argument(
         "--det_model",
-        default="/opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod",
+        default="/opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod",
         help="text detection model prefix of the model suite files",
     )
     parser.add_argument(
@@ -49,33 +68,36 @@ def argument_parser():
         help="input file",
     )
     parser.add_argument(
-        "--cls_model",
+        "--text_ori_model",
         default="/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod",
         help="text detection model prefix of the model suite files",
     )
     parser.add_argument(
-        "--cls_vdsp_params",
+        "--text_ori_vdsp_params",
         default="./data/configs/crnn_rgbplanar.json",
         help="text detection vdsp preprocess parameter file",
     )
     parser.add_argument(
-        "--cls_label_list",
+        "--text_ori_label_list",
         type=list,
         default=["0", "180"],
-        help="text classification label list",
+        help="text line orientation classification label list",
     )
     parser.add_argument(
-        "--cls_thresh", type=float, default=0.9, help="text classification thresh"
+        "--text_ori_thresh", type=float, default=0.9, help="text line orientation classification thresh"
+    )
+    parser.add_argument(
+        "--use_text_ori_cls", type=int, default=1, help="whether use text line orientation classifier"
     )
     parser.add_argument(
         "--rec_model",
         default="/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod",
-        help="text detection model prefix of the model suite files",
+        help="text recognition model prefix of the model suite files",
     )
     parser.add_argument(
         "--rec_vdsp_params",
         default="./data/configs/crnn_rgbplanar.json",
-        help="text detection vdsp preprocess parameter file",
+        help="text recognition vdsp preprocess parameter file",
     )
     parser.add_argument(
         "--rec_label_file",
@@ -87,9 +109,6 @@ def argument_parser():
         type=float,
         default=0.5,
         help="text recogniztion drop score threshold",
-    )
-    parser.add_argument(
-        "--use_angle_cls", type=int, default=1, help="whether use angle classifier"
     )
     parser.add_argument(
         "--hw_config",
@@ -127,23 +146,29 @@ def argument_parser():
         default="",
         help="dataset output file",
     )
+    parser.add_argument(
+        "--queue_size",
+        type=int,
+        default=1,
+        help="queue size of the pipeline"
+    )
     args = parser.parse_args()
     return args
 
 
-def inference_async(ocr_e2e, args, context, thread_index):
-    vsx.set_device(ocr_e2e.device_id)
+def inference_async(model, args, context, thread_index):
+    vsx.set_device(model.device_id)
 
     ticks = []
     tocks = []
 
     # get output thread
-    def get_output_thread(ocr_e2e, filelist):
-        vsx.set_device(ocr_e2e.device_id)
+    def get_output_thread(model, filelist):
+        vsx.set_device(model.device_id)
         index = 0
         while True:
             try:
-                output = ocr_e2e.get_output()
+                output, rot_angle = model.get_output()
                 tocks.append(time.time())
                 print(f"Thread:{thread_index},Get {filelist[index]} result")
                 if len(filelist) == 1:
@@ -156,6 +181,12 @@ def inference_async(ocr_e2e, args, context, thread_index):
                         print(str, rec_result)
                     if args.output_file != "":
                         cv_mat = cv2.imread(filelist[index])
+                        if rot_angle == 90:
+                            cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                        elif rot_angle == 180:
+                            cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_180)
+                        elif rot_angle == 270:
+                            cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_CLOCKWISE)
                         for box in boxes:
                             for i in range(len(box)):
                                 t = (i + 1) % len(box)
@@ -166,6 +197,13 @@ def inference_async(ocr_e2e, args, context, thread_index):
                         outfile = os.path.join(
                             direc, f"thread_{thread_index}_{filename}"
                         )
+                        if rot_angle == 90:
+                            cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_CLOCKWISE)
+                        elif rot_angle == 180:
+                            cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_180)
+                        elif rot_angle == 270:
+                            cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
                         cv2.imwrite(outfile, cv_mat)
                         print(f"save file to {outfile}")
                 index += 1
@@ -176,13 +214,12 @@ def inference_async(ocr_e2e, args, context, thread_index):
         cv_mat = cv2.imread(args.input_file)
         assert cv_mat is not None, f"Failed to read image file: {args.input_file}"
         output_thread = threading.Thread(
-            target=get_output_thread, args=(ocr_e2e, [args.input_file])
+            target=get_output_thread, args=(model, [args.input_file])
         )
         output_thread.start()
+        model.process_async(cv_mat)
 
-        ocr_e2e.process_async(cv_mat)
-
-        ocr_e2e.stop()
+        model.stop()
         output_thread.join()
         return
 
@@ -197,16 +234,16 @@ def inference_async(ocr_e2e, args, context, thread_index):
     else:
         filelist = files
 
-    output_thread = threading.Thread(target=get_output_thread, args=(ocr_e2e, filelist))
+    output_thread = threading.Thread(target=get_output_thread, args=(model, filelist))
     output_thread.start()
 
-    for file in filelist:
+    for i, file in enumerate(filelist):
         cv_image = cv2.imread(file)
         assert cv_image is not None, f"Failed to read image file:{file}"
-        ocr_e2e.process_async(cv_image)
+        model.process_async(cv_image)
         ticks.append(time.time())
 
-    ocr_e2e.stop()
+    model.stop()
 
     output_thread.join()
     context.merge_lock.acquire()
@@ -218,29 +255,41 @@ def inference_async(ocr_e2e, args, context, thread_index):
 if __name__ == "__main__":
     args = argument_parser()
     device_ids = ast.literal_eval(args.device_ids)
-    use_angle_cls = bool(args.use_angle_cls)
+    use_text_ori_cls = bool(args.use_text_ori_cls)
+
+    doc_ori_labels={}
+    if args.use_doc_ori_cls:
+        lines = utils.load_labels(args.doc_ori_label_file)
+        for line in lines:
+            label, angle = line.strip().split()
+            doc_ori_labels[int(label)] = int(angle)
 
     models = []
     for id in device_ids:
-        ocr_e2e = OCR_e2e_Async(
-            args.det_model,
-            args.det_vdsp_params,
-            args.det_box_type,
-            args.det_elf_file,
-            args.cls_model,
-            args.cls_vdsp_params,
-            args.cls_label_list,
-            args.cls_thresh,
-            args.rec_model,
-            args.rec_vdsp_params,
-            args.rec_label_file,
-            args.rec_drop_score,
-            use_angle_cls,
+        model = PPOCR_v5_Async(
+            doc_ori_model=args.doc_ori_model,
+            doc_ori_vdsp_params=args.doc_ori_vdsp_params,
+            doc_ori_labels=doc_ori_labels,
+            use_doc_ori_cls=args.use_doc_ori_cls,
+            det_model=args.det_model,
+            det_vdsp_params=args.det_vdsp_params,
+            det_box_type=args.det_box_type,
+            det_elf_file=args.det_elf_file,
+            text_ori_model=args.text_ori_model,
+            text_ori_vdsp_params=args.text_ori_vdsp_params,
+            text_ori_label_list=args.text_ori_label_list,
+            text_ori_thresh=args.text_ori_thresh,
+            use_text_ori_cls=args.use_text_ori_cls,
+            rec_model=args.rec_model,
+            rec_vdsp_params=args.rec_vdsp_params,
+            rec_label_file=args.rec_label_file,
+            rec_drop_score=args.rec_drop_score,
             batch_size=1,
             device_id=id,
             hw_config=args.hw_config,
+            queue_size=args.queue_size,
         )
-        models.append(ocr_e2e)
+        models.append(model)
 
     threads = []
     context = edict(
