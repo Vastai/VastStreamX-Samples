@@ -49,6 +49,8 @@ def cv_bgr888_to_vsximage(bgr888, vsx_format, device_id):
         res = np.array(cv2.cvtColor(bgr888, cv2.COLOR_BGR2RGB)).transpose(2, 0, 1)
     elif vsx_format == vsx.ImageFormat.YUV_NV12:
         res = cv_bgr888_to_nv12(bgr888=bgr888)
+    elif vsx_format == vsx.ImageFormat.GRAY:
+        res = cv2.cvtColor(bgr888, cv2.COLOR_BGR2GRAY)
     else:
         assert False, f"Unsupport format:{vsx_format}"
     return vsx.create_image(
@@ -73,7 +75,7 @@ def vsximage_to_cv_bgr888(vsx_image):
     elif vsx_image.format == vsx.ImageFormat.YUV_NV12:
         return cv_nv12_to_bgr888(image_np)
     elif vsx_image.format == vsx.ImageFormat.GRAY:
-        return image_np
+        return np.expand_dims(image_np, axis=-1) 
     else:
         assert False, f"Unrecognize format:{vsx_image.format}"
 

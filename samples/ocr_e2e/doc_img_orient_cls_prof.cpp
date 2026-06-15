@@ -1,25 +1,25 @@
 
 /*
- * Copyright (C) 2025 Vastai-tech Company.
+ * Copyright (C) 2026 Vastai-tech Company.
  * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 #include "common/cmdline.hpp"
+#include "common/doc_img_orient_cls.hpp"
 #include "common/model_profiler.hpp"
-#include "common/text_cls.hpp"
 
 cmdline::parser ArgumentParser(int argc, char** argv) {
   cmdline::parser args;
   args.add<std::string>("model_prefix", 'm',
                         "model prefix of the model suite files", false,
                         "/opt/vastai/vaststreamx/data/models/"
-                        "resnet34_vd-int8-max-1_3_32_100-vacc/resnet34_vd");
+                        "doc_ori_int8_mse_1-3-224-224/mod");
   args.add<std::string>("hw_config", '\0', "hw-config file of the model suite",
                         false);
   args.add<std::string>("vdsp_params", '\0', "vdsp preprocess parameter file",
-                        false, "../data/configs/crnn_rgbplanar.json");
+                        false, "../data/configs/doc_ori_rgbplanar.json");
   args.add<std::string>("device_ids", 'd', "device id to run", false, "[0]");
   args.add<uint32_t>("batch_size", 'b', "profiling batch size of the model",
                      false, 1);
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
   auto percentiles = vsx::ParseVecUint(args.get<std::string>("percentiles"));
   auto warmup_times = args.get<uint32_t>("warmup_times");
 
-  std::vector<std::shared_ptr<vsx::TextClassifier>> models;
+  std::vector<std::shared_ptr<vsx::DocImgOrientClassifier>> models;
   models.reserve(instance);
   std::vector<vsx::Context> contexts;
   for (uint32_t i = 0; i < instance; i++) {
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     } else {
       contexts.push_back(vsx::Context::VACC(device_id));
     }
-    models.push_back(std::make_shared<vsx::TextClassifier>(
+    models.push_back(std::make_shared<vsx::DocImgOrientClassifier>(
         model_prefix, vdsp_params, batch_size, device_id, hw_config));
   }
   vsx::TShape shape;
@@ -73,8 +73,8 @@ int main(int argc, char** argv) {
   vsx::ProfilerConfig config = {instance,    iterations,  batch_size,
                                 vsx::kUint8, device_ids,  contexts,
                                 {shape},     percentiles, queue_size};
-  vsx::ModelProfiler<vsx::TextClassifier> profiler(config, models,
-                                                   warmup_times);
+  vsx::ModelProfiler<vsx::DocImgOrientClassifier> profiler(config, models,
+                                                           warmup_times);
   std::cout << profiler.Profiling() << std::endl;
   return 0;
 }

@@ -8,20 +8,20 @@
  */
 #pragma once
 
-#include <typeinfo>
-#include <vector>
-
-#include "common/model_cv.hpp"
+#include "common/model_cv_async.hpp"
 #include "common/utils.hpp"
+#include "vaststreamx/vaststreamx.h"
 
 namespace vsx {
 
-class Resnet : public ModelCV {
+class DocImgOrientClassifierAsync : public ModelCVAsync {
  public:
-  Resnet(const std::string& model_prefix, const std::string& vdsp_config,
-         uint32_t batch_size = 1, uint32_t device_id = 0,
-         const std::string& hw_config = "")
-      : ModelCV(model_prefix, vdsp_config, batch_size, device_id, hw_config) {
+  DocImgOrientClassifierAsync(const std::string& model_prefix,
+                              const std::string& vdsp_config,
+                              uint32_t batch_size = 1, uint32_t device_id = 0,
+                              const std::string& hw_config = "")
+      : ModelCVAsync(model_prefix, vdsp_config, batch_size, device_id,
+                     hw_config) {
     int width, height;
     GetFusionOpResize(width, height);
     resize_size_ = width > height ? width : height;
@@ -54,6 +54,7 @@ class Resnet : public ModelCV {
         << "Can't find ResizeWidth or ResizeHeight in fusion_op";
     return ret;
   }
+
   void GetResize(int img_w, int img_h, int model_size, int& resize_w,
                  int& resize_h) {
     if (img_w > img_h) {
@@ -64,12 +65,13 @@ class Resnet : public ModelCV {
       resize_w = model_size;
     }
   }
+
   void GetCrop(int img_w, int img_h, int model_size, int& crop_x, int& crop_y) {
     crop_x = (img_w - model_size + 1) / 2;
     crop_y = (img_h - model_size + 1) / 2;
   }
 
-  std::vector<vsx::Tensor> ProcessImpl(const std::vector<vsx::Image>& images) {
+  uint32_t ProcessAsyncImpl(const std::vector<vsx::Image>& images) {
     vsx::StreamExtraRuntimeConfig extra_configs;
     extra_configs.crop_resize_config.reserve(images.size());
     for (const auto& image : images) {
@@ -80,15 +82,35 @@ class Resnet : public ModelCV {
               config.crop_x, config.crop_y);
       extra_configs.crop_resize_config.push_back(config);
     }
-    auto outputs = stream_->RunSync(images, extra_configs);
-    std::vector<vsx::Tensor> results;
-    results.reserve(outputs.size());
-    for (const auto& out : outputs) {
-      auto tensor_host = out[0].Clone();
-      auto tensor_fp32 = ConvertTensorFromFp16ToFp32(tensor_host);
-      results.push_back(tensor_fp32);
+    return stream_->RunAsync(images, extra_configs);
+  }
+
+ public:
+  bool GetOutput(std::vector<Tensor>& output) {
+    std::vector<std::vector<Tensor>> model_outputs;
+    if (stream_->GetOperatorOutput(model_op_, model_outputs)) {
+      output.reserve(model_outputs.size());
+      for (const auto& mod_outs : model_outputs) {
+        output.push_back(mod_outs[0]);
+      }
+      return true;
     }
-    return results;
+    return false;
+  }
+  void PostProcess(const vsx::Tensor& model_output, int& index, float& score) {
+    auto output = model_output.Clone();
+    auto fp32_output = vsx::ConvertTensorFromFp16ToFp32(output);
+    int max_index = 0;
+    float max_score = -10000.0;
+    // Find the index of the maximum value
+    for (size_t i = 0; i < fp32_output.GetSize(); ++i) {
+      if (fp32_output.Data<float>()[i] > max_score) {
+        max_index = i;
+        max_score = fp32_output.Data<float>()[i];
+      }
+    }
+    index = max_index;
+    score = max_score;
   }
 
  protected:
