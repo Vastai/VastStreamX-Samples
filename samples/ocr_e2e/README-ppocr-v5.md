@@ -15,7 +15,7 @@
 |  VACC FP16  精度(mobile) | accuracy: 74.59 |
 |  VACC INT8  精度(mobile)  |  accuracy: 71.65 |
 
-### PPOCR-V5-DET
+### PPOCR-V5-TEXT-DETECTION
 
 |    模型信息   |  值       |
 |-----------|-----------|
@@ -37,7 +37,7 @@
 |  VACC FP16  精度(mobile) | 86.50 |
 |  VACC INT8  精度(mobile)  |  84.00 |
 
-### PPOCR-V5-REC
+### PPOCR-V5-TEXT-RECOGNITION
 
 |    模型信息   |  值       |
 |-----------|-----------|
