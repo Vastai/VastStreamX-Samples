@@ -38,7 +38,7 @@ class TextDetectorAsync(ModelCVAsync):
         unclip_ratio=1.5,
         use_dilation=False,
         score_mode="fast",
-        elf_file="/opt/vastai/vastpipe/data/elf/find_contours_ext_op",
+        elf_file="/opt/vastai/vaststreamx/data/elf/find_contours_ext_op",
     ) -> None:
         super().__init__(model_prefix, vdsp_config, batch_size, device_id, hw_config)
         self.thresh_ = thresh

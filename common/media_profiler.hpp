@@ -101,7 +101,7 @@ class MediaProfiler {
     std::atomic<bool> stopped = {false};
     std::atomic<int> send = {0};
     std::atomic<int> recv = {0};
-    std::thread cunsume_thread([&] {
+    std::thread consume_thread([&] {
       while (!stopped || recv < send) {
         P param;
         if (!medias_[idx]->GetResult(param)) {
@@ -135,7 +135,7 @@ class MediaProfiler {
 
     stopped = true;
     medias_[idx]->Stop();
-    cunsume_thread.join();
+    consume_thread.join();
     auto end = std::chrono::high_resolution_clock::now();
     uint64_t used = duration_cast<microseconds>(end - start).count();
     throughput_ += static_cast<double>(ticks.size()) * 1000000 / used;

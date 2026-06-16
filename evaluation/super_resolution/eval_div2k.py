@@ -59,7 +59,7 @@ def calculate_ssim(img1, img2):
 
 if __name__ == '__main__':
     parse = argparse.ArgumentParser(description="SUPER RESOLUTION EVAL")
-    parse.add_argument("--gt", type=str, default="/opt/vastai/vastpipe/data/images/DIV2K/DIV2K_valid_HR", help="gt HR images folder")
+    parse.add_argument("--gt", type=str, default="/opt/vastai/vaststreamx/data/images/DIV2K/DIV2K_valid_HR", help="gt HR images folder")
     parse.add_argument("--result", type=str, default="/home/lwyu/work/edsr/vacc_result", help="result images folder")
     args = parse.parse_args()
 

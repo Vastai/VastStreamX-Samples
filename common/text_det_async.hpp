@@ -20,10 +20,10 @@ namespace vsx {
 
 class TextDetectorAsync : public ModelCVAsync {
  public:
-  TextDetectorAsync(const std::string &model_prefix,
-                    const std::string &vdsp_config, const std::string &elf_path,
+  TextDetectorAsync(const std::string& model_prefix,
+                    const std::string& vdsp_config, const std::string& elf_path,
                     uint32_t batch_size = 1, uint32_t device_id = 0,
-                    const std::string &hw_config = "")
+                    const std::string& hw_config = "")
       : ModelCVAsync(model_prefix, vdsp_config, batch_size, device_id,
                      hw_config),
         images_size_hw_(10) {
@@ -50,14 +50,14 @@ class TextDetectorAsync : public ModelCVAsync {
   void SetMaxContourNumber(uint32_t max_contour_num) {
     opinfo_.max_contour_num = max_contour_num;
   }
-  static void SetTestDataPath(const std::string &path) {
+  static void SetTestDataPath(const std::string& path) {
     test_data_path_ = path;
   }
 
   std::vector<vsx::Image> GetTestData(
-      uint32_t bsize, uint32_t dtype, const Context &context,
-      const std::vector<vsx::TShape> &input_shapes) {
-    const auto &input_shape = input_shapes[0];
+      uint32_t bsize, uint32_t dtype, const Context& context,
+      const std::vector<vsx::TShape>& input_shapes) {
+    const auto& input_shape = input_shapes[0];
     CHECK(input_shape.ndim() >= 2);
     vsx::Image image;
     if (test_data_path_.empty()) {
@@ -84,7 +84,7 @@ class TextDetectorAsync : public ModelCVAsync {
     return images;
   }
 
-  bool GetOutput(std::vector<Tensor> &outputs) {
+  bool GetOutput(std::vector<Tensor>& outputs) {
     std::vector<std::vector<Tensor>> model_outputs;
     if (stream_->GetOperatorOutput(model_op_, model_outputs)) {
       auto batch_size = model_outputs.size();
@@ -92,7 +92,7 @@ class TextDetectorAsync : public ModelCVAsync {
       std::vector<std::vector<int>> input_sizes;
       images_size_hw_.wait_dequeue(input_sizes);
       for (size_t i = 0; i < batch_size; ++i) {
-        auto &mod_out = model_outputs[i][0];
+        auto& mod_out = model_outputs[i][0];
 
         std::vector<int> srcimg_hw{input_sizes[i][0], input_sizes[i][1]};
         std::vector<float> ratio_hw{this->model_height_ * 1.0f / srcimg_hw[0],
@@ -114,29 +114,29 @@ class TextDetectorAsync : public ModelCVAsync {
 
  private:
   vsx::Tensor save_boxes_2_tensor(
-      const std::vector<float> &scores,
-      const std::vector<std::vector<std::vector<int>>> &boxes) {
+      const std::vector<float>& scores,
+      const std::vector<std::vector<std::vector<int>>>& boxes) {
     int64_t box_num = boxes.size();
     vsx::Tensor tsr(vsx::TShape({box_num, 9}), vsx::Context::CPU(),
                     vsx::TypeFlag::kFloat32);
 
     // NOTE: 要确保内存连续
-    float *dataArray = tsr.MutableData<float>();
+    float* dataArray = tsr.MutableData<float>();
     size_t currentIndex = 0;
     for (size_t i = 0; i < boxes.size(); i++) {
-      const auto &vec2D = boxes[i];
+      const auto& vec2D = boxes[i];
       dataArray[currentIndex++] = scores[i];
-      for (const auto &vec1D : vec2D) {
-        for (const int &value : vec1D) {
+      for (const auto& vec1D : vec2D) {
+        for (const int& value : vec1D) {
           dataArray[currentIndex++] = value;
         }
       }
     }
     return tsr;
   }
-  uint32_t ProcessAsyncImpl(const std::vector<vsx::Image> &images) {
+  uint32_t ProcessAsyncImpl(const std::vector<vsx::Image>& images) {
     std::vector<std::vector<int>> input_sizes;
-    for (auto &img : images) {
+    for (auto& img : images) {
       input_sizes.push_back({img.Height(), img.Width()});
     }
     images_size_hw_.wait_enqueue(std::move(input_sizes));
@@ -163,7 +163,7 @@ class TextDetectorAsync : public ModelCVAsync {
   static std::string elf_path_;
 
   FindContourOpInfo opinfo_{
-      "/opt/vastai/vastpipe/data/elf/find_contours_ext_op", 0.3, 0, 1024};
+      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 1024};
 };
 
 std::string TextDetectorAsync::test_data_path_ = "";

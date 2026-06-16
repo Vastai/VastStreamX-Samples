@@ -83,7 +83,7 @@ def argument_parser():
     )
     parser.add_argument(
         "--gt",
-        default="/opt/vastai/vastpipe/data/images/WFLW/list.txt",
+        default="/opt/vastai/vaststreamx/data/images/WFLW/list.txt",
         type=str,
         help="dataset ground truth",
     )

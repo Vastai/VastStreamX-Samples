@@ -113,7 +113,7 @@ class ModelProfilerAsync {
     WarmUpInstance(idx);
 
     BlockingReaderWriterCircularBuffer<int> queue_futs(config_->queue_size);
-    std::thread cunsume_thread([&] {
+    std::thread consume_thread([&] {
       std::vector<vsx::Tensor> outputs;
       while (models_[idx]->GetOutput(outputs)) {
         if (!long_time_test_) {
@@ -144,7 +144,7 @@ class ModelProfilerAsync {
       }
     }
     models_[idx]->CloseInput();
-    cunsume_thread.join();
+    consume_thread.join();
     models_[idx]->WaitUntilDone();
     auto end = std::chrono::high_resolution_clock::now();
     merge_mutex.lock();
@@ -161,7 +161,7 @@ class ModelProfilerAsync {
   void WarmUpInstance(uint32_t idx) {
     BlockingReaderWriterCircularBuffer<int> queue_futs(config_->queue_size);
     bool send_finish_signal = false;
-    std::thread cunsume_thread([&] {
+    std::thread consume_thread([&] {
       do {
         if (send_finish_signal && queue_futs.size_approx() == 0) {
           break;
@@ -181,7 +181,7 @@ class ModelProfilerAsync {
       models_[idx]->ProcessAsync(infer_data);
     }
     send_finish_signal = true;
-    cunsume_thread.join();
+    consume_thread.join();
 
     std::cout << "Warmup done for instance " << idx << std::endl;
   }

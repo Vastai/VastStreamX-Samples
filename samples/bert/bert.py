@@ -15,7 +15,7 @@ def argument_parser():
     parser.add_argument(
         "-m",
         "--model_prefix",
-        default="/opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod",
+        default="/opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod",
         help="model prefix of the model suite files",
     )
     parser.add_argument(
