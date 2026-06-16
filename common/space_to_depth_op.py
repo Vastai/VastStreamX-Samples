@@ -51,7 +51,7 @@ class SpaceToDepthOp(CustomOpBase):
         oh_align,
         ow_align,
         op_name="opf_space_to_depth_out_matrix",
-        elf_file="/opt/vastai/vastpipe/data/elf/space_to_depth",
+        elf_file="/opt/vastai/vaststreamx/data/elf/space_to_depth",
         device_id=0,
     ):
         super().__init__(op_name=op_name, elf_file=elf_file, device_id=device_id)

@@ -91,7 +91,7 @@ class MediaProfiler:
         tocks = []
         context = edict(stopped=False, left=0, send=0, recv=0)
 
-        def cunsume_thread_func(context, idx, tocks):
+        def consume_thread_func(context, idx, tocks):
             assert vsx.set_device(device_id) == 0
             while not context.stopped or context.recv < context.send:
                 try:
@@ -103,10 +103,10 @@ class MediaProfiler:
                 except:
                     break
 
-        cunsume_thread = threading.Thread(
-            target=cunsume_thread_func, args=(context, idx, tocks)
+        consume_thread = threading.Thread(
+            target=consume_thread_func, args=(context, idx, tocks)
         )
-        cunsume_thread.start()
+        consume_thread.start()
         start = time.time()
 
         while self.iters_left_ > 0 or self.long_time_test_:
@@ -121,7 +121,7 @@ class MediaProfiler:
 
         context.stopped = True
         self.medias_[idx].stop()
-        cunsume_thread.join()
+        consume_thread.join()
         end = time.time()
         self.merge_lock.acquire()
         time_used = (end - start) * 1000000

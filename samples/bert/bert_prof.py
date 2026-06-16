@@ -17,7 +17,7 @@ def argument_parser():
     parser.add_argument(
         "-m",
         "--model_prefix",
-        default="/opt/vastai/vastpipe/data/models/bert_base_en_qa-int8-max-1_384_1_384_1_384-vacc/bert_base_en",
+        default="/opt/vastai/vaststreamx/data/models/bert_base_en_qa-int8-max-1_384_1_384_1_384-vacc/bert_base_en",
         help="model prefix of the model suite files",
     )
     parser.add_argument(
@@ -73,6 +73,12 @@ def argument_parser():
         type=int,
         help="cache input data into host memory",
     )
+    parser.add_argument(
+        "--warmup_times",
+        default=10,
+        type=int,
+        help="number of warmup iterations",
+    )
     args = parser.parse_args()
     return args
 
@@ -89,6 +95,7 @@ if __name__ == "__main__":
     queue_size = args.queue_size
     input_host = args.input_host
     percentiles = ast.literal_eval(args.percentiles)
+    warmup_times = args.warmup_times
 
     models = []
     contexts = []
@@ -116,5 +123,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())

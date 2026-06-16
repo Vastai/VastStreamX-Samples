@@ -24,17 +24,17 @@ if __name__ == "__main__":
     parse.add_argument(
         "--test_image_path",
         type=str,
-        default="/home/zhchen/vastpipe-samples/data/ch4_test_images",
+        default="/opt/vastai/vaststreamx/data/ch4_test_images",
     )
     parse.add_argument(
         "--boxes_npz_dir",
         type=str,
-        default="/home/zhchen/vastpipe-samples/build/boxes_npz",
+        default="./boxes_npz",
     )
     parse.add_argument(
         "--label_file",
         type=str,
-        default="/home/zhchen/vastpipe-samples/samples/text_detection/calc_accrate/test_icdar2015_label.txt",
+        default="/opt/vastai/vaststreamx/data/test_icdar2015_label.txt",
     )
     parse.add_argument("--draw_image", action="store_true")
 

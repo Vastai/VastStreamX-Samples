@@ -87,7 +87,7 @@ class ModelProfilerAsync:
         ticks = []
         tocks = []
 
-        def cunsume_thread_func(que, tocks):
+        def consume_thread_func(que, tocks):
             while True:
                 try:
                     self.models_[idx].get_output()
@@ -97,8 +97,8 @@ class ModelProfilerAsync:
                 except ValueError:
                     break
 
-        cunsume_thread = threading.Thread(target=cunsume_thread_func, args=(que, tocks))
-        cunsume_thread.start()
+        consume_thread = threading.Thread(target=consume_thread_func, args=(que, tocks))
+        consume_thread.start()
         start = time.time()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             while self.iters_left_ >= 0:
@@ -108,7 +108,7 @@ class ModelProfilerAsync:
                 que.put(0)
                 ticks.append(tick)
         self.models_[idx].close_input()
-        cunsume_thread.join()
+        consume_thread.join()
         self.models_[idx].wait_until_done()
         end = time.time()
         self.merge_lock.acquire()
@@ -123,7 +123,7 @@ class ModelProfilerAsync:
         que = queue.Queue(self.config_.queue_size)
         send_finish_signal = False
 
-        def cunsume_thread_func(que):
+        def consume_thread_func(que):
             while True:
                 if send_finish_signal and que.empty():
                     break
@@ -133,13 +133,13 @@ class ModelProfilerAsync:
                 except ValueError:
                     break
 
-        cunsume_thread = threading.Thread(target=cunsume_thread_func, args=(que,))
-        cunsume_thread.start()
+        consume_thread = threading.Thread(target=consume_thread_func, args=(que,))
+        consume_thread.start()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             for i in range(self.warmup_iters_):
                 self.models_[idx].process_async(infer_data)
                 que.put(i)
         send_finish_signal = True
-        cunsume_thread.join()
+        consume_thread.join()
 
         print(f"Warmup done for instance {idx}")

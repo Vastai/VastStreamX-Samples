@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parse.add_argument(
         "--test_image_path",
         type=str,
-        default="/home/zhchen/vastpipe-samples/data/ppocr-v5/rec_test/",
+        default="/opt/vastai/vaststreamx/data/ppocr-v5/rec_test/",
     )
     parse.add_argument(
         "--pred_file",

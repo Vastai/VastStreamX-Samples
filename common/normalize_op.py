@@ -32,7 +32,7 @@ class NormalizeOp(CustomOpBase):
     def __init__(
         self,
         op_name="opf_normalize",
-        elf_file="/opt/vastai/vastpipe/data/elf/normalize",
+        elf_file="/opt/vastai/vaststreamx/data/elf/normalize",
         device_id=0,
         mean=[],
         std=[],

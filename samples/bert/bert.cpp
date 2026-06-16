@@ -10,7 +10,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   cmdline::parser args;
   args.add<std::string>(
       "model_prefix", 'm', "model prefix of the model suite files", false,
-      "/opt/vastai/vastpipe/data/models/"
+      "/opt/vastai/vaststreamx/data/models/"
       "bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod");
   args.add<std::string>("hw_config", '\0', "hw-config file of the model suite",
                         false);

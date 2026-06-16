@@ -32,12 +32,12 @@ if __name__ == "__main__":
     parse.add_argument(
         "--test_image_path",
         type=str,
-        default="/home/zhchen/vastpipe-samples/data/ch4_test_images",
+        default="/opt/vastai/vaststreamx/data/datasets/ch4_test_images",
     )
     parse.add_argument(
         "--boxes_npz_dir",
         type=str,
-        default="/home/zhchen/vastpipe-samples/build/boxes_npz",
+        default="./boxes_npz",
     )
 
     args = parse.parse_args()

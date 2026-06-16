@@ -106,7 +106,7 @@ class ModelProfiler:
         tocks = []
         context = edict(stopped=False, left=0, lock=threading.Lock())
 
-        def cunsume_thread_func(context, queue_futs, tocks):
+        def consume_thread_func(context, queue_futs, tocks):
             while not context.stopped or context.left > 0:
                 if context.left > 0:
                     fut = queue_futs.get(timeout=0.01)
@@ -119,10 +119,10 @@ class ModelProfiler:
                 else:
                     time.sleep(0.00001)
 
-        cunsume_thread = threading.Thread(
-            target=cunsume_thread_func, args=(context, queue_futs, tocks)
+        consume_thread = threading.Thread(
+            target=consume_thread_func, args=(context, queue_futs, tocks)
         )
-        cunsume_thread.start()
+        consume_thread.start()
         start = time.time()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             while self.iters_left_ > 0 or self.long_time_test_:
@@ -135,7 +135,7 @@ class ModelProfiler:
                 if self.long_time_test_ is False:
                     ticks.append(tick)
         context.stopped = True
-        cunsume_thread.join()
+        consume_thread.join()
         end = time.time()
         self.merge_lock.acquire()
         time_used = (end - start) * 1000000

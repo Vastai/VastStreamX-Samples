@@ -6,7 +6,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   cmdline::parser args;
   args.add<std::string>(
       "model_prefix", 'm', "model prefix of the model suite files", false,
-      "/opt/vastai/vastpipe/data/models/"
+      "/opt/vastai/vaststreamx/data/models/"
       "bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod");
   args.add<std::string>("hw_config", '\0', "hw-config file of the model suite",
                         false, "");
@@ -24,6 +24,8 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<bool>("input_host", '\0', "cache input data into host memory", false,
                  0);
   args.add<uint32_t>("queue_size", 'q', "aync wait queue size", false, 2);
+  args.add<uint32_t>("warmup_times", '\0', "number of warmup iterations", false,
+                     10);
   args.parse_check(argc, argv);
   return args;
 }
@@ -40,6 +42,7 @@ int main(int argc, char** argv) {
   auto input_host = args.get<bool>("input_host");
   auto queue_size = args.get<uint32_t>("queue_size");
   auto percentiles = vsx::ParseVecUint(args.get<std::string>("percentiles"));
+  auto warmup_times = args.get<uint32_t>("warmup_times");
 
   std::vector<std::shared_ptr<vsx::Bert>> models;
   models.reserve(instance);
@@ -67,7 +70,7 @@ int main(int argc, char** argv) {
   vsx::ProfilerConfig config = {instance,     iterations,  batch_size,
                                 vsx::kInt32,  device_ids,  contexts,
                                 input_shapes, percentiles, queue_size};
-  vsx::ModelProfiler<vsx::Bert> profiler(config, models);
+  vsx::ModelProfiler<vsx::Bert> profiler(config, models, warmup_times);
   std::cout << profiler.Profiling() << std::endl;
   return 0;
 }

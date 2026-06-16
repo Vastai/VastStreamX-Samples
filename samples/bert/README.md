@@ -3,15 +3,17 @@
 本目录提供基于 bert 模型的 NLP sample
 
 ## 数据准备
-下载模型 bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc 到 /opt/vastai/vastpipe/data/models 里
-下载数据集 SQuAD_1.1 到 /opt/vastai/vastpipe/data/datasets 里
+
+下载模型 bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc 到 /opt/vastai/vaststreamx/data/models 里
+下载数据集 SQuAD_1.1 到 /opt/vastai/vaststreamx/data/datasets 里
 
 ## C++ sample
 
 ### bert 命令行参数说明
+
 ```bash
 options:
-  -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod])
+  -m, --model_prefix             model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod])
       --hw_config                hw-config file of the model suite (string [=])
       --vdsp_params              vdsp preprocess parameter file (string [=../data/configs/bert_vdsp.json])
   -d, --device_id                device id to run (unsigned int [=0])
@@ -22,31 +24,34 @@ options:
       --dataset_output_folder    dataset result output folder (string [=])
   -?, --help                     print this message
 ```
+
 ### bert 运行示例
 
 在 build 目录里执行  
 
 跑单个npz
+
 ```bash
-./vastpipe-samples/bin/bert \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+./vaststreamx-samples/bin/bert \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
 --vdsp_params ../data/configs/bert_vdsp.json \
 --device_id 0 \
---input_file  /opt/vastai/vastpipe/data/datasets/SQuAD_1.1/val_npz_6inputs/test_0.npz \
+--input_file  /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/val_npz_6inputs/test_0.npz \
 --output_file ./bert_result.npz
 ```
+
 结果保存到 ./bert_result.npz 里
 
-
 跑数据集
+
 ```bash
 mkdir -p bert_output
-./vastpipe-samples/bin/bert \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+./vaststreamx-samples/bin/bert \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
 --vdsp_params ../data/configs/bert_vdsp.json \
 --device_id  0 \
---dataset_filelist  /opt/vastai/vastpipe/data/datasets/SQuAD_1.1_filelist.txt  \
---dataset_root /opt/vastai/vastpipe/data/datasets/ \
+--dataset_filelist  /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1_filelist.txt  \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder ./bert_output
 ```
 
@@ -55,19 +60,21 @@ mkdir -p bert_output
 ```bash
 python3 ../evaluation/bert/squad_eval.py  \
 --result_dir ./bert_output \
---eval_path /opt/vastai/vastpipe/data/datasets/SQuAD_1.1/dev-v1.1.json \
---vocab_path /opt/vastai/vastpipe/data/datasets/SQuAD_1.1/vocab.txt
+--eval_path /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/dev-v1.1.json \
+--vocab_path /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/vocab.txt
 ```
 
 精度输出结果
+
 ```bash
 {"exact_match": 71.18259224219489, "f1": 81.61918268029476}
 ```
 
 ### bert_prof 命令行参数说明
+
 ```bash
 options:
-  -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod])
+  -m, --model_prefix    model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod])
       --hw_config       hw-config file of the model suite (string [=])
       --vdsp_params     vdsp preprocess parameter file (string [=../data/configs/bert_vdsp.json])
   -d, --device_ids      device id to run (string [=[0]])
@@ -77,38 +84,44 @@ options:
       --percentiles     percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=2])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
+
 ### bert_prof 运行示例
 
 在 build 目录里执行  
 
 ```bash
 # 测试最大吞吐
-./vastpipe-samples/bin/bert_prof  \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+./vaststreamx-samples/bin/bert_prof  \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
 --vdsp_params ../data/configs/bert_vdsp.json \
 --device_ids  [0] \
 --batch_size  8 \
 --instance 1 \
 --iterations 200 \
+--warmup_times 200 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 1
 
 # 测试最小时延
-./vastpipe-samples/bin/bert_prof  \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+./vaststreamx-samples/bin/bert_prof  \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
 --vdsp_params ../data/configs/bert_vdsp.json \
 --device_ids  [0] \
 --batch_size  1 \
 --instance 1 \
 --iterations 500 \
+--warmup_times 500 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 0
 ```
+
 ### bert_prof 运行结果示例
+
 ```bash
 # 测试最大吞吐
 - number of instances: 1
@@ -144,6 +157,7 @@ options:
 ## Python sample 功能测试
 
 ### bert.py 命令行参数说明
+
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
@@ -172,47 +186,50 @@ optional arguments:
 在本目录下运行
 
 跑单个实例
+
 ```bash
 python3 bert.py \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
---vdsp_params ../../../data/configs/bert_vdsp.json \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+--vdsp_params ../../data/configs/bert_vdsp.json \
 --device_id 0 \
---input_file  /opt/vastai/vastpipe/data/datasets/SQuAD_1.1/val_npz_6inputs/test_0.npz \
+--input_file  /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/val_npz_6inputs/test_0.npz \
 --output_file ./bert_result.npz
 ```
+
 结果保存于 bert_output.npz
 
 跑数据集
+
 ```bash
 mkdir -p bert_output
 python3 bert.py \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
---vdsp_params ../../../data/configs/bert_vdsp.json \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+--vdsp_params ../../data/configs/bert_vdsp.json \
 --device_id 0 \
---dataset_filelist  /opt/vastai/vastpipe/data/datasets/SQuAD_1.1_filelist.txt  \
---dataset_root /opt/vastai/vastpipe/data/datasets/ \
+--dataset_filelist  /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1_filelist.txt  \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_folder ./bert_output
 ```
 
 计算数据集精度
 
 ```bash
-python3 ../../../evaluation/bert/squad_eval.py  \
+python3 ../../evaluation/bert/squad_eval.py  \
 --result_dir ./bert_output \
---eval_path /opt/vastai/vastpipe/data/datasets/SQuAD_1.1/dev-v1.1.json \
---vocab_path /opt/vastai/vastpipe/data/datasets/SQuAD_1.1/vocab.txt
+--eval_path /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/dev-v1.1.json \
+--vocab_path /opt/vastai/vaststreamx/data/datasets/SQuAD_1.1/vocab.txt
 ```
 
 精度输出结果
+
 ```bash
 {"exact_match": 71.18259224219489, "f1": 81.61918268029476}
 ```
 
-
 ### bert_prof.py 命令行说明
 
 ```bash
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -m MODEL_PREFIX, --model_prefix MODEL_PREFIX
                         model prefix of the model suite files
@@ -234,40 +251,43 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
-### bert_prof.py 命令示例 
+### bert_prof.py 命令示例
 
 在本目录下运行
 
 ```bash
 # 测试最大吞吐
 python3 bert_prof.py \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
---vdsp_params ../../../data/configs/bert_vdsp.json \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+--vdsp_params ../../data/configs/bert_vdsp.json \
 --device_ids  [0] \
 --batch_size  8 \
 --instance 1 \
 --iterations 200 \
+--warmup_times 200 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 1
 
 # 测试最小时延
 python3 bert_prof.py \
--m /opt/vastai/vastpipe/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
---vdsp_params ../../../data/configs/bert_vdsp.json \
+-m /opt/vastai/vaststreamx/data/models/bert_base_en_qa-384-int8-max-1_384_1_384_1_384-vacc/mod \
+--vdsp_params ../../data/configs/bert_vdsp.json \
 --device_ids  [0] \
 --batch_size  1 \
 --instance 1 \
 --iterations 500 \
+--warmup_times 1000 \
 --percentiles "[50,90,95,99]" \
 --input_host 1 \
 --queue_size 0
 ```
 
-
-###  bert_prof.py 运行结果示例
+### bert_prof.py 运行结果示例
 
 ```bash
 # 测试最大吞吐

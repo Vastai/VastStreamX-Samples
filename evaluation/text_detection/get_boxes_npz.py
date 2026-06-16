@@ -63,23 +63,23 @@ if __name__ == "__main__":
     parse.add_argument(
         "--exec_file",
         type=str,
-        default="/home/zhchen/vastpipe-samples/build/vastpipe-samples/bin/dbnet_sample",
+        default="./vaststreamx-samples/bin/dbnet_sample",
     )
     parse.add_argument(
         "--model_prefix",
         type=str,
-        default="/home/zhchen/vastpipe-samples/data/dbnet_mobilenetv3-int8-kl_divergence-1_3_736_1280-debug/dbnet_mobilenetv3",
+        default="/opt/vastai/vaststreamx/data/models/dbnet_mobilenetv3-int8-kl_divergence-1_3_736_1280-debug/dbnet_mobilenetv3",
     )
     parse.add_argument(
         "--vdsp_params",
         type=str,
-        default="/home/zhchen/vastpipe-samples/data/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/dbnet_resnet50_vd_rgb888_vdsp.json",
+        default="/opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/dbnet_resnet50_vd_rgb888_vdsp.json",
     )
     parse.add_argument("--device_id", type=str, default="0")
     parse.add_argument(
         "--input_file_path",
         type=str,
-        default="/home/zhchen/vastpipe-samples/data/ch4_test_images",
+        default="/opt/vastai/vaststreamx/data/ch4_test_images",
     )
     parse.add_argument("--out_npz_dir", type=str, default="boxes_npz")
     parse.add_argument("--use_custom_op", type=str, default="0")

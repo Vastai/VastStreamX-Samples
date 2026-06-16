@@ -123,12 +123,12 @@ class ModelProfiler {
         config_->batch_size, config_->data_type, config_->contexts[idx],
         config_->input_shapes);
 
-    // warmup    
+    // warmup
     for (int i = 0; i < warmup_iters_; i++) {
       models_[idx]->Process(infer_data);
     }
     std::cout << "Warmup done for instance " << idx << std::endl;
-    std::thread cunsume_thread([&] {
+    std::thread consume_thread([&] {
       while (!stopped || left > 0) {
         if (left > 0) {
           std::future<InferResult> fut;
@@ -162,7 +162,7 @@ class ModelProfiler {
       ++left;
     }
     stopped = true;
-    cunsume_thread.join();
+    consume_thread.join();
     auto end = std::chrono::high_resolution_clock::now();
     merge_mutex.lock();
     uint64_t used = duration_cast<microseconds>(end - start).count();
