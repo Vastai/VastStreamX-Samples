@@ -29,7 +29,7 @@
 
 |    模型信息   |  值       |
 |-----------|-----------|
-|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v3.5.0/docs/version3.x/algorithm/PP-OCRv5/PP-OCRv5.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/main/cv/text_recognition/ppocr_v5_rec/README.md)|
+|    来源   | [github](https://github.com/PaddlePaddle/PaddleOCR/blob/v3.5.0/docs/version3.x/algorithm/PP-OCRv5/PP-OCRv5.md)  [modelzoo](https://github.com/Vastai/VastModelZOO/blob/develop/cv/text_recognition/ppocr_v4_rec/README.md) |
 |  输入 shape |    (1,3,48,320)    |
 | INT8量化方式 |   percentile          |
 |  VACC FP16  精度(mobile) | ACC : 0.8090 |
