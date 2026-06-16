@@ -8,7 +8,13 @@
 import torch
 import numpy as np
 
-from mmcv.ops.nms import nms
+from torchvision.ops import nms as _tv_nms
+
+
+def nms(boxes, scores, iou_threshold=0.5):
+    keep = _tv_nms(boxes, scores, iou_threshold)
+    dets = torch.cat([boxes[keep], scores[keep, None]], dim=-1)
+    return dets, keep
 from concurrent.futures import ThreadPoolExecutor
 import time
 
