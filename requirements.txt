@@ -21,8 +21,7 @@ pysodmetrics
 cython_bbox 
 transformers  
 lap 
-pybind11 
-mmcv-full  
+pybind11  
 tensorflow 
 easydict 
 lvis 
