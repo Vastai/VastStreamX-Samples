@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 #pragma once
+#include "common/doc_img_orient_cls.hpp"
 #include "common/text_cls.hpp"
 #include "common/text_det.hpp"
 #include "common/text_rec.hpp"
@@ -14,16 +15,21 @@
 #include "opencv2/opencv.hpp"
 #include "vdsp_ops/rotate_op.hpp"
 #include "vdsp_ops/warp_perspective_op.hpp"
+
 namespace vsx {
-class OCR_e2e {
+class PPOCR {
  public:
-  OCR_e2e(
+  PPOCR(
+      // document image orientation classify
+      const std::string& doc_roi_model, const std::string& doc_roi_config,
+      const std::vector<std::vector<int>>& doc_ori_labels, bool use_doc_ori_cls,
       // text detection
       const std::string& det_model, const std::string& det_config,
       const std::string& det_box_type, const std::string& det_elf_file,
-      // text line orientation classification
-      const std::string& cls_model, const std::string& cls_config,
-      float cls_thresh, bool use_angle_cls,
+      float det_box_thresh,
+      // textline orientation classify
+      const std::string& text_ori_model, const std::string& text_ori_config,
+      float text_ori_thresh, bool use_text_ori_cls,
       // text recognition
       const std::string& rec_model, const std::string& rec_config,
       const std::string& rec_label_file, float rec_drop_score,
@@ -32,22 +38,32 @@ class OCR_e2e {
       const std::string& warp_perspective_op_file,
       // common
       uint32_t batch_size = 1, uint32_t device_id = 0,
-      const std::string& hw_config = "")
-      : det_box_type_(det_box_type),
-        use_angle_cls_(use_angle_cls),
-        cls_thresh_(cls_thresh),
-        rec_drop_score_(rec_drop_score) {
+      const std::string& hw_config = "") {
+    use_doc_ori_cls_ = use_doc_ori_cls;
+    doc_ori_labels_ = doc_ori_labels;
+    det_box_type_ = det_box_type;
+    use_text_ori_cls_ = use_text_ori_cls;
+    text_ori_thresh_ = text_ori_thresh;
+    rec_drop_score_ = rec_drop_score;
     device_id_ = device_id;
-    vsx::SetDevice(device_id);
+    vsx::SetDevice(device_id_);
+
+    if (use_doc_ori_cls) {
+      doc_ori_cls_ = std::make_shared<vsx::DocImgOrientClassifier>(
+          doc_roi_model, doc_roi_config, batch_size, device_id);
+    }
+
     text_det_ = std::make_shared<vsx::TextDetector>(
         det_model, det_config, det_elf_file, batch_size, device_id);
+    text_det_->SetBoxThreshold(det_box_thresh);
+
     text_rec_ = std::make_shared<vsx::TextRecognizer>(
         rec_model, rec_config, batch_size, device_id, rec_label_file,
         hw_config);
 
-    if (use_angle_cls_) {
-      text_cls_ = std::make_shared<vsx::TextClassifier>(
-          cls_model, cls_config, batch_size, device_id, hw_config);
+    if (use_text_ori_cls_) {
+      text_ori_cls_ = std::make_shared<vsx::TextClassifier>(
+          text_ori_model, text_ori_config, batch_size, device_id, hw_config);
     }
 
     rotate_op_ = std::make_shared<vsx::RotateOp>(rotate_op_file, device_id);
@@ -55,18 +71,32 @@ class OCR_e2e {
         warp_perspective_op_file, device_id);
   }
 
-  // Only Process RGB_PLANAR
+  // 当前 Process仅支持rgb_planar格式输入
   std::vector<std::tuple<std::vector<float>, float, std::string>> Process(
-      vsx::Image& origin_rgb_planar, bool do_cls = true) {
+      vsx::Image& origin_rgb_planar, int& return_rotate_angle,
+      bool do_doc_ori_cls = true, bool do_textline_ori_cls = true) {
     auto vsx_image = origin_rgb_planar;
-    auto det_results = text_det_->Process(vsx_image);  // text detection
+    return_rotate_angle = 0;
+    if (do_doc_ori_cls && use_doc_ori_cls_) {
+      auto tensor = doc_ori_cls_->Process(vsx_image);
+      int index;
+      float score;
+      doc_ori_cls_->PostProcess(tensor, index, score);
+      int angle = get_angle(index);
+      if (angle != 0) {
+        vsx_image = rotate_op_->Process(vsx_image, 360 - angle);
+        return_rotate_angle = 360 - angle;
+      }
+    }
+    // text_detection
+    auto det_results = text_det_->Process(vsx_image);
     // parse text detection result
     std::vector<std::tuple<std::vector<float>, float, std::string>> results;
+    std::vector<vsx::Image> crop_images;
     if (det_results.GetSize() == 0) {
-      std::cout << "No Text detected in image.\n";
+      std::cout << "No text detected in image.\n";
     } else {
       int obj_count = det_results.Shape()[0];
-      std::vector<vsx::Image> crop_imgs;
       const float* det_res_data = det_results.Data<float>();
       for (int i = 0; i < obj_count; i++) {
         // float score = det_res_data[i * 9 + 0];
@@ -76,24 +106,29 @@ class OCR_e2e {
             cv::Point2f(det_res_data[i * 9 + 5], det_res_data[i * 9 + 6]),
             cv::Point2f(det_res_data[i * 9 + 7], det_res_data[i * 9 + 8])};
         if (det_box_type_ == "quad") {
-          crop_imgs.emplace_back(GetRotateCropImage(vsx_image, src_points));
+          auto crop_image = GetRotateCropImage(vsx_image, src_points);
+          if (!crop_image.IsEmpty()) {
+            crop_images.push_back(crop_image);
+          }
         } else {
-          crop_imgs.emplace_back(
-              GetMinareaRectCropImage(vsx_image, src_points));
+          auto crop_image = GetMinareaRectCropImage(vsx_image, src_points);
+          if (!crop_image.IsEmpty()) {
+            crop_images.push_back(crop_image);
+          }
         }
       }
-      if (use_angle_cls_) {
-        auto cls_result = text_cls_->Process(crop_imgs);
+      if (use_text_ori_cls_) {
+        auto cls_result = text_ori_cls_->Process(crop_images);
         for (size_t i = 0; i < cls_result.size(); i++) {
           const float* cls_data = cls_result[i].Data<float>();
-          if (cls_data[1] > cls_data[0] && cls_data[1] > cls_thresh_) {
-            crop_imgs[i] = rotate_op_->Process(crop_imgs[i], 180);
+          if (cls_data[1] > cls_data[0] && cls_data[1] > text_ori_thresh_) {
+            crop_images[i] = rotate_op_->Process(crop_images[i], 180);
           }
         }
       }
 
       // text recognition
-      auto rec_res = text_rec_->Process(crop_imgs);
+      auto rec_res = text_rec_->Process(crop_images);
       for (size_t i = 0; i < rec_res.size(); i++) {
         float score = vsx::GetScoreFromTensor(rec_res[i]);
         if (score >= rec_drop_score_) {
@@ -111,6 +146,16 @@ class OCR_e2e {
   }
 
  private:
+  int get_angle(int index) {
+    for (auto& label : doc_ori_labels_) {
+      if (label[0] == index) {
+        return label[1];
+      }
+    }
+    std::cerr << "Error: Cann't find index: " << index << " in label file"
+              << std::endl;
+    return -10000;
+  }
   vsx::Image GetRotateCropImage(const vsx::Image& vsx_image,
                                 const std::vector<cv::Point2f>& points) {
     // Calculate width and height of the cropped image
@@ -121,6 +166,9 @@ class OCR_e2e {
 
     int crop_w = std::max(width1, width2);
     int crop_h = std::max(height1, height2);
+    if (crop_h < 5 || crop_w < 5) {
+      return vsx::Image();
+    }
 
     std::vector<cv::Point2f> pts_std = {
         cv::Point2f(0, 0), cv::Point2f(crop_w, 0), cv::Point2f(crop_w, crop_h),
@@ -184,11 +232,15 @@ class OCR_e2e {
 
  private:
   std::string det_box_type_;
-  bool use_angle_cls_;
-  float cls_thresh_;
+  bool use_doc_ori_cls_;
+  bool use_text_ori_cls_;
+  float text_ori_thresh_;
   float rec_drop_score_;
+  std::vector<std::vector<int>> doc_ori_labels_;
+
+  std::shared_ptr<vsx::DocImgOrientClassifier> doc_ori_cls_;
   std::shared_ptr<vsx::TextDetector> text_det_;
-  std::shared_ptr<vsx::TextClassifier> text_cls_;
+  std::shared_ptr<vsx::TextClassifier> text_ori_cls_;
   std::shared_ptr<vsx::TextRecognizer> text_rec_;
 
   std::shared_ptr<vsx::RotateOp> rotate_op_;

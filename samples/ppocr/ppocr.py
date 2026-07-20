@@ -71,6 +71,9 @@ def argument_parser():
         help="input file",
     )
     parser.add_argument(
+        "--det_box_thresh", type=float, default=0.6, help="text detection box thresh"
+    )
+    parser.add_argument(
         "--text_ori_model",
         default="/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod",
         help="text detection model prefix of the model suite files",
@@ -153,7 +156,7 @@ def argument_parser():
     return args
 
 
-class PPOCR_v5:
+class PPOCR:
     def __init__(
         self,
         doc_ori_model:str,
@@ -164,6 +167,7 @@ class PPOCR_v5:
         det_vdsp_params,
         det_box_type,
         det_elf_file,
+        det_box_thresh,
         text_ori_model,
         text_ori_vdsp_params,
         text_ori_label_list,
@@ -190,8 +194,10 @@ class PPOCR_v5:
             batch_size,
             device_id,
             hw_config,
+            box_thresh=det_box_thresh,
             elf_file=det_elf_file,
         )
+
         if use_text_ori_cls:
             self.text_ori_cls = TextClassifier(
                 text_ori_model, text_ori_vdsp_params, text_ori_label_list, batch_size, device_id, hw_config
@@ -237,7 +243,8 @@ class PPOCR_v5:
                 img_crop = self.get_rotate_crop_image(cv_image, tmp_box)
             else:
                 img_crop = self.get_minarea_rect_crop(cv_image, tmp_box)
-            img_crop_list.append(img_crop)
+            if img_crop is not None:
+                img_crop_list.append(img_crop)
 
         # rotate text image according to the classification result
         if self.use_text_ori_cls and self.text_ori_cls:
@@ -296,6 +303,9 @@ class PPOCR_v5:
                 np.linalg.norm(points[1] - points[2]),
             )
         )
+        if img_crop_width < 5 or img_crop_height < 5:
+            return None
+        
         pts_std = np.float32(
             [
                 [0, 0],
@@ -445,7 +455,7 @@ if __name__ == "__main__":
 
     models=[]
     for id in device_ids:
-        model = PPOCR_v5(
+        model = PPOCR(
             doc_ori_model=args.doc_ori_model,
             doc_ori_vdsp_params=args.doc_ori_vdsp_params,
             doc_ori_labels=doc_ori_labels,
@@ -454,6 +464,7 @@ if __name__ == "__main__":
             det_vdsp_params=args.det_vdsp_params,
             det_box_type=args.det_box_type,
             det_elf_file=args.det_elf_file,
+            det_box_thresh=args.det_box_thresh,
             text_ori_model=args.text_ori_model,
             text_ori_vdsp_params=args.text_ori_vdsp_params,
             text_ori_label_list=args.text_ori_label_list,

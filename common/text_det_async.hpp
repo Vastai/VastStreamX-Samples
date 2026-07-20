@@ -163,7 +163,7 @@ class TextDetectorAsync : public ModelCVAsync {
   static std::string elf_path_;
 
   FindContourOpInfo opinfo_{
-      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 1024};
+      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 2048};
 };
 
 std::string TextDetectorAsync::test_data_path_ = "";

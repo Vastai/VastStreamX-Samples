@@ -14,7 +14,7 @@ VaststreamX Samples 是基于 VaststreamX API 开发的示例程序，用户可�
 
 使用瀚博半导体的AI加速卡测试 VaststreamX Samples 前， 需联系销售代表获取部署软件包。
 
-- 版本号：[VVI-25.11](https://developer.vastaitech.com/downloads/delivery-center?&version_uid=484479150992789504)
+- 版本号：[VVI-26.02](https://developer.vastaitech.com/downloads/vvi)
 
 ## 支持的模型与开发语言
 
@@ -79,6 +79,11 @@ make install
 参考各个 sample 目录下的 readme ，执行对应的指令
 
 ## Update
+
+- 2026-07-20
+  - Update:
+    - OCR-E2E SAMPLE 改名为 PPOCR
+    - PPOCR-V4 E2E SAMPLE 与 PPOCR-V5 SAMPLE 共用同一套代码
 
 - 2026-06-15
   - Features:

@@ -1,4 +1,4 @@
-# PPOCR-E2E
+# PPOCR  E2E Sample
 
 ## PPOCR-V4 Sample
 

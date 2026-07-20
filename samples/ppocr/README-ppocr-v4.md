@@ -1,9 +1,9 @@
-# OCR_e2e SAMPLE
+# PPOCR V4 SAMPLE
 
 本目录提供端到端（文本检测，文本方向分类，文本识别）的 OCR sample
 
-其中 ocr_e2e 是 三个模型同步推理,  ocr_e2e_async是三个模型多线程异步推理
-    ocr_e2e.py 是 三个模型同步推理,  ocr_e2e_async.py  是三个模型多线程异步推理
+其中 ppocr 是 三个模型同步推理,  ppocr_async 是三个模型多线程异步推理
+    ppocr.py 是 三个模型同步推理,  ppocr_async.py  是三个模型多线程异步推理
 
 ## 模型信息
 
@@ -39,19 +39,24 @@
 
 ### PPOCR-V4 E2E Samples
 
-#### ocr_e2e 命令行参数说明
+#### ppocr 命令行参数说明
 
 ```bash
-usage: ./vaststreamx-samples/bin/ocr_e2e [options] ... 
+usage: ./vaststreamx-samples/bin/ppocr [options] ... 
 options:
+      --doc_ori_model           document image orientation classify model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/det_model_vacc_fp16/mod])
+      --doc_ori_config          document image orientation classify vdsp preprocess parameter file (string [=../data/configs/dbnet_rgbplanar.json])
+      --doc_ori_label_file      document image orientation classify vdsp preprocess parameter file (string [=../data/configs/dbnet_rgbplanar.json])
+      --use_doc_ori_cls         use image orientation classification (bool [=0])
       --det_model               text detection model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/det_model_vacc_fp16/mod])
       --det_config              text detection vdsp preprocess parameter file (string [=../data/configs/dbnet_rgbplanar.json])
-      --det_box_type            text detection box type (string [=quad])
       --det_elf_file            text detection elf file (string [=/opt/vastai/vaststreamx/data/elf/find_contours_ext_op])
-      --cls_model               text classification model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/cls_model_vacc_fp16/mod])
-      --cls_config              text classification vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
-      --cls_thresh              text classification thresh (float [=0.9])
-      --use_angle_cls           use text classification (bool [=1])
+      --det_box_type            text detection box type (string [=quad])
+      --det_box_thresh          text detection box thresh (float [=0.6])
+      --text_ori_model          textline orientation classification model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/cls_model_vacc_fp16/mod])
+      --text_ori_config         text classification vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
+      --text_ori_thresh         text classification thresh (float [=0.9])
+      --use_text_ori_cls        use text classification (bool [=1])
       --rec_model               text recognition model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/rec_model_vacc_fp16/mod])
       --rec_config              text recognition vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
       --rec_label_file          text recognition label file (string [=../data/labels/ppocr_keys_v1.txt])
@@ -61,7 +66,7 @@ options:
       --batch_size              batch size of the model (unsigned int [=1])
       --device_ids              device id to run (string [=[0]])
       --hw_config               hw-config file of the model suite (string [=])
-      --input_file              input image (string [=../data/images/word_336.png])
+      --input_file              input image (string [=../data/images/ppocr.jpg])
       --output_file             output image file (string [=])
       --dataset_filelist        input dataset filelist (string [=])
       --dataset_root            input dataset root (string [=])
@@ -69,20 +74,24 @@ options:
   -?, --help                    print this message
 ```
 
-#### ocr_e2e 命令行示例
+#### ppocr 命令行示例
 
 在build 目录里执行
 
 单图片示例
 
 ```bash
-./vaststreamx-samples/bin/ocr_e2e \
+./vaststreamx-samples/bin/ppocr \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---use_angle_cls 1 \
+--det_box_type "quad" \
+--det_box_thresh 0.6 \
+--text_ori_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
+--text_ori_config ../data/configs/crnn_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../data/labels/ocr_rec_dict.txt \
@@ -91,12 +100,13 @@ options:
 --warp_perspective_elf /opt/vastai/vaststreamx/data/elf/warp_perspective_ext_op \
 --device_ids [0] \
 --input_file ../data/images/detect.jpg \
---output_file ocr_e2e_result.jpg
+--output_file ppocr_v4_result.jpg
 ```
 
 输出
 
 ```bash
+Thread 0 get ../data/images/detect.jpg result:
 bbox:[ [659 79] [702 81] [701 100] [ 658 98] ], score: 0.998438, string: 20029
 bbox:[ [636 133] [726 138] [724 159] [ 635 154] ], score: 0.99762, string: 97154197
 bbox:[ [636 151] [701 154] [700 173] [ 635 170] ], score: 0.998291, string: 198727
@@ -105,21 +115,25 @@ bbox:[ [788 298] [902 298] [902 338] [ 788 338] ], score: 0.994727, string: JOIN
 bbox:[ [787 330] [869 332] [868 370] [ 786 368] ], score: 0.987915, string: PAIN
 bbox:[ [852 452] [904 450] [905 469] [ 853 471] ], score: 0.946167, string: JOINT-RX
 bbox:[ [846 531] [883 529] [884 544] [ 847 546] ], score: 0.663483, string: TUFBLANE
-Save file to: ./thread_0_ocr_e2e_result.jpg
+Save file to: ./ppocr_v4_result.jpg
 ```
 
-并在图片上画出检测框，保存到  thread_0_ocr_e2e_result.jpg
+并在图片上画出检测框，保存到  thread_0_ppocr_v4_result.jpg
 
 测试 三个模型同步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
 
 ```bash
-./vaststreamx-samples/bin/ocr_e2e \
+./vaststreamx-samples/bin/ppocr \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---use_angle_cls 1 \
+--det_box_type "quad" \
+--det_box_thresh 0.6 \
+--text_ori_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
+--text_ori_config ../data/configs/crnn_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../data/labels/ocr_rec_dict.txt \
@@ -131,23 +145,27 @@ Save file to: ./thread_0_ocr_e2e_result.jpg
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_file ppocr_v4_dataset_output.txt
 
-##结果示例  880MHz 下
-Image count: 500, total cost: 27183 ms, throughput: 18.3938 fps. Average latency: 54.366 ms.
+##结果示例  1200MHz 下
+Image count: 500, total cost: 27072 ms, throughput: 18.4693 fps. Average latency: 54.144 ms. 
 ```
 
-#### ocr_e2e_async 命令行参数说明
+#### ppocr_async 命令行参数说明
 
 ```bash
-usage: ./vaststreamx-samples/bin/ocr_e2e_async [options] ... 
 options:
+      --doc_ori_model           document image orientation classify model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/det_model_vacc_fp16/mod])
+      --doc_ori_config          document image orientation classify vdsp preprocess parameter file (string [=../data/configs/dbnet_rgbplanar.json])
+      --doc_ori_label_file      document image orientation classify vdsp preprocess parameter file (string [=../data/configs/dbnet_rgbplanar.json])
+      --use_doc_ori_cls         use image orientation classification (bool [=0])
       --det_model               text detection model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/det_model_vacc_fp16/mod])
       --det_config              text detection vdsp preprocess parameter file (string [=../data/configs/dbnet_rgbplanar.json])
-      --det_box_type            text detection box type (string [=quad])
       --det_elf_file            text detection elf file (string [=/opt/vastai/vaststreamx/data/elf/find_contours_ext_op])
-      --cls_model               text classification model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/cls_model_vacc_fp16/mod])
-      --cls_config              text classification vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
-      --cls_thresh              text classification thresh (float [=0.9])
-      --use_angle_cls           use text classification (int [=1])
+      --det_box_type            text detection box type (string [=quad])
+      --det_box_thresh          text detection box thresh (float [=0.6])
+      --text_ori_model          textline orientation classification model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/cls_model_vacc_fp16/mod])
+      --text_ori_config         text classification vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
+      --text_ori_thresh         text classification thresh (float [=0.9])
+      --use_text_ori_cls        use text classification (bool [=1])
       --rec_model               text recognition model prefix of the model suite files (string [=/opt/vastai/vaststreamx/data/models/rec_model_vacc_fp16/mod])
       --rec_config              text recognition vdsp preprocess parameter file (string [=../data/configs/crnn_rgbplanar.json])
       --rec_label_file          text recognition label file (string [=../data/labels/ppocr_keys_v1.txt])
@@ -157,7 +175,7 @@ options:
       --batch_size              batch size of the model (unsigned int [=1])
       --device_ids              device id to run (string [=[0]])
       --hw_config               hw-config file of the model suite (string [=])
-      --input_file              input image (string [=../data/images/word_336.png])
+      --input_file              input image (string [=../data/images/ppocr.jpg])
       --output_file             output image file (string [=])
       --dataset_filelist        input dataset filelist (string [=])
       --dataset_root            input dataset root (string [=])
@@ -166,20 +184,24 @@ options:
   -?, --help                    print this message
 ```
 
-#### ocr_e2e_async 命令行示例
+#### ppocr_async 命令行示例
 
 在build 目录里执行
 
 单图片示例
 
 ```bash
-./vaststreamx-samples/bin/ocr_e2e_async \
+./vaststreamx-samples/bin/ppocr_async \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---use_angle_cls 1 \
+--det_box_type "quad" \
+--det_box_thresh 0.6 \
+--text_ori_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
+--text_ori_config ../data/configs/crnn_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../data/labels/ocr_rec_dict.txt \
@@ -189,12 +211,13 @@ options:
 --device_ids [0] \
 --queue_size 1 \
 --input_file ../data/images/detect.jpg \
---output_file ocr_e2e_async_result.jpg
+--output_file ppocr_v4_async_result.jpg
 ```
 
-#### ocr_e2e_async 结果示例
+#### ppocr_async 结果示例
 
 ```bash
+Thread 0 get ../data/images/detect.jpg result.
 bbox:[ [659 79] [702 81] [701 100] [ 658 98] ], score: 0.998438, string: 20029
 bbox:[ [636 133] [726 138] [724 159] [ 635 154] ], score: 0.99762, string: 97154197
 bbox:[ [636 151] [701 154] [700 173] [ 635 170] ], score: 0.998291, string: 198727
@@ -203,19 +226,23 @@ bbox:[ [788 298] [902 298] [902 338] [ 788 338] ], score: 0.994727, string: JOIN
 bbox:[ [787 330] [869 332] [868 370] [ 786 368] ], score: 0.987915, string: PAIN
 bbox:[ [852 452] [904 450] [905 469] [ 853 471] ], score: 0.946167, string: JOINT-RX
 bbox:[ [846 531] [883 529] [884 544] [ 847 546] ], score: 0.663483, string: TUFBLANE
-Save file to: ./thread_0_ocr_e2e_async_result.jpg
+Save file to: ./thread_0_ppocr_v4_async_result.jpg
 ```
 
 测试 三个模型多线程异步推理 的性能与时延, 可以通过 --device_ids 指定多个 die
 
 ```bash
-./vaststreamx-samples/bin/ocr_e2e_async \
+./vaststreamx-samples/bin/ppocr_async \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_config ../data/configs/dbnet_rgbplanar.json \
 --det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---cls_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
---cls_config ../data/configs/crnn_rgbplanar.json \
---use_angle_cls 1 \
+--det_box_type "quad" \
+--det_box_thresh 0.6 \
+--text_ori_model  /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod  \
+--text_ori_config ../data/configs/crnn_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_config ../data/configs/crnn_rgbplanar.json \
 --rec_label_file ../data/labels/ocr_rec_dict.txt \
@@ -227,8 +254,8 @@ Save file to: ./thread_0_ocr_e2e_async_result.jpg
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/
 
-##结果示例  880MHz 下
-Image count: 500, total cost: 16952 ms, throughput: 29.495 fps. Average latency: 974.576 ms.
+##结果示例  1200MHz 下
+Image count: 500, total cost: 15746 ms, throughput: 31.7541 fps. Average latency: 398.132 ms. 
 ```
 
 ### 文本检测模型精度与性能测试
@@ -449,8 +476,8 @@ vaststreamx-samples/bin/text_cls \
 -m /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
 --vdsp_params ../data/configs/crnn_rgbplanar.json \
 --device_id 0 \
---dataset_val_file /opt/vastai/vaststreamx/data/datasets/ppocr-v5/textline_orientation_example_data/val.txt \
---dataset_root /opt/vastai/vaststreamx/data/datasets/ppocr-v5/textline_orientation_example_data/
+--dataset_val_file /opt/vastai/vaststreamx/data/datasets/textline_orientation_example_data/val.txt \
+--dataset_root /opt/vastai/vaststreamx/data/datasets/textline_orientation_example_data/
 
 #输出
 Accuracy: 0.93
@@ -711,11 +738,19 @@ options:
 
 ### PPOCR-V4 E2E Samples
 
-#### ocr_e2e.py 命令行参数说明
+#### ppocr.py 命令行参数说明
 
 ```bash
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  --doc_ori_model DOC_ORI_MODEL
+                        document image orientation classification model prefix of the model suite files
+  --doc_ori_vdsp_params DOC_ORI_VDSP_PARAMS
+                        document image orientation classification model vdsp preprocess parameter file
+  --doc_ori_label_file DOC_ORI_LABEL_FILE
+                        doc image orientation classification label file
+  --use_doc_ori_cls USE_DOC_ORI_CLS
+                        whether use document image orientation classifier
   --det_model DET_MODEL
                         text detection model prefix of the model suite files
   --det_vdsp_params DET_VDSP_PARAMS
@@ -724,24 +759,26 @@ optional arguments:
                         det box type, poly or quad
   --det_elf_file DET_ELF_FILE
                         input file
-  --cls_model CLS_MODEL
+  --det_box_thresh DET_BOX_THRESH
+                        text detection box thresh
+  --text_ori_model TEXT_ORI_MODEL
                         text detection model prefix of the model suite files
-  --cls_vdsp_params CLS_VDSP_PARAMS
+  --text_ori_vdsp_params TEXT_ORI_VDSP_PARAMS
                         text detection vdsp preprocess parameter file
-  --cls_label_list CLS_LABEL_LIST
-                        text classification label list
-  --cls_thresh CLS_THRESH
-                        text classification thresh
+  --text_ori_label_list TEXT_ORI_LABEL_LIST
+                        text line orientation classification label list
+  --text_ori_thresh TEXT_ORI_THRESH
+                        text line orientation classification thresh
+  --use_text_ori_cls USE_TEXT_ORI_CLS
+                        whether use text line orientation classifier
   --rec_model REC_MODEL
-                        text detection model prefix of the model suite files
+                        text recognition model prefix of the model suite files
   --rec_vdsp_params REC_VDSP_PARAMS
-                        text detection vdsp preprocess parameter file
+                        text recognition vdsp preprocess parameter file
   --rec_label_file REC_LABEL_FILE
                         text recognizition label file
   --rec_drop_score REC_DROP_SCORE
                         text recogniztion drop score threshold
-  --use_angle_cls USE_ANGLE_CLS
-                        whether use angle classifier
   --hw_config HW_CONFIG
                         hw-config file of the model suite
   --device_ids DEVICE_IDS
@@ -758,29 +795,33 @@ optional arguments:
                         dataset output file
 ```
 
-#### ocr_e2e.py 运行示例
+#### ppocr.py 运行示例
 
 在本目录下运行  
 
 ```bash
 #单张图片示例
-python3 ocr_e2e.py \
+python3 ppocr.py \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--det_box_thresh 0.6 \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--text_ori_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0] \
 --rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--device_ids [0] \
 --input_file ../../data/images/detect.jpg \
---det_box_type quad \
---output_file ocr_res.jpg
+--output_file ppocr_v4_result.jpg
 
 ```
 
-#### ocr_e2e.py 运行结果示例
+#### ppocr.py 运行结果示例
 
 终端显示 检测到的文字的 bbox 多边形的四个角的坐标，文本内容，识别分数，bbox也画在图片上并保存为 ocr_res.jpg
 
@@ -794,34 +835,47 @@ python3 ocr_e2e.py \
 [[790,333], [866,336], [865,368], [789,366]],  [('PAIN', 0.99267578125)]
 [[854,454], [903,453], [903,468], [854,469]],  [('JOINT-RX', 0.93212890625)]
 [[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
+save file  thread_0_ppocr_v4_result.jpg
 ```
 
-#### ocr_e2e.py 测试 同步推理 性能与时延
+#### ppocr.py 测试 同步推理 性能与时延
 
 ```bash
-python ocr_e2e.py \
+python ppocr.py \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--det_box_thresh 0.6 \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--text_ori_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--text_ori_thresh 0.9 \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0] \
---det_box_type quad \
 --rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--device_ids [0] \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/ \
 --dataset_output_file ppocr_v4_dataset_output.txt
-#测试结果  880MHz 下
-Image count: 500, total cost: 31.75 s, throughput: 15.75 fps, average latency: 0.064 s
+#测试结果  1200MHz 下
+Image count: 500, total cost: 31.46 s, throughput: 15.89 fps, average latency: 0.063 s
 ```
 
-#### ocr_e2e_async.py 命令行参数说明
+#### ppocr_async.py 命令行参数说明
 
 ```bash
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  --doc_ori_model DOC_ORI_MODEL
+                        document image orientation classification model prefix of the model suite files
+  --doc_ori_vdsp_params DOC_ORI_VDSP_PARAMS
+                        document image orientation classification model vdsp preprocess parameter file
+  --doc_ori_label_file DOC_ORI_LABEL_FILE
+                        doc image orientation classification label file
+  --use_doc_ori_cls USE_DOC_ORI_CLS
+                        whether use document image orientation classifier
   --det_model DET_MODEL
                         text detection model prefix of the model suite files
   --det_vdsp_params DET_VDSP_PARAMS
@@ -830,24 +884,26 @@ optional arguments:
                         det box type, poly or quad
   --det_elf_file DET_ELF_FILE
                         input file
-  --cls_model CLS_MODEL
+  --det_box_thresh DET_BOX_THRESH
+                        text detection box threshold
+  --text_ori_model TEXT_ORI_MODEL
                         text detection model prefix of the model suite files
-  --cls_vdsp_params CLS_VDSP_PARAMS
+  --text_ori_vdsp_params TEXT_ORI_VDSP_PARAMS
                         text detection vdsp preprocess parameter file
-  --cls_label_list CLS_LABEL_LIST
-                        text classification label list
-  --cls_thresh CLS_THRESH
-                        text classification thresh
+  --text_ori_label_list TEXT_ORI_LABEL_LIST
+                        text line orientation classification label list
+  --text_ori_thresh TEXT_ORI_THRESH
+                        text line orientation classification thresh
+  --use_text_ori_cls USE_TEXT_ORI_CLS
+                        whether use text line orientation classifier
   --rec_model REC_MODEL
-                        text detection model prefix of the model suite files
+                        text recognition model prefix of the model suite files
   --rec_vdsp_params REC_VDSP_PARAMS
-                        text detection vdsp preprocess parameter file
+                        text recognition vdsp preprocess parameter file
   --rec_label_file REC_LABEL_FILE
                         text recognizition label file
   --rec_drop_score REC_DROP_SCORE
                         text recogniztion drop score threshold
-  --use_angle_cls USE_ANGLE_CLS
-                        whether use angle classifier
   --hw_config HW_CONFIG
                         hw-config file of the model suite
   --device_ids DEVICE_IDS
@@ -862,28 +918,34 @@ optional arguments:
                         input dataset root
   --dataset_output_file DATASET_OUTPUT_FILE
                         dataset output file
+  --queue_size QUEUE_SIZE
+                        queue size of the pipeline
 ```
 
-#### ocr_e2e_async.py 命令行示例
+#### ppocr_async.py 命令行示例
 
 ```bash
 # 测试单张图片
-python ocr_e2e_async.py \
+python ppocr_async.py \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--det_box_thresh 0.6 \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--text_ori_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0] \
---det_box_type quad \
 --rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--device_ids [0] \
 --input_file ../../data/images/detect.jpg \
---output_file ocr_res.jpg
+--output_file ppocr_v4_result.jpg
 
 #结果示例
 
+Thread:0,Get ../../data/images/detect.jpg result
 [[660,80], [701,83], [700,100], [659,97]],  [('20029', 0.998046875)]
 [[638,135], [723,140], [722,158], [637,152]],  [('97154197', 0.9990234375)]
 [[637,152], [700,156], [699,172], [636,169]],  [('198727', 0.99755859375)]
@@ -892,29 +954,32 @@ python ocr_e2e_async.py \
 [[790,333], [866,336], [865,368], [789,366]],  [('PAIN', 0.99267578125)]
 [[854,454], [903,453], [903,468], [854,469]],  [('JOINT-RX', 0.93212890625)]
 [[848,532], [881,530], [882,544], [849,546]],  [('TUFBRAN', 0.78466796875)]
-save file to thread_0_ocr_res.jpg
+save file to thread_0_ppocr_v4_result.jpg
 ```
 
-#### ocr_e2e_async.py 测试多线程异步推理 性能与时延
+#### ppocr_async.py 测试多线程异步推理 性能与时延
 
 ```bash
 # 测试多线程异步
-python ocr_e2e_async.py \
+python ppocr_async.py \
+--use_doc_ori_cls 0 \
 --det_model /opt/vastai/vaststreamx/data/models/ppocr-v4/det-fp16-none-1_3_736_1280-vacc/mod \
 --det_vdsp_params ../../data/configs/dbnet_rgbplanar.json \
---cls_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
---cls_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
+--det_box_type quad \
+--det_box_thresh 0.6 \
+--text_ori_model /opt/vastai/vaststreamx/data/models/ppocr-v4/cls-fp16-none-1_3_48_192-vacc/mod \
+--text_ori_vdsp_params ../../data/configs/crnn_rgbplanar.json \
+--use_text_ori_cls 1 \
 --rec_model /opt/vastai/vaststreamx/data/models/ppocr-v4/rec-fp16-none-1_3_48_320-vacc/mod \
 --rec_vdsp_params ../../data/configs/crnn_rgbplanar.json \
---det_elf_file /opt/vastai/vaststreamx/data/elf/find_contours_ext_op \
---device_ids [0] \
---det_box_type quad \
 --rec_label_file ../../data/labels/ocr_rec_dict.txt \
+--device_ids [0] \
 --dataset_filelist /opt/vastai/vaststreamx/data/datasets/ch4_test_images_filelist.txt \
 --dataset_root /opt/vastai/vaststreamx/data/datasets/
 
-#测试结果  880MHz 下
-Image count: 500, total cost: 15.59 s, throughput: 32.07 fps, average latency: 2.042 s
+#测试结果  1200MHz 下
+Image count: 500, total cost: 14.71 s, throughput: 34.00 fps, average latency: 0.375 s
 ```
 
 ### 文本检测模型精度性能测试
