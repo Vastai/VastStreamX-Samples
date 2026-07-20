@@ -23,95 +23,146 @@ import time
 from common.text_det_async import TextDetectorAsync
 from common.text_cls import TextClassifier
 from common.text_rec_async import TextRecognizerAsync
+from common.doc_img_orient_cls import DocImgOrientClassifier
 import copy
 import vaststreamx as vsx
 
 attr = vsx.AttrKey
 
+DOC_ORI_STOP = 1
+INPUT_STOP = 2
+DET_STOP = 3
+DET_POST_STOP = 4
+CLS_STOP = 5
+REC_STOP = 6
 
-INPUT_STOP = 1
-DET_STOP = 2
-DET_POST_STOP = 3
-CLS_STOP = 4
-REC_STOP = 5
 
-
-class OCR_e2e_Async:
+class PPOCR_Async:
     def __init__(
         self,
+        doc_ori_model:str,
+        doc_ori_vdsp_params,
+        doc_ori_labels:dict,
+        use_doc_ori_cls,
         det_model,
-        det_config,
+        det_vdsp_params,
         det_box_type,
         det_elf_file,
-        cls_model,
-        cls_config,
-        cls_label_list,
-        cls_thresh,
+        det_box_thresh,
+        text_ori_model,
+        text_ori_vdsp_params,
+        text_ori_label_list,
+        text_ori_thresh,
+        use_text_ori_cls,
         rec_model,
-        rec_config,
+        rec_vdsp_params,
         rec_label_file,
         rec_drop_score,
-        use_angle_cls,
         batch_size=1,
         device_id=0,
         hw_config="",
         queue_size=1,
     ):
+        self.use_doc_ori_cls = use_doc_ori_cls
+        if use_doc_ori_cls:
+            self.doc_img_orient_cls = DocImgOrientClassifier(
+                doc_ori_model, doc_ori_vdsp_params, batch_size, device_id, hw_config
+            )
+            self.doc_ori_labels = doc_ori_labels
+
         self.text_det = TextDetectorAsync(
             det_model,
-            det_config,
+            det_vdsp_params,
             batch_size,
             device_id,
             hw_config,
+            box_thresh=det_box_thresh,
             elf_file=det_elf_file,
         )
-        if use_angle_cls:
-            self.text_cls = TextClassifier(
-                cls_model, cls_config, cls_label_list, batch_size, device_id, hw_config
+        if use_text_ori_cls:
+            self.text_ori_cls = TextClassifier(
+                text_ori_model, text_ori_vdsp_params, text_ori_label_list, batch_size, device_id, hw_config
             )
         self.text_rec = TextRecognizerAsync(
-            rec_model, rec_config, rec_label_file, batch_size, device_id, hw_config
+            rec_model, rec_vdsp_params, rec_label_file, batch_size, device_id, hw_config
         )
         self.det_box_type = det_box_type
-        self.use_angle_cls = use_angle_cls
-        self.cls_thresh = cls_thresh
+        self.use_text_ori_cls = use_text_ori_cls
+        self.text_ori_thresh = text_ori_thresh
         self.rec_drop_score = rec_drop_score
-        self.input_image_format = self.text_det.get_fusion_op_iimage_format()
         self.device_id = device_id
 
+        self.image_rotate_angles = queue.Queue(queue_size+10)
+        self.doc_ori_inputs = queue.Queue(queue_size)
         self.det_inputs = queue.Queue(queue_size)
         self.det_post_inputs = queue.Queue(queue_size)
-        self.cls_inputs = queue.Queue(queue_size)
+        self.text_ori_inputs = queue.Queue(queue_size)
         self.rec_inputs = queue.Queue(queue_size)
         self.rec_outputs = queue.Queue(queue_size)
         self.stop_flag = 0
 
-        self.get_timeout = 0.01
+        self.get_timeout = 0.1
 
+        self.doc_ori_thread = Thread(target=self.doc_ori_cls_thread)
         self.det_thread = Thread(target=self.detect_thread)
         self.det_post_thread = Thread(target=self.detect_post_thread)
-        self.cls_thread = Thread(target=self.classify_thread)
+        self.text_ori_thread = Thread(target=self.text_ori_cls_thread)
         self.rec_thread = Thread(target=self.recognize_thread)
 
+        self.doc_ori_thread.start()
         self.det_thread.start()
         self.det_post_thread.start()
-        self.cls_thread.start()
+        self.text_ori_thread.start()
         self.rec_thread.start()
 
     def process_async(self, cv_image):
-        self.det_inputs.put(cv_image)
+        self.doc_ori_inputs.put(cv_image)
 
     def get_output(self):
         while True:
             try:
+
                 out = self.rec_outputs.get(timeout=self.get_timeout)
-                return out
+                angle = self.image_rotate_angles.get()
+                return out,angle
             except Exception:
                 if self.stop_flag == REC_STOP:
                     raise Exception("Inference is stop")
 
     def stop(self):
         self.stop_flag = INPUT_STOP
+
+    def doc_ori_cls_thread(self):
+        vsx.set_device(self.device_id)
+        while True:
+            try:
+                cv_mat = self.doc_ori_inputs.get(timeout=self.get_timeout)
+                if not self.use_doc_ori_cls:
+                    self.image_rotate_angles.put(0)
+                    self.det_inputs.put(cv_mat)
+                else:
+                    format = self.doc_img_orient_cls.get_fusion_op_iimage_format()
+                    vsx_image = utils.cv_bgr888_to_vsximage(
+                        cv_mat, format, self.device_id
+                    )
+                    self.doc_img_orient_cls.process(vsx_image)
+                    index, score = self.doc_img_orient_cls.process(vsx_image)
+                    if self.doc_ori_labels[index] == 90:
+                        cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                        rotate_angle = 90
+                    elif self.doc_ori_labels[index] == 180:
+                        cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_180)
+                        rotate_angle = 180
+                    elif self.doc_ori_labels[index] == 270:
+                        cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_CLOCKWISE)
+                        rotate_angle = 270
+                    self.det_inputs.put(cv_mat)
+                    self.image_rotate_angles.put(rotate_angle)
+                    
+            except Exception as e:
+                if self.stop_flag == INPUT_STOP:
+                    self.stop_flag = DOC_ORI_STOP
+                    break
 
     def detect_thread(self):
         vsx.set_device(self.device_id)
@@ -141,7 +192,7 @@ class OCR_e2e_Async:
                 input_mats.put(cv_mat)
                 self.text_det.process_async(vsx_image)
             except Exception as e:
-                if self.stop_flag == INPUT_STOP:
+                if self.stop_flag == DOC_ORI_STOP:
                     self.text_det.close_input()
                     thread.join()
                     self.text_det.wait_until_done()
@@ -167,19 +218,19 @@ class OCR_e2e_Async:
         queue_futs = queue.Queue(10)
         context = edict(stopped=False, left=0)
 
-        def cunsume_thread_func(context, queue_futs, cls_inputs):
+        def cunsume_thread_func(context, queue_futs, text_ori_inputs):
             vsx.set_device(self.device_id)
             while not context.stopped or context.left > 0:
                 try:
                     fut = queue_futs.get(timeout=self.get_timeout)
                     result = fut.result()
-                    cls_inputs.put(result)
+                    text_ori_inputs.put(result)
                     context.left -= 1
                 except Exception:
                     pass
 
         cunsume_thread = Thread(
-            target=cunsume_thread_func, args=(context, queue_futs, self.cls_inputs)
+            target=cunsume_thread_func, args=(context, queue_futs, self.text_ori_inputs)
         )
         cunsume_thread.start()
 
@@ -197,25 +248,26 @@ class OCR_e2e_Async:
                         self.stop_flag = DET_POST_STOP
                         break
 
-    def classify_thread(self):
+    def text_ori_cls_thread(self):
         vsx.set_device(self.device_id)
         while True:
             try:
-                cls_input = self.cls_inputs.get(timeout=self.get_timeout)
+                cls_input = self.text_ori_inputs.get(timeout=self.get_timeout)
                 [dt_boxes, dt_scores], img_crop_list = cls_input
-                if self.use_angle_cls and self.text_cls and len(img_crop_list) > 0:
-                    format = self.text_cls.get_fusion_op_iimage_format()
+                if self.use_text_ori_cls and self.text_ori_cls and len(img_crop_list) > 0:
+                    format = self.text_ori_cls.get_fusion_op_iimage_format()
                     vacc_img_crop_list = []
                     for img_crop in img_crop_list:
                         vacc_img_crop = utils.cv_bgr888_to_vsximage(
                             img_crop, format, self.device_id
                         )
                         vacc_img_crop_list.append(vacc_img_crop)
-                    cls_result = self.text_cls.process(vacc_img_crop_list)
+                    cls_result = self.text_ori_cls.process(vacc_img_crop_list)
                     for rno in range(len(cls_result)):
                         label, score = cls_result[rno]
-                        if "180" in label and score > self.cls_thresh:
+                        if "180" in label and score > self.text_ori_thresh:
                             img_crop_list[rno] = cv2.rotate(img_crop_list[rno], 1)
+
                 self.rec_inputs.put(([dt_boxes, dt_scores], img_crop_list))
             except Exception:
                 if self.stop_flag == DET_POST_STOP:
@@ -235,6 +287,8 @@ class OCR_e2e_Async:
                     if flag:
                         rec_res = text_rec.get_output()
                         dt_boxes = det_results.get()
+                    else:
+                        rec_res, dt_boxes = [], []
                     filter_boxes, filter_rec_res = [], []
                     for box, rec_result in zip(dt_boxes, rec_res):
                         text, score = rec_result[0]

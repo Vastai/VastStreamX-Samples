@@ -6,7 +6,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-#include "ppocr_v5.hpp"
+#include "ppocr.hpp"
 
 #include <chrono>
 #include <thread>
@@ -48,6 +48,8 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
 
   args.add<std::string>("det_box_type", '\0', "text detection box type", false,
                         "quad");
+  args.add<float>("det_box_thresh", '\0', "text detection box thresh", false,
+                  0.6);
   // textline orientation classification
   args.add<std::string>(
       "text_ori_model", '\0',
@@ -98,10 +100,9 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   return args;
 }
 
-void InferenceThread(std::shared_ptr<vsx::PPOCR_v5> model,
-                     cmdline::parser& args, std::mutex& merge_mutex,
-                     std::vector<int64_t>& costs, uint32_t device_id,
-                     float& throughput) {
+void InferenceThread(std::shared_ptr<vsx::PPOCR> model, cmdline::parser& args,
+                     std::mutex& merge_mutex, std::vector<int64_t>& costs,
+                     uint32_t device_id, float& throughput) {
   vsx::SetDevice(device_id);
 
   // test one image
@@ -259,10 +260,10 @@ int main(int argc, char** argv) {
         get_doc_ori_labels(args.get<std::string>("doc_ori_label_file"));
   }
 
-  std::vector<std::shared_ptr<vsx::PPOCR_v5>> models;
+  std::vector<std::shared_ptr<vsx::PPOCR>> models;
   models.reserve(device_ids.size());
   for (auto device_id : device_ids) {
-    auto model = std::make_shared<vsx::PPOCR_v5>(
+    auto model = std::make_shared<vsx::PPOCR>(
         // document image orientation classify
         args.get<std::string>("doc_ori_model"),
         args.get<std::string>("doc_ori_config"), doc_ori_labels,
@@ -271,6 +272,7 @@ int main(int argc, char** argv) {
         args.get<std::string>("det_model"), args.get<std::string>("det_config"),
         args.get<std::string>("det_box_type"),
         args.get<std::string>("det_elf_file"),
+        args.get<float>("det_box_thresh"),
         // textline orientation classify
         args.get<std::string>("text_ori_model"),
         args.get<std::string>("text_ori_config"),

@@ -113,12 +113,6 @@ class TextDetector : public ModelCV {
         output = output.Clone(vsx::Context::VACC(device_id_));
       }
 
-      // vsx::TShape output_shape;
-      // model_->GetOutputShapeByIndex(0, output_shape);
-      // std::cout << "model output shape: " << output_shape << std::endl;
-
-      // output = output.Reshape(output_shape);
-
       std::vector<int> srcimg_hw{images[i].Height(), images[i].Width()};
       std::vector<float> ratio_hw{this->model_height_ * 1.0f / srcimg_hw[0],
                                   this->model_width_ * 1.0f / srcimg_hw[1]};
@@ -152,7 +146,7 @@ class TextDetector : public ModelCV {
   static std::string elf_path_;
 
   FindContourOpInfo opinfo_{
-      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 1024};
+      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 2048};
 };
 
 std::string TextDetector::test_data_path_ = "";

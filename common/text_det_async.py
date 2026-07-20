@@ -34,7 +34,7 @@ class TextDetectorAsync(ModelCVAsync):
         hw_config="",
         thresh=0.3,
         box_thresh=0.6,
-        max_candidates=1024,
+        max_candidates=2048,
         unclip_ratio=1.5,
         use_dilation=False,
         score_mode="fast",
