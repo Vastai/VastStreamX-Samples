@@ -113,3 +113,7 @@ make install
 - 2025-01-20
   - 新增模型: grounding_dino  yolo_world dinov2 elic mask2former  
   - bert_qa 与 market_bot_r50 有bug，暂未修复
+
+## 获取支持
+- 如需社区支持或咨询，请通过`ais-support@vastaitech.com`联系我们
+- For community support or inquiries, please contact us at `ais-support@vastaitech.com`
