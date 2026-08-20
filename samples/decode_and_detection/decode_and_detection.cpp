@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 #include <chrono>
+#include <filesystem>
 #include <fstream>
 #include <thread>
 
@@ -49,12 +50,9 @@ void process(std::string uri, const std::string model_prefix,
   detector.SetThreshold(threshold);
   vsx::SetDevice(device_id);
   vsx::VideoCapture video_capture(uri, vsx::FULLSPEED_MODE, device_id);
-  uint32_t video_count_ =  0;
   uint32_t yolo_count_ = 0;
   uint32_t count = 0;
   auto tick = std::chrono::high_resolution_clock::now();
-  std::chrono::time_point<std::chrono::high_resolution_clock> last_print_time;
-  last_print_time = std::chrono::high_resolution_clock::now();
 
   vsx::Image image;
   while (1) {
@@ -66,7 +64,6 @@ void process(std::string uri, const std::string model_prefix,
       break;
     }
     ++count;
-    ++video_count_;
     if(count <= keep){
       ++yolo_count_;
       auto result = detector.Process(image);
@@ -87,30 +84,50 @@ void process(std::string uri, const std::string model_prefix,
         object.height = res_data[5];
         det_result.objects.emplace_back(object);
         det_result.obj_nums++;
-        // std::cerr << "classId: " << res_data[0] << ", score: " << res_data[1]
-        //           << "\n";
-        // std::cerr << "bounding_box: xmin:" << res_data[2]
-        //           << ", ymin:" << res_data[3] << ", width:" << res_data[4]
-        //           << ", height:" << res_data[5] << "\n";
         res_data += vsx::kDetectionOffset;
       }
+
+      if (!output_path.empty()) {
+        vsx::Image cpu_image(image.Format(), image.Width(), image.Height(),
+                             vsx::Context::CPU(0), image.WidthPitch(),
+                             image.HeightPitch(), image.GetDType());
+        cpu_image.CopyFrom(image);
+
+        vsx::Image unpitch_image(image.Format(), image.Width(), image.Height(),
+                                 vsx::Context::CPU());
+        unpitch_image.CopyFrom(cpu_image);
+        uint8_t* yuv_nv12 = unpitch_image.MutableData<uint8_t>();
+        int width = unpitch_image.WidthPitch() > unpitch_image.Width()
+                        ? unpitch_image.WidthPitch()
+                        : unpitch_image.Width();
+        int height = unpitch_image.HeightPitch() > unpitch_image.Height()
+                         ? unpitch_image.HeightPitch()
+                         : unpitch_image.Height();
+
+        cv::Mat img_rgb;
+        cv::Mat nv12_opencv(height * 3 / 2, width, CV_8UC1, yuv_nv12, width);
+        cv::cvtColor(nv12_opencv, img_rgb, cv::COLOR_YUV2BGR_NV12);
+        for (const auto& obj : det_result.objects) {
+          cv::rectangle(img_rgb,
+                        cv::Rect{(int)obj.x, (int)obj.y, (int)obj.width,
+                                 (int)obj.height},
+                        cv::Scalar(255, 0, 0), 2);
+        }
+        std::filesystem::create_directories(output_path);
+        std::string save_file = output_path + "/img_" +
+                                std::to_string(yolo_count_ - 1) + ".png";
+        cv::imwrite(save_file, img_rgb);
+      }
+
+      auto tock = std::chrono::high_resolution_clock::now();
+      auto cost =
+          std::chrono::duration_cast<std::chrono::milliseconds>(tock - tick)
+              .count();
+      std::cout << index << "th Decode+AI @ " << (yolo_count_ * 1000.0 / cost)
+                << " fps\n";
     }
     if(count == keep+drop){
       count = 0;
-    }
-    auto tock = std::chrono::high_resolution_clock::now();
-    auto cost =
-        std::chrono::duration_cast<std::chrono::milliseconds>(tock - tick)
-            .count();
-    auto elapsed_since_last_print = std::chrono::duration_cast<std::chrono::seconds>(tock - last_print_time).count();
-
-    if (elapsed_since_last_print >= 5) {
-        // std::cout << index << "th Decode @"
-        //           << (video_count_ * 1000.0 / cost)
-        //           << " fps, AI @:"
-        //           << (yolo_count_ * 1000.0 / cost)
-        //           << "fps" << std::endl;
-        last_print_time = tock;  // 更新上次打印时间
     }
   }
 }
