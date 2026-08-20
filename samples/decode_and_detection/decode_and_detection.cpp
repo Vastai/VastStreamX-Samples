@@ -84,11 +84,6 @@ void process(std::string uri, const std::string model_prefix,
         object.height = res_data[5];
         det_result.objects.emplace_back(object);
         det_result.obj_nums++;
-        // std::cerr << "classId: " << res_data[0] << ", score: " << res_data[1]
-        //           << "\n";
-        // std::cerr << "bounding_box: xmin:" << res_data[2]
-        //           << ", ymin:" << res_data[3] << ", width:" << res_data[4]
-        //           << ", height:" << res_data[5] << "\n";
         res_data += vsx::kDetectionOffset;
       }
 
