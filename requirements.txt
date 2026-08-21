@@ -32,3 +32,4 @@ pytest-merge-html
 crayons
 einops
 timm
+pydantic
