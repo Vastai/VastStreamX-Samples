@@ -210,7 +210,9 @@ class PPOCR_Async:
                 img_crop = self.get_rotate_crop_image(cv_mat, tmp_box)
             else:
                 img_crop = self.get_minarea_rect_crop(cv_mat, tmp_box)
-            img_crop_list.append(img_crop)
+            if img_crop is not None:
+                img_crop_list.append(img_crop)
+        
         return ([dt_boxes, dt_scores], img_crop_list)
 
     def detect_post_thread(self):
@@ -354,6 +356,10 @@ class PPOCR_Async:
                 np.linalg.norm(points[1] - points[2]),
             )
         )
+
+        if img_crop_width < 5 or img_crop_height < 5:
+            return None
+        
         pts_std = np.float32(
             [
                 [0, 0],
