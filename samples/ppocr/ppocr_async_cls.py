@@ -145,7 +145,6 @@ class PPOCR_Async:
                     vsx_image = utils.cv_bgr888_to_vsximage(
                         cv_mat, format, self.device_id
                     )
-                    self.doc_img_orient_cls.process(vsx_image)
                     index, score = self.doc_img_orient_cls.process(vsx_image)
                     if self.doc_ori_labels[index] == 90:
                         cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_COUNTERCLOCKWISE)
@@ -156,6 +155,8 @@ class PPOCR_Async:
                     elif self.doc_ori_labels[index] == 270:
                         cv_mat = cv2.rotate(cv_mat, cv2.ROTATE_90_CLOCKWISE)
                         rotate_angle = 270
+                    else:
+                        rotate_angle = 0
                     self.det_inputs.put(cv_mat)
                     self.image_rotate_angles.put(rotate_angle)
                     
