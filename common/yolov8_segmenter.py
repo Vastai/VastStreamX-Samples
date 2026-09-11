@@ -19,6 +19,7 @@ class Yolov8Segmenter(ModelCV):
         batch_size=1,
         device_id=0,
         hw_config="",
+        threshold=0.1,
     ) -> None:
         super().__init__(
             model_prefix,
@@ -29,6 +30,7 @@ class Yolov8Segmenter(ModelCV):
             output_type=vsx.GraphOutputType.GRAPH_OUTPUT_TYPE_NCHW_HOST,
         )
         self.post_proc_op_ = Yolov8SegPostProcOp("yolov8_seg_op", elf_file, device_id)
+        self.threshold_ = threshold
 
     def process_impl(self, input):
         model_outs = self.stream_.run_sync(input)
@@ -36,11 +38,15 @@ class Yolov8Segmenter(ModelCV):
         for inp, mod_out in zip(input, model_outs):
             op_outs = self.post_process(mod_out, inp.width, inp.height)
             num = vsx.as_numpy(op_outs[4])[0]
-            if num > 0:
-                outs = [vsx.as_numpy(out) for out in op_outs]
+            scores = vsx.as_numpy(op_outs[1])
+            if num > 0 and any(x >= self.threshold_ for x in scores[:num]):
+                outs = [vsx.as_numpy(op_outs[0])]
+                outs.append(scores)
+                for out in op_outs[2:]:
+                    outs.append(vsx.as_numpy(out))
                 outputs.append(outs)
             else:
-                outputs.append([])
+                outputs.append([np.array([0])] * 5)
         return outputs
 
     def post_process(self, fp16_tensors, image_width, image_height):

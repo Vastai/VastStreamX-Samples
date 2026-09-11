@@ -190,8 +190,17 @@ if __name__ == "__main__":
             outputs = segmenter.process(vsx_image)
             basename, _ = os.path.splitext(os.path.basename(filename))
             npz_file = os.path.join(args.dataset_output_folder, basename + ".npz")
-
             det_num = outputs[4][0]
+            if det_num == 0:
+                np.savez(
+                    npz_file,
+                    classes=np.array([0]),
+                    scores=np.array([0]),
+                    boxes=np.array([0]),
+                    masks=np.array([0]),
+                    num=np.array([0]),
+                )
+                continue
             classes = outputs[0][:det_num]
             scores = outputs[1][:det_num]
             boxes = outputs[2][:det_num, :]
