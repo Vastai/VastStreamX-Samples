@@ -5,7 +5,7 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 common_path = os.path.join(current_file_path, "../../..")
 sys.path.append(common_path)
 
-from common.model_cv import ModelCV
+from common.segmentator import Segmentator, vsx
 import numpy as np
 import cv2
 import argparse
@@ -97,7 +97,7 @@ part_colors = [
 if __name__ == "__main__":
     args = argument_parser()
     batch_size = 1
-    model = ModelCV(
+    model = Segmentator(
         args.model_prefix, args.vdsp_params, batch_size, args.device_id, args.hw_config
     )
     image_format = model.get_fusion_op_iimage_format()
@@ -107,7 +107,8 @@ if __name__ == "__main__":
         assert cv_image is not None, f"Read image failed: {args.input_image}"
         vsx_image = utils.cv_bgr888_to_vsximage(cv_image, image_format, args.device_id)
 
-        result = model.process(vsx_image)
+        vsx_tensor = model.process(vsx_image)
+        result = vsx.as_numpy(vsx_tensor)
         class_map = np.array(result).squeeze().argmax(0)
         num_of_class = np.max(class_map)
         class_map = cv2.resize(
@@ -136,8 +137,8 @@ if __name__ == "__main__":
                 cv_image, image_format, args.device_id
             )
 
-            result = model.process(vsx_image)
-
+            vsx_tensor = model.process(vsx_image)
+            result = vsx.as_numpy(vsx_tensor)
             base_name = os.path.basename(image_file).split(".")[0]
             npz_file = os.path.join(args.dataset_output_folder, base_name + ".npz")
-            np.savez(npz_file, output_0=result[0])
+            np.savez(npz_file, output_0=result)

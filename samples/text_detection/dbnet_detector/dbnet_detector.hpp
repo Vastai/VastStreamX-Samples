@@ -16,9 +16,9 @@ namespace vsx {
 
 class DBnetDetector : public ModelCV {
  public:
-  DBnetDetector(const std::string &model_prefix, const std::string &vdsp_config,
-                const std::string &elf_path, uint32_t batch_size = 1,
-                uint32_t device_id = 0, const std::string &hw_config = "")
+  DBnetDetector(const std::string& model_prefix, const std::string& vdsp_config,
+                const std::string& elf_path, uint32_t batch_size = 1,
+                uint32_t device_id = 0, const std::string& hw_config = "")
       : ModelCV(model_prefix, vdsp_config, batch_size, device_id, hw_config) {
     auto shape = vsx::TShape();
     model_->GetInputShapeByIndex(0, shape);  // this model only has one input
@@ -42,14 +42,14 @@ class DBnetDetector : public ModelCV {
   void SetMaxContourNumber(uint32_t max_contour_num) {
     opinfo_.max_contour_num = max_contour_num;
   }
-  static void SetTestDataPath(const std::string &path) {
+  static void SetTestDataPath(const std::string& path) {
     test_data_path_ = path;
   }
 
   std::vector<vsx::Image> GetTestData(
-      uint32_t bsize, uint32_t dtype, const Context &context,
-      const std::vector<vsx::TShape> &input_shapes) {
-    const auto &input_shape = input_shapes[0];
+      uint32_t bsize, uint32_t dtype, const Context& context,
+      const std::vector<vsx::TShape>& input_shapes) {
+    const auto& input_shape = input_shapes[0];
     CHECK(input_shape.ndim() >= 2);
     vsx::Image image;
     if (test_data_path_.empty()) {
@@ -78,20 +78,20 @@ class DBnetDetector : public ModelCV {
 
  private:
   vsx::Tensor save_boxes_2_tensor(
-      const std::vector<float> &scores,
-      const std::vector<std::vector<std::vector<int>>> &boxes) {
+      const std::vector<float>& scores,
+      const std::vector<std::vector<std::vector<int>>>& boxes) {
     int64_t box_num = boxes.size();
     vsx::Tensor tsr(vsx::TShape({box_num, 9}), vsx::Context::CPU(),
                     vsx::TypeFlag::kFloat32);
 
     // NOTE: 要确保内存连续
-    float *dataArray = tsr.MutableData<float>();
+    float* dataArray = tsr.MutableData<float>();
     size_t currentIndex = 0;
     for (size_t i = 0; i < boxes.size(); i++) {
-      const auto &vec2D = boxes[i];
+      const auto& vec2D = boxes[i];
       dataArray[currentIndex++] = scores[i];
-      for (const auto &vec1D : vec2D) {
-        for (const int &value : vec1D) {
+      for (const auto& vec1D : vec2D) {
+        for (const int& value : vec1D) {
           dataArray[currentIndex++] = value;
         }
       }
@@ -99,14 +99,14 @@ class DBnetDetector : public ModelCV {
     return tsr;
   }
 
-  std::vector<vsx::Tensor> ProcessImpl(const std::vector<vsx::Image> &images) {
+  std::vector<vsx::Tensor> ProcessImpl(const std::vector<vsx::Image>& images) {
     auto outputs = stream_->RunSync(images);
     // NOTE: this vector receive fp16 tensor
     auto batch_size = outputs.size();
     std::vector<vsx::Tensor> results;
     results.reserve(batch_size);
     for (size_t i = 0; i < batch_size; ++i) {
-      auto &output = outputs[i][0];
+      auto& output = outputs[i][0];
 
       if (output.GetContext().dev_type != vsx::Context::kVACC) {
         output = output.Clone(vsx::Context::VACC(device_id_));
@@ -151,7 +151,7 @@ class DBnetDetector : public ModelCV {
   static std::string elf_path_;
 
   FindContourOpInfo opinfo_{
-      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 1024};
+      "/opt/vastai/vaststreamx/data/elf/find_contours_ext_op", 0.3, 0, 2048};
 };
 
 std::string DBnetDetector::test_data_path_ = "";

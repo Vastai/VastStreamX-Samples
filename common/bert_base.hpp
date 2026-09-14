@@ -38,7 +38,7 @@ class Bert : public ModelNLP {
       }
       results.push_back(result);
     }
-    return std::move(results);
+    return results;
   }
 };
 }  // namespace vsx

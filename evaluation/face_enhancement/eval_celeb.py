@@ -63,7 +63,7 @@ def calculate_ssim(img1, img2):
 if __name__ == "__main__":
 
     parse = argparse.ArgumentParser(description="VAMP EVAL")
-    parse.add_argument("--gt", type=str, default="/opt/vastai/vastpipe/data/images/GPEN/hq", help="hr gt image folder")
+    parse.add_argument("--gt", type=str, default="/opt/vastai/vaststreamx/data/images/GPEN/hq", help="hr gt image folder")
     parse.add_argument("--result", type=str, default="./sample_output", help="model output folder")
 
     args = parse.parse_args()

@@ -8,7 +8,7 @@
  */
 #include "common/cmdline.hpp"
 #include "common/model_profiler.hpp"
-#include "common/text_cls.hpp"
+#include "common/text_rec.hpp"
 
 cmdline::parser ArgumentParser(int argc, char** argv) {
   cmdline::parser args;
@@ -21,11 +21,11 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("vdsp_params", '\0', "vdsp preprocess parameter file",
                         false, "../data/configs/crnn_rgbplanar.json");
   args.add<std::string>("device_ids", 'd', "device id to run", false, "[0]");
-  args.add<std::string>("label_file", '\0', "label file", false, "[0, 180]");
+  args.add<std::string>("label_file", '\0', "label file", false,
+                        "../data/labels/key_37.txt");
   args.add<uint32_t>("batch_size", 'b', "profiling batch size of the model",
                      false, 1);
-  args.add<uint32_t>("instance", 'i', "instance number for each device", false,
-                     1);
+  args.add<uint32_t>("instance", 'i', "model instance number", false, 1);
   args.add<std::string>("shape", 's', "model input shape", false);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);
@@ -34,6 +34,8 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<bool>("input_host", '\0', "cache input data into host memory", false,
                  0);
   args.add<uint32_t>("queue_size", 'q', "aync wait queue size", false, 1);
+  args.add<uint32_t>("warmup_times", '\0', "number of warmup iterations", false,
+                     10);
   args.parse_check(argc, argv);
   return args;
 }
@@ -42,7 +44,7 @@ int main(int argc, char** argv) {
   auto args = ArgumentParser(argc, argv);
   auto model_prefix = args.get<std::string>("model_prefix");
   auto vdsp_params = args.get<std::string>("vdsp_params");
-  auto label_file = vsx::ParseVecUint(args.get<std::string>("label_file"));
+  auto label_file = args.get<std::string>("label_file");
   auto hw_config = args.get<std::string>("hw_config");
   auto device_ids = vsx::ParseVecUint(args.get<std::string>("device_ids"));
   auto batch_size = args.get<uint32_t>("batch_size");
@@ -51,8 +53,9 @@ int main(int argc, char** argv) {
   auto input_host = args.get<bool>("input_host");
   auto queue_size = args.get<uint32_t>("queue_size");
   auto percentiles = vsx::ParseVecUint(args.get<std::string>("percentiles"));
+  auto warmup_times = args.get<uint32_t>("warmup_times");
 
-  std::vector<std::shared_ptr<vsx::TextClassifier>> models;
+  std::vector<std::shared_ptr<vsx::TextRecognizer>> models;
   models.reserve(instance);
   std::vector<vsx::Context> contexts;
   for (uint32_t i = 0; i < instance; i++) {
@@ -62,8 +65,8 @@ int main(int argc, char** argv) {
     } else {
       contexts.push_back(vsx::Context::VACC(device_id));
     }
-    models.push_back(std::make_shared<vsx::TextClassifier>(
-        model_prefix, vdsp_params, label_file, batch_size, device_id,
+    models.push_back(std::make_shared<vsx::TextRecognizer>(
+        model_prefix, vdsp_params, batch_size, device_id, label_file,
         hw_config));
   }
   vsx::TShape shape;
@@ -74,7 +77,8 @@ int main(int argc, char** argv) {
   vsx::ProfilerConfig config = {instance,    iterations,  batch_size,
                                 vsx::kUint8, device_ids,  contexts,
                                 {shape},     percentiles, queue_size};
-  vsx::ModelProfiler<vsx::TextClassifier> profiler(config, models);
+  vsx::ModelProfiler<vsx::TextRecognizer> profiler(config, models,
+                                                   warmup_times);
   std::cout << profiler.Profiling() << std::endl;
   return 0;
 }

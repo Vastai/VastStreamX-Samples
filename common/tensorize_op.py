@@ -30,7 +30,7 @@ class TensorizeOp(CustomOpBase):
     def __init__(
         self,
         op_name="tensorize_op",
-        elf_file="/opt/vastai/vastpipe/data/elf/tensorize_ext_op",
+        elf_file="/opt/vastai/vaststreamx/data/elf/tensorize_ext_op",
         device_id=0,
     ):
         super().__init__(op_name=op_name, elf_file=elf_file, device_id=device_id)

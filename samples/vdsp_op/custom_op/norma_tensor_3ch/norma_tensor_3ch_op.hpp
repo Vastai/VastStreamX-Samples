@@ -12,11 +12,6 @@
 #include "opencv2/opencv.hpp"
 
 namespace vsx {
-uint32_t getInputCount(const char* op_name) { return 1; }
-uint32_t getOutputCount(const char* op_name) { return 1; }
-
-vsx::CustomOperatorCallback callback{
-    getInputCount, nullptr, getOutputCount, nullptr, nullptr, nullptr, 0, 0};
 
 enum ColorSpace_enum {
   COLOR_SPACE_BT709,
@@ -149,9 +144,7 @@ class NormaTensor3ChOp : public CustomOpBase {
  public:
   NormaTensor3ChOp(const std::string& op_name, const std::string& elf_file,
                    uint32_t device_id = 0)
-      : CustomOpBase(op_name, elf_file, device_id) {
-    custom_op_->SetCallback(callback);
-  }
+      : CustomOpBase(op_name, elf_file, device_id) {}
   vsx::Tensor Process(const vsx::Tensor& tensor) {
     std::vector<vsx::Tensor> tensors = {tensor};
     return Process(tensors)[0];

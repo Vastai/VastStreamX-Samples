@@ -46,7 +46,7 @@ options:
       --elf_file       elf_file path (string [=/opt/vastai/vaststreamx/data/elf/brightness])
   -d, --device_ids     device id to run (string [=[0]])
       --shape          input shape [c,h,w] (string [=[3,640,640]])
-  -i, --instance       instance number or range for each device (unsigned int [=1])
+  -i, --instance       model instance number (unsigned int [=1])
       --iterations     iterations count for one profiling (int [=10240])
       --scale          brightness scale coefficient (float [=2.2])
       --percentiles    percentiles of latency (string [=[50,90,95,99]])
@@ -128,7 +128,7 @@ optional arguments:
   -d DEVICE_IDS, --device_ids DEVICE_IDS
                         device ids to run
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   -s SHAPE, --shape SHAPE
                         model input shape
   --iterations ITERATIONS

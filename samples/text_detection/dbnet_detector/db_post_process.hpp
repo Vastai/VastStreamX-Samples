@@ -61,7 +61,7 @@ inline std::vector<std::vector<float>> Mat2Vector(cv::Mat mat) {
 }
 
 inline void GetContourArea(std::vector<std::vector<float>> box,
-                           float unclip_ratio, float &distance) {
+                           float unclip_ratio, float& distance) {
   int pts_num = 4;
   float area = 0.0f;
   float dist = 0.0f;
@@ -138,7 +138,7 @@ inline std::vector<std::vector<int>> OrderPointsClockwise(
 }
 
 inline std::vector<std::vector<float>> GetMiniBoxes(cv::RotatedRect box,
-                                                    float &ssid) {
+                                                    float& ssid) {
   ssid = std::min(box.size.width, box.size.height);
 
   cv::Mat points;
@@ -206,7 +206,7 @@ inline float BoxScoreFast(std::vector<std::vector<float>> box_array,
                             static_cast<int>(array[2][1]) - ymin);
   root_point[3] = cv::Point(static_cast<int>(array[3][0]) - xmin,
                             static_cast<int>(array[3][1]) - ymin);
-  const cv::Point *ppt[1] = {root_point};
+  const cv::Point* ppt[1] = {root_point};
   int npt[] = {4};
   cv::fillPoly(mask, ppt, npt, 1, cv::Scalar(1));
 
@@ -244,12 +244,12 @@ inline float PolygonScoreAcc(std::vector<cv::Point> contour, cv::Mat pred) {
   cv::Mat mask;
   mask = cv::Mat::zeros(ymax - ymin + 1, xmax - xmin + 1, CV_8UC1);
 
-  cv::Point *rook_point = new cv::Point[contour.size()];
+  cv::Point* rook_point = new cv::Point[contour.size()];
 
   for (size_t i = 0; i < contour.size(); ++i) {
     rook_point[i] = cv::Point(int(box_x[i]) - xmin, int(box_y[i]) - ymin);
   }
-  const cv::Point *ppt[1] = {rook_point};
+  const cv::Point* ppt[1] = {rook_point};
   int npt[] = {int(contour.size())};
 
   cv::fillPoly(mask, ppt, npt, 1, cv::Scalar(1));
@@ -264,7 +264,7 @@ inline float PolygonScoreAcc(std::vector<cv::Point> contour, cv::Mat pred) {
 
 // TAG: to display result
 inline void DisplayContours(
-    const std::vector<std::vector<cv::Point>> &contours) {
+    const std::vector<std::vector<cv::Point>>& contours) {
   // 输出每个轮廓的点
   for (size_t i = 0; i < contours.size(); ++i) {
     std::cout << "Contour " << i << ": ";
@@ -284,16 +284,16 @@ struct customized_param_t {
   float thresh;
 };
 
-uint32_t getInputCount(const char *op_name) { return 1; }
-uint32_t getOutputCount(const char *op_name) { return 4; }
+uint32_t getInputCount(const char* op_name) { return 1; }
+uint32_t getOutputCount(const char* op_name) { return 4; }
 
 vsx::CustomOperatorCallback callback{
     getInputCount, nullptr, getOutputCount, nullptr, nullptr, nullptr, 0, 0};
 
 inline void BoxesFromBitmap(const cv::Mat pred,
-                            const std::vector<std::vector<cv::Point>> &contours,
-                            std::vector<std::vector<std::vector<int>>> &boxes,
-                            std::vector<float> &scores, float box_thresh,
+                            const std::vector<std::vector<cv::Point>>& contours,
+                            std::vector<std::vector<std::vector<int>>>& boxes,
+                            std::vector<float>& scores, float box_thresh,
                             float unclip_ratio, bool det_use_polygon_score) {
   const int min_size = 3;
   const int max_candidates = 1000;
@@ -358,7 +358,7 @@ inline void BoxesFromBitmap(const cv::Mat pred,
   // return boxes;
 }
 
-inline void FilterTagDetRes(std::vector<std::vector<std::vector<int>>> &boxes,
+inline void FilterTagDetRes(std::vector<std::vector<std::vector<int>>>& boxes,
                             float ratio_h, float ratio_w, int oriimg_h,
                             int oriimg_w) {
   std::vector<std::vector<std::vector<int>>> root_points;
@@ -377,12 +377,12 @@ inline void FilterTagDetRes(std::vector<std::vector<std::vector<int>>> &boxes,
 }
 
 inline void DisplayBoxAndScores(
-    std::vector<float> &scores,
-    std::vector<std::vector<std::vector<int>>> &filter_boxes) {
+    std::vector<float>& scores,
+    std::vector<std::vector<std::vector<int>>>& filter_boxes) {
   assert(scores.size() == filter_boxes.size());
   for (size_t k = 0; k < scores.size(); ++k) {
     std::cout << "index:" << k << ", score:" << scores[k] << ",bbox:" << "[";
-    for (auto &vec : filter_boxes[k]) {
+    for (auto& vec : filter_boxes[k]) {
       std::cout << "[" << vec[0] << " " << vec[1] << "] ";
     }
     std::cout << "]\n";
@@ -391,8 +391,8 @@ inline void DisplayBoxAndScores(
 
 class DbnetPostProcesser {
  public:
-  DbnetPostProcesser(const std::string &elf_path, uint32_t device_id = 0,
-                     const std::string &op_name = "find_contours")
+  DbnetPostProcesser(const std::string& elf_path, uint32_t device_id = 0,
+                     const std::string& op_name = "find_contours_1out")
       : device_id_(device_id) {
     CHECK(vsx::SetDevice(device_id) == 0)
         << "Failed to set device id: " << device_id;
@@ -401,11 +401,11 @@ class DbnetPostProcesser {
     find_contours_op_->SetCallback(callback);
   }
 
-  DBresult Process(vsx::Tensor &fp16_tensor, std::vector<int> &srcimg_hw,
-                   std::vector<float> &ratio_hw, double threshold,
+  DBresult Process(vsx::Tensor& fp16_tensor, std::vector<int>& srcimg_hw,
+                   std::vector<float>& ratio_hw, double threshold,
                    bool det_db_use_dilate, float box_thresh, float unclip_ratio,
                    bool det_use_polygon_score,
-                   const vsx::FindContourOpInfo &OpInfo, bool display) {
+                   const vsx::FindContourOpInfo& OpInfo, bool display) {
     auto contours =
         RunfindContoursOp(srcimg_hw, fp16_tensor, OpInfo.max_contour_num,
                           OpInfo.thresh, OpInfo.device_id);
@@ -415,13 +415,13 @@ class DbnetPostProcesser {
     auto fp32_tensor = vsx::ConvertTensorFromFp16ToFp32(fp16_tensor_host);
 
     // Get output and post process
-    float *pred = fp32_tensor.MutableData<float>();
+    float* pred = fp32_tensor.MutableData<float>();
     auto shape_out = fp32_tensor.Shape();
 
     auto height = shape_out[shape_out.ndim() - 2];
     auto width = shape_out[shape_out.ndim() - 1];
 
-    cv::Mat pred_map(height, width, CV_32F, reinterpret_cast<float *>(pred));
+    cv::Mat pred_map(height, width, CV_32F, reinterpret_cast<float*>(pred));
 
     DBresult result;
     // TODO: not pass bit_map , just pass contours
@@ -435,7 +435,7 @@ class DbnetPostProcesser {
     return result;
   }
   std::vector<std::vector<cv::Point>> RunfindContoursOp(
-      std::vector<int> &srcimg_hw, const Tensor &in_tensor,
+      std::vector<int>& srcimg_hw, const Tensor& in_tensor,
       uint32_t max_contour_num, float thresh = 0.3, uint32_t device = 0) {
     std::vector<Tensor> input{in_tensor};
 
@@ -450,20 +450,14 @@ class DbnetPostProcesser {
     cfg.pitch = width;
     cfg.thresh = thresh;
 
-    // out_tensor0: to save point array, assume that there are 10 point in a
-    // countour.
-    Tensor out_tensor0({4, height, width}, Context::VACC(device),
-                       TypeFlag::kUint8);
-    // out_tensor1: to save contour array.
-    Tensor out_tensor1({1, 20 * max_contour_num}, Context::VACC(device),
-                       TypeFlag::kUint8);
-    // out_tensor1: to save contour number.
-    Tensor out_tensor2({1}, Context::VACC(device), TypeFlag::kUint32);
-    Tensor vdsp_buffer({4, height, width + 2}, Context::VACC(device),
-                       TypeFlag::kUint8);
-
-    std::vector<Tensor> output{out_tensor0, out_tensor1, out_tensor2,
-                               vdsp_buffer};
+    int img_size = height * width * 4;  // 4 byte for uint32
+    int contour_size = 20 * max_contour_num;
+    int contour_num_size = 4;  // 4 byte for uint32
+    int vdsp_buffer_size = (width + 2) * height * 4;
+    int total_size =
+        img_size + contour_size + contour_num_size + vdsp_buffer_size;
+    Tensor out_tensor0({total_size}, Context::VACC(device), TypeFlag::kUint8);
+    std::vector<Tensor> output{out_tensor0};
 
     assert(in_tensor.GetContext().dev_type == vsx::Context::kVACC);
 
@@ -488,13 +482,12 @@ class DbnetPostProcesser {
 
     find_contours_op_->RunSync(input, output, &cfg, sizeof(customized_param_t));
 
-    auto out_tensor0_cpu = output[0].Clone();
-    auto out_tensor1_cpu = output[1].Clone();
-    auto out_tensor2_cpu = output[2].Clone();
+    auto out_tensor0_cpu = out_tensor0.Clone();
 
     // 获取轨迹的个数
-    uint32_t det_contour_num = *(out_tensor2_cpu.MutableData<uint32_t>());
-
+    int index = img_size + contour_size;  // contour array start index
+    uint8_t* contour_num_ptr = out_tensor0_cpu.MutableData<uint8_t>() + index;
+    uint32_t det_contour_num = *reinterpret_cast<uint32_t*>(contour_num_ptr);
     if (det_contour_num > max_contour_num) {
       LOG(ERROR)
           << "Deteced contour num is greater than configed max_contour_num";
@@ -503,7 +496,9 @@ class DbnetPostProcesser {
     // 获取轨迹
     std::vector<std::vector<cv::Point>> contours;
     contours.reserve(det_contour_num);
-    auto contour_ptr = out_tensor1_cpu.MutableData<contour>();
+    uint8_t* contour_array_ptr =
+        out_tensor0_cpu.MutableData<uint8_t>() + img_size;
+    auto contour_ptr = reinterpret_cast<contour*>(contour_array_ptr);
     auto point_ptr = out_tensor0_cpu.MutableData<point>();
     uint64_t point_id_st = 0;
     for (uint32_t contour_id = 0; contour_id < det_contour_num; ++contour_id) {

@@ -112,13 +112,14 @@ options:
       --vdsp_params     vdsp preprocess parameter file (string [=./data/configs/yolo_div255_bgr888.json])
   -d, --device_ids      device id to run (string [=[0]])
   -b, --batch_size      profiling batch size of the model (unsigned int [=1])
-  -i, --instance        instance number or range for each device (unsigned int [=1])
+  -i, --instance        model instance number (unsigned int [=1])
   -s, --shape           model input shape (string [=])
       --iterations      iterations count for one profiling (int [=10240])
       --percentiles     percentiles of latency (string [=[50,90,95,99]])
       --threshold       threshold for detection (float [=0.5])
       --input_host      cache input data into host memory (bool [=0])
   -q, --queue_size      aync wait queue size (unsigned int [=2])
+      --warmup_times    number of warmup iterations (unsigned int [=10])
   -?, --help            print this message
 ```
 
@@ -301,7 +302,7 @@ optional arguments:
   -b BATCH_SIZE, --batch_size BATCH_SIZE
                         profiling batch size of the model
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   -s SHAPE, --shape SHAPE
                         model input shape
   --iterations ITERATIONS
@@ -312,6 +313,8 @@ optional arguments:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### det_prof.py 运行示例

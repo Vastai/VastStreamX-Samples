@@ -13,12 +13,6 @@
 
 namespace vsx {
 
-uint32_t getInputCount(const char* op_name) { return 1; }
-uint32_t getOutputCount(const char* op_name) { return 1; }
-
-vsx::CustomOperatorCallback callback{
-    getInputCount, nullptr, getOutputCount, nullptr, nullptr, nullptr, 0, 0};
-
 struct yuv_nv12_shape_t {
   int height, width;
   int h_pitch, w_pitch;
@@ -32,9 +26,7 @@ class BrightnessOp : public CustomOpBase {
  public:
   BrightnessOp(const std::string& op_name, const std::string& elf_file,
                uint32_t device_id = 0, float scale = 2.2)
-      : CustomOpBase(op_name, elf_file, device_id), scale_(scale) {
-    custom_op_->SetCallback(callback);
-  }
+      : CustomOpBase(op_name, elf_file, device_id), scale_(scale) {}
   void SetScale(float scale) { scale_ = scale; }
 
   vsx::Image Process(const vsx::Image& image) {

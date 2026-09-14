@@ -45,7 +45,7 @@ class SpaceToDepthOp : public CustomOpBase {
   SpaceToDepthOp(int kh, int kw, int oh_align, int ow_align,
                  const std::string& op_name = "opf_space_to_depth_out_matrix",
                  const std::string& elf_file =
-                     "/opt/vastai/vastpipe/data/elf/space_to_depth",
+                     "/opt/vastai/vaststreamx/data/elf/space_to_depth",
                  uint32_t device_id = 0)
       : CustomOpBase(op_name, elf_file, device_id) {
     CHECK(oh_align / 16 * 16 == oh_align)

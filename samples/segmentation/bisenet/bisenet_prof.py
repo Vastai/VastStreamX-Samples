@@ -5,7 +5,7 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 common_path = os.path.join(current_file_path, "../../..")
 sys.path.append(common_path)
 
-from common.model_cv import ModelCV
+from common.segmentator import Segmentator
 from common.model_profiler import ModelProfiler
 from easydict import EasyDict as edict
 import argparse
@@ -48,7 +48,7 @@ def argument_parser():
         "--instance",
         default=1,
         type=int,
-        help="instance number for each device",
+        help="model instance number",
     )
     parser.add_argument(
         "-s",
@@ -78,6 +78,12 @@ def argument_parser():
         type=int,
         help="cache input data into host memory",
     )
+    parser.add_argument(
+        "--warmup_times",
+        default=10,
+        type=int,
+        help="number of warmup iterations",
+    )
     args = parser.parse_args()
     return args
 
@@ -94,13 +100,14 @@ if __name__ == "__main__":
     queue_size = args.queue_size
     input_host = args.input_host
     percentiles = ast.literal_eval(args.percentiles)
+    warmup_times = args.warmup_times
 
     models = []
     contexts = []
 
     for i in range(instance):
         device_id = device_ids[i % len(device_ids)]
-        model = ModelCV(model_prefix, vdsp_params, batch_size, device_id, hw_config)
+        model = Segmentator(model_prefix, vdsp_params, batch_size, device_id, hw_config)
         models.append(model)
         if input_host:
             contexts.append("CPU")
@@ -125,5 +132,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())

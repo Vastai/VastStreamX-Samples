@@ -195,7 +195,7 @@ if __name__ == "__main__":
         os.makedirs(args.dataset_output_path, exist_ok=True)
         compress_times = []
         decompress_times = []
-        pnsrs = []
+        psnrs = []
 
         for file in filepaths:
             print(f"image file:{file}")
@@ -230,7 +230,7 @@ if __name__ == "__main__":
             cv_image = cv_image[np.newaxis, :] / 255.0
             psnr = compute_psnr(decom_out["x_hat"], torch.from_numpy(cv_image))
             print(f"psnr:{psnr}")
-            pnsrs.append(psnr)
+            psnrs.append(psnr)
             compress_times.append(com_out["cost_time"])
             decompress_times.append(decom_out["cost_time"])
 
@@ -239,7 +239,7 @@ if __name__ == "__main__":
 
         average_compress_time = sum(compress_times) / float(len(compress_times))
         average_decompress_time = sum(decompress_times) / float(len(decompress_times))
-        average_pnsr = sum(pnsrs) / float(len(pnsrs))
+        average_psnr = sum(psnrs) / float(len(psnrs))
         print(f"    Ave Compress time:{average_compress_time*1000} ms")
         print(f"    Ave Decompress time:{average_decompress_time*1000} ms")
-        print(f"    Ave PNSR:{average_pnsr}")
+        print(f"    Ave PSNR:{average_psnr}")

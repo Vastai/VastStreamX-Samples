@@ -2,7 +2,7 @@ import sys
 import os
 import torch
 
-# _dataset_path = "/opt/vastai/vastpipe/data/images/fastreid"
+# _dataset_path = "/opt/vastai/vaststreamx/data/images/fastreid"
 # os.environ["FASTREID_DATASETS"] = _dataset_path + "/datasets/"
 # sys.path.append(_dataset_path + "/fast-reid/")
 current_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parse.add_argument(
         "--gt",
         type=str,
-        default="/opt/vastai/vastpipe/data/images/fastreid/fast-reid/configs/Market1501/bagtricks_R50.yml",
+        default="/opt/vastai/vaststreamx/data/images/fastreid/fast-reid/configs/Market1501/bagtricks_R50.yml",
         help="fastreid output folder",
     )
     args = parse.parse_args()

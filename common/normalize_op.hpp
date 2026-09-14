@@ -40,12 +40,12 @@ typedef struct {
 
 class NormalizeOp : public CustomOpBase {
  public:
-  NormalizeOp(
-      const std::string& op_name = "opf_normalize",
-      const std::string& elf_file = "/opt/vastai/vastpipe/data/elf/normalize",
-      uint32_t device_id = 0, const std::vector<uint16_t>& mean_v = {},
-      const std::vector<uint16_t>& std_v = {},
-      normal_type_t normal_type = normal_type_t::NORMAL_EQUAL)
+  NormalizeOp(const std::string& op_name = "opf_normalize",
+              const std::string& elf_file =
+                  "/opt/vastai/vaststreamx/data/elf/normalize",
+              uint32_t device_id = 0, const std::vector<uint16_t>& mean_v = {},
+              const std::vector<uint16_t>& std_v = {},
+              normal_type_t normal_type = normal_type_t::NORMAL_EQUAL)
       : CustomOpBase(op_name, elf_file, device_id) {
     if (normal_type == normal_type_t::NORMAL_MINUSMEAN_DIVSTD) {
       CHECK(mean_v.size() == 3)

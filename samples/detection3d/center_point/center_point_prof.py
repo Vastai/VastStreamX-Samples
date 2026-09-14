@@ -88,7 +88,7 @@ def argument_parser():
         "--instance",
         default=1,
         type=int,
-        help="instance number for each device",
+        help="model instance number",
     )
     parser.add_argument(
         "-s",
@@ -118,6 +118,12 @@ def argument_parser():
         type=int,
         help="cache input data into host memory",
     )
+    parser.add_argument(
+        "--warmup_times",
+        default=10,
+        type=int,
+        help="number of warmup iterations",
+    )
     args = parser.parse_args()
     return args
 
@@ -135,6 +141,7 @@ if __name__ == "__main__":
     percentiles = ast.literal_eval(args.percentiles)
     max_voxel_nums = ast.literal_eval(args.max_voxel_num)
     max_points_num = args.max_points_num
+    warmup_times = args.warmup_times
 
     assert len(model_prefixs) == len(max_voxel_nums)
 
@@ -191,5 +198,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())

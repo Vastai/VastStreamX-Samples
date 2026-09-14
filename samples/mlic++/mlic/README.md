@@ -95,6 +95,6 @@ python3 mlic_inference.py  \
 # CPU min MHz:         800.0000
     Ave Compress time:596.7426829867892 ms
     Ave Decompress time:648.1502321031359 ms
-    Ave PNSR:35.357761837544075
+    Ave PSNR:35.357761837544075
 
 ```

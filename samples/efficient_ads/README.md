@@ -90,7 +90,7 @@ options:
   -b BATCH_SIZE, --batch_size BATCH_SIZE
                         profiling batch size of the model
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   -s SHAPE, --shape SHAPE
                         model input shape
   --iterations ITERATIONS
@@ -101,6 +101,8 @@ options:
                         percentiles of latency
   --input_host INPUT_HOST
                         cache input data into host memory
+  --warmup_times WARMUP_TIMES
+                        number of warmup iterations
 ```
 
 ### efficient_ads_prof.py 命令行示例
@@ -133,7 +135,7 @@ python3 ./efficient_ads_prof.py \
 --input_host 0
 ```
 
-### face_detection_prof.py 命令结果示例
+### efficient_ads_prof.py 命令结果示例
 
 本结果在OCLK=1250MHz情况下测试得到
 

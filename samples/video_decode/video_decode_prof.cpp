@@ -22,7 +22,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("device_ids", 'd', "device id to run", false, "[0]");
   args.add<std::string>("input_file", '\0', "input file", false, "");
 
-  args.add<uint32_t>("instance", 'i', "instance number for each device", false,
+  args.add<uint32_t>("instance", 'i', "model instance number", false,
                      1);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);

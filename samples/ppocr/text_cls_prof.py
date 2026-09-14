@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2025 Vastai-tech Company.
+# All rights reserved.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+#
 import os
 import sys
 
@@ -5,7 +12,7 @@ current_file_path = os.path.dirname(os.path.abspath(__file__))
 common_path = os.path.join(current_file_path, "../..")
 sys.path.append(common_path)
 
-from common.text_rec import TextRecognizer
+from common.text_cls import TextClassifier
 from common.model_profiler import ModelProfiler
 from easydict import EasyDict as edict
 import argparse
@@ -17,7 +24,7 @@ def argument_parser():
     parser.add_argument(
         "-m",
         "--model_prefix",
-        default="/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod",
+        default="/opt/vastai/vaststreamx/data/models/resnet50-int8-percentile-3_224_224-vacc/resnet50",
         help="model prefix of the model suite files",
     )
     parser.add_argument(
@@ -27,7 +34,7 @@ def argument_parser():
     )
     parser.add_argument(
         "--vdsp_params",
-        default="./data/configs/crnn_rgbplanar.json",
+        default="./data/configs/resnet_bgr888.json",
         help="vdsp preprocess parameter file",
     )
     parser.add_argument(
@@ -48,12 +55,7 @@ def argument_parser():
         "--instance",
         default=1,
         type=int,
-        help="instance number for each device",
-    )
-    parser.add_argument(
-        "--label_file",
-        default="../data/labels/key_37.txt",
-        help="label file",
+        help="model instance number",
     )
     parser.add_argument(
         "-s",
@@ -62,7 +64,7 @@ def argument_parser():
     )
     parser.add_argument(
         "--iterations",
-        default=10,
+        default=10240,
         type=int,
         help="iterations count for one profiling",
     )
@@ -74,7 +76,7 @@ def argument_parser():
     )
     parser.add_argument(
         "--percentiles",
-        default="[50,90,95,99]",
+        default="[50, 90, 95, 99]",
         help="percentiles of latency",
     )
     parser.add_argument(
@@ -82,6 +84,12 @@ def argument_parser():
         default=0,
         type=int,
         help="cache input data into host memory",
+    )
+    parser.add_argument(
+        "--warmup_times",
+        default=10,
+        type=int,
+        help="number of warmup iterations",
     )
     args = parser.parse_args()
     return args
@@ -94,20 +102,21 @@ if __name__ == "__main__":
     hw_config = args.hw_config
     device_ids = ast.literal_eval(args.device_ids)
     batch_size = args.batch_size
-    label_file = args.label_file
     instance = args.instance
     iterations = args.iterations
     queue_size = args.queue_size
     input_host = args.input_host
     percentiles = ast.literal_eval(args.percentiles)
+    label_list = ["0", "180"]
+    warmup_times = args.warmup_times
 
     models = []
     contexts = []
 
     for i in range(instance):
         device_id = device_ids[i % len(device_ids)]
-        model = TextRecognizer(
-            model_prefix, vdsp_params, label_file, batch_size, device_id, hw_config
+        model = TextClassifier(
+            model_prefix, vdsp_params, label_list, batch_size, device_id, hw_config
         )
         models.append(model)
         if input_host:
@@ -115,11 +124,10 @@ if __name__ == "__main__":
         else:
             contexts.append("VACC")
 
-    if hasattr(args, "shape"):
+    if args.shape:
         shape = ast.literal_eval(args.shape)
     else:
         shape = models[0].input_shape[0]
-
     config = edict(
         {
             "instance": instance,
@@ -133,5 +141,5 @@ if __name__ == "__main__":
             "queue_size": queue_size,
         }
     )
-    profiler = ModelProfiler(config, models)
+    profiler = ModelProfiler(config, models, warmup_times)
     print(profiler.profiling())

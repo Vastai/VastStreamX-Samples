@@ -37,9 +37,10 @@ class ProfilerResult:
 
 
 class ModelProfiler:
-    def __init__(self, config, models) -> None:
+    def __init__(self, config, models, warmup_iters=10) -> None:
         self.config_ = config
         self.models_ = models
+        self.warmup_iters_ = warmup_iters if warmup_iters > 0 else 1
         self.iters_left_ = config.iterations
         self.merge_lock = threading.Lock()
         self.throughput_ = 0
@@ -49,7 +50,6 @@ class ModelProfiler:
             self.long_time_test_ = False
         else:
             self.long_time_test_ = True
-        self.warmup(warmup_iters=1)
         
     def profiling(self):
         threads = []
@@ -95,12 +95,18 @@ class ModelProfiler:
             self.config_.batch_size,
             self.config_.contexts[idx],
         )
+
+        # warmup
+        for i in range(self.warmup_iters_):
+            self.models_[idx].process(infer_data)
+        print(f"Warmup done for instance {idx}")
+
         queue_futs = queue.Queue(self.config_.queue_size)
         ticks = []
         tocks = []
         context = edict(stopped=False, left=0, lock=threading.Lock())
 
-        def cunsume_thread_func(context, queue_futs, tocks):
+        def consume_thread_func(context, queue_futs, tocks):
             while not context.stopped or context.left > 0:
                 if context.left > 0:
                     fut = queue_futs.get(timeout=0.01)
@@ -113,10 +119,10 @@ class ModelProfiler:
                 else:
                     time.sleep(0.00001)
 
-        cunsume_thread = threading.Thread(
-            target=cunsume_thread_func, args=(context, queue_futs, tocks)
+        consume_thread = threading.Thread(
+            target=consume_thread_func, args=(context, queue_futs, tocks)
         )
-        cunsume_thread.start()
+        consume_thread.start()
         start = time.time()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             while self.iters_left_ > 0 or self.long_time_test_:
@@ -129,7 +135,7 @@ class ModelProfiler:
                 if self.long_time_test_ is False:
                     ticks.append(tick)
         context.stopped = True
-        cunsume_thread.join()
+        consume_thread.join()
         end = time.time()
         self.merge_lock.acquire()
         time_used = (end - start) * 1000000
@@ -152,6 +158,11 @@ class ModelProfiler:
             while True:
                 self.models_[idx].process(infer_data)
 
+        # warmup
+        for i in range(self.warmup_iters_):
+            self.models_[idx].process(infer_data)
+        print(f"Warmup done for instance {idx}")
+        
         ticks = []
         tocks = []
 
@@ -175,12 +186,12 @@ class ModelProfiler:
 
     def warmup(self, warmup_iters=1):
         for idx, model in enumerate(self.models_):
-            vsx.set_device(model.device_id_)
             infer_data = model.get_test_data(
                 self.config_.data_type,
                 self.config_.input_shape,
                 self.config_.batch_size,
                 self.config_.contexts[idx],
             )
+            vsx.set_device(model.device_id_)
             for _ in range(warmup_iters):
                 model.process(infer_data)

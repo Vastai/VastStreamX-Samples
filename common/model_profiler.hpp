@@ -57,8 +57,8 @@ class ModelProfiler {
                            uint32_t, Context, std::vector<TShape>>;
 
   ModelProfiler(const ProfilerConfig& config,
-                std::vector<std::shared_ptr<T>> models)
-      : config_(&config), models_(models) {
+                std::vector<std::shared_ptr<T>> models, int warmup_iters = 10)
+      : config_(&config), models_(models), warmup_iters_(warmup_iters) {
     threads_.reserve(models.size());
     long_time_test_ = config.iterations > 0 ? false : true;
     iters_left_ = long_time_test_ ? 1 : config.iterations;
@@ -123,7 +123,12 @@ class ModelProfiler {
         config_->batch_size, config_->data_type, config_->contexts[idx],
         config_->input_shapes);
 
-    std::thread cunsume_thread([&] {
+    // warmup
+    for (int i = 0; i < warmup_iters_; i++) {
+      models_[idx]->Process(infer_data);
+    }
+    std::cout << "Warmup done for instance " << idx << std::endl;
+    std::thread consume_thread([&] {
       while (!stopped || left > 0) {
         if (left > 0) {
           std::future<InferResult> fut;
@@ -157,7 +162,7 @@ class ModelProfiler {
       ++left;
     }
     stopped = true;
-    cunsume_thread.join();
+    consume_thread.join();
     auto end = std::chrono::high_resolution_clock::now();
     merge_mutex.lock();
     uint64_t used = duration_cast<microseconds>(end - start).count();
@@ -180,6 +185,12 @@ class ModelProfiler {
     auto infer_data = models_[idx]->GetTestData(
         config_->batch_size, config_->data_type, config_->contexts[idx],
         config_->input_shapes);
+
+    // warmup
+    for (int i = 0; i < warmup_iters_; i++) {
+      models_[idx]->Process(infer_data);
+    }
+    std::cout << "Warmup done for instance " << idx << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
     while (--iters_left_ >= 0 || long_time_test_) {
@@ -218,6 +229,7 @@ class ModelProfiler {
   std::vector<time_point> latency_end_;
   std::mutex merge_mutex;
   bool long_time_test_ = false;
+  int warmup_iters_ = 2;
 };
 
 }  // namespace vsx

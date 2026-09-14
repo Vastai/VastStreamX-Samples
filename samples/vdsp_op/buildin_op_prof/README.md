@@ -13,7 +13,7 @@ Buildin Op 即 SDK 自带的算子。 本 sample 用于展示如何测试各算�
 options:
   -d, --device_ids     device id to run (string [=[0]])
       --op_config      build in op config json (string)
-  -i, --instance       instance number or range for each device (unsigned int [=1])
+  -i, --instance       model instance number (unsigned int [=1])
       --iterations     iterations count for one profiling (int [=10240])
       --percentiles    percentiles of latency (string [=[50, 90, 95, 99]])
       --input_host     cache input data into host memory (bool [=0])
@@ -662,7 +662,7 @@ optional arguments:
   -d DEVICE_IDS, --device_ids DEVICE_IDS
                         device ids to run
   -i INSTANCE, --instance INSTANCE
-                        instance number for each device
+                        model instance number
   --iterations ITERATIONS
                         iterations count for one profiling
   --percentiles PERCENTILES

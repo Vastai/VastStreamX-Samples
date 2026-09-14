@@ -260,7 +260,7 @@ cmdline::parser ArgumentParser(int argc, char** argv) {
   args.add<std::string>("device_ids", 'd', "device id to run", false, "[0]");
   args.add<std::string>("op_config", '\0', "build in op config json", true);
   args.add<uint32_t>("instance", 'i',
-                     "instance number or range for each device", false, 1);
+                     "model instance number", false, 1);
   args.add<int>("iterations", '\0', "iterations count for one profiling", false,
                 10240);
   args.add<std::string>("percentiles", '\0', "percentiles of latency", false,

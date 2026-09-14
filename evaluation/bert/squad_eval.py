@@ -76,13 +76,13 @@ if __name__ == '__main__':
     parse.add_argument(
         "--eval_path", 
         type=str,
-        default="/opt/vastai/vastpipe/data/nlp/SQuAD_1.1/dev-v1.1.json",
+        default="/opt/vastai/vaststreamx/data/nlp/SQuAD_1.1/dev-v1.1.json",
         help="MRPC-dev file path "
     )
     parse.add_argument(
         "--vocab_path", 
         type=str,
-        default="/opt/vastai/vastpipe/data/nlp/SQuAD_1.1/vocab.txt",
+        default="/opt/vastai/vaststreamx/data/nlp/SQuAD_1.1/vocab.txt",
         help="MRPC-dev file path "
     )
     args = parse.parse_args()

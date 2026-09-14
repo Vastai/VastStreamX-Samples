@@ -65,14 +65,14 @@ def test_elic_inference_py_precision(device_id):
     decompress_time = re.search(
         pattern=r"\d+.\d+", string=re.search(pattern=r"Decompress time:\d+.\d+", string=res).group()
     ).group()
-    pnsr = re.search(
-        pattern=r"\d+.\d+", string=re.search(pattern=r"PNSR:\d+.\d+", string=res).group()
+    psnr = re.search(
+        pattern=r"\d+.\d+", string=re.search(pattern=r"PSNR:\d+.\d+", string=res).group()
     ).group()
 
     
     compress_time_thresh = 800
     decompress_time_thresh = 500
-    pnsr_thresh = 37.6 
+    psnr_thresh = 37.6 
 
 
     assert (
@@ -84,8 +84,8 @@ def test_elic_inference_py_precision(device_id):
     ), f"elic python :decompress_time {decompress_time} is larger than {decompress_time_thresh}"
 
     assert (
-        float(pnsr) > pnsr_thresh
-    ), f"elic python :pnsr {pnsr} is smaller than {pnsr_thresh}"
+        float(psnr) > psnr_thresh
+    ), f"elic python :psnr {psnr} is smaller than {psnr_thresh}"
 
     os.system("rm -rf dataset_outputs")
 
@@ -146,13 +146,13 @@ def test_dynamic_elic_inference_py_precision(device_id):
     decompress_time = re.search(
         pattern=r"\d+.\d+", string=re.search(pattern=r"Decompress time:\d+.\d+", string=res).group()
     ).group()
-    pnsr = re.search(
-        pattern=r"\d+.\d+", string=re.search(pattern=r"PNSR:\d+.\d+", string=res).group()
+    psnr = re.search(
+        pattern=r"\d+.\d+", string=re.search(pattern=r"PSNR:\d+.\d+", string=res).group()
     ).group()
 
     compress_time_thresh = 600
     decompress_time_thresh = 500
-    pnsr_thresh = 37.4 
+    psnr_thresh = 37.4 
 
     assert (
         float(compress_time) < compress_time_thresh
@@ -163,8 +163,8 @@ def test_dynamic_elic_inference_py_precision(device_id):
     ), f"dynamic elic python :decompress_time {decompress_time} is larger than {decompress_time_thresh}"
 
     assert (
-        float(pnsr) > pnsr_thresh
-    ), f"dynamic elic python :pnsr {pnsr} is smaller than {pnsr_thresh}"
+        float(psnr) > psnr_thresh
+    ), f"dynamic elic python :psnr {psnr} is smaller than {psnr_thresh}"
 
     os.system("rm -rf dataset_outputs")
 
@@ -240,13 +240,13 @@ def test_elic_no_entropy_inference_py_512_512_precision(device_id):
     bbp = re.search(
         pattern=r"\d+.\d+", string=re.search(pattern=r"bbp:\d+.\d+", string=res).group()
     ).group()
-    pnsr = re.search(
-        pattern=r"\d+.\d+", string=re.search(pattern=r"PNSR:\d+.\d+", string=res).group()
+    psnr = re.search(
+        pattern=r"\d+.\d+", string=re.search(pattern=r"PSNR:\d+.\d+", string=res).group()
     ).group()
 
     compress_time_thresh = 200
     bbp_thresh = 0.84
-    pnsr_thresh = 37.65 
+    psnr_thresh = 37.65 
 
     assert (
         float(compress_time) < compress_time_thresh
@@ -257,8 +257,8 @@ def test_elic_no_entropy_inference_py_512_512_precision(device_id):
     ), f"no_entropy 512x512 elic python :bbp {bbp} is smaller than {bbp_thresh}"
 
     assert (
-        float(pnsr) > pnsr_thresh
-    ), f"no_entropy 512x512 elic python :pnsr {pnsr} is smaller than {pnsr_thresh}"
+        float(psnr) > psnr_thresh
+    ), f"no_entropy 512x512 elic python :psnr {psnr} is smaller than {psnr_thresh}"
 
     os.system("rm -rf dataset_outputs_512x512")
 
@@ -286,13 +286,13 @@ def test_elic_no_entropy_inference_py_1280_2048_precision(device_id):
     bbp = re.search(
         pattern=r"\d+.\d+", string=re.search(pattern=r"bbp:\d+.\d+", string=res).group()
     ).group()
-    pnsr = re.search(
-        pattern=r"\d+.\d+", string=re.search(pattern=r"PNSR:\d+.\d+", string=res).group()
+    psnr = re.search(
+        pattern=r"\d+.\d+", string=re.search(pattern=r"PSNR:\d+.\d+", string=res).group()
     ).group()
 
     compress_time_thresh = 2000
     bbp_thresh = 0.26
-    pnsr_thresh = 42.99 
+    psnr_thresh = 42.99 
 
     assert (
         float(compress_time) < compress_time_thresh
@@ -303,8 +303,8 @@ def test_elic_no_entropy_inference_py_1280_2048_precision(device_id):
     ), f"no_entropy 1280x2048 elic python :bbp {bbp} is smaller than {bbp_thresh}"
 
     assert (
-        float(pnsr) > pnsr_thresh
-    ), f"no_entropy 1280x2048 elic python :pnsr {pnsr} is smaller than {pnsr_thresh}"
+        float(psnr) > psnr_thresh
+    ), f"no_entropy 1280x2048 elic python :psnr {psnr} is smaller than {psnr_thresh}"
 
     os.system("rm -rf dataset_outputs_1280x2048")
 

@@ -19,6 +19,7 @@ import argparse
 from common.text_det import TextDetector
 from common.text_cls import TextClassifier
 from common.text_rec import TextRecognizer
+from common.doc_img_orient_cls import DocImgOrientClassifier
 import copy
 import vaststreamx as vsx
 from easydict import EasyDict as edict
@@ -32,8 +33,26 @@ attr = vsx.AttrKey
 def argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--doc_ori_model",
+        default="",
+        help="document image orientation classification model prefix of the model suite files",
+    )
+    parser.add_argument(
+        "--doc_ori_vdsp_params",
+        default="",
+        help="document image orientation classification model vdsp preprocess parameter file",
+    )
+    parser.add_argument(
+        "--doc_ori_label_file",
+        default="",
+        help="doc image orientation classification label file",
+    )
+    parser.add_argument(
+        "--use_doc_ori_cls", type=int, default=1, help="whether use document image orientation classifier"
+    )
+    parser.add_argument(
         "--det_model",
-        default="/opt/vastai/vaststreamx/data/models/dbnet_resnet50_vd-int8-kl_divergence-1_3_736_1280-vacc/mod",
+        default="/opt/vastai/vaststreamx/data/models/ppocr-v5-mobile/det_fp16_1-3-960-960/mod",
         help="text detection model prefix of the model suite files",
     )
     parser.add_argument(
@@ -52,33 +71,39 @@ def argument_parser():
         help="input file",
     )
     parser.add_argument(
-        "--cls_model",
+        "--det_box_thresh", type=float, default=0.6, help="text detection box thresh"
+    )
+    parser.add_argument(
+        "--text_ori_model",
         default="/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod",
         help="text detection model prefix of the model suite files",
     )
     parser.add_argument(
-        "--cls_vdsp_params",
+        "--text_ori_vdsp_params",
         default="./data/configs/crnn_rgbplanar.json",
         help="text detection vdsp preprocess parameter file",
     )
     parser.add_argument(
-        "--cls_label_list",
+        "--text_ori_label_list",
         type=list,
         default=["0", "180"],
-        help="text classification label list",
+        help="text line orientation classification label list",
     )
     parser.add_argument(
-        "--cls_thresh", type=float, default=0.9, help="text classification thresh"
+        "--text_ori_thresh", type=float, default=0.9, help="text line orientation classification thresh"
+    )
+    parser.add_argument(
+        "--use_text_ori_cls", type=int, default=1, help="whether use text line orientation classifier"
     )
     parser.add_argument(
         "--rec_model",
         default="/opt/vastai/vaststreamx/data/models/resnet34_vd-int8-max-1_3_32_100-vacc/mod",
-        help="text detection model prefix of the model suite files",
+        help="text recognition model prefix of the model suite files",
     )
     parser.add_argument(
         "--rec_vdsp_params",
         default="./data/configs/crnn_rgbplanar.json",
-        help="text detection vdsp preprocess parameter file",
+        help="text recognition vdsp preprocess parameter file",
     )
     parser.add_argument(
         "--rec_label_file",
@@ -90,9 +115,6 @@ def argument_parser():
         type=float,
         default=0.5,
         help="text recogniztion drop score threshold",
-    )
-    parser.add_argument(
-        "--use_angle_cls", type=bool, default=True, help="whether use angle classifier"
     )
     parser.add_argument(
         "--hw_config",
@@ -134,76 +156,119 @@ def argument_parser():
     return args
 
 
-class OCR_e2e:
+class PPOCR:
     def __init__(
         self,
+        doc_ori_model:str,
+        doc_ori_vdsp_params,
+        doc_ori_labels:dict,
+        use_doc_ori_cls,
         det_model,
-        det_config,
+        det_vdsp_params,
         det_box_type,
         det_elf_file,
-        cls_model,
-        cls_config,
-        cls_label_list,
-        cls_thresh,
+        det_box_thresh,
+        text_ori_model,
+        text_ori_vdsp_params,
+        text_ori_label_list,
+        text_ori_thresh,
+        use_text_ori_cls,
         rec_model,
-        rec_config,
+        rec_vdsp_params,
         rec_label_file,
         rec_drop_score,
-        use_angle_cls,
         batch_size=1,
         device_id=0,
         hw_config="",
     ):
+        self.use_doc_ori_cls = use_doc_ori_cls
+        if use_doc_ori_cls:
+            self.doc_img_orient_cls = DocImgOrientClassifier(
+                doc_ori_model, doc_ori_vdsp_params, batch_size, device_id, hw_config
+            )
+            self.doc_ori_labels = doc_ori_labels
+
         self.text_det = TextDetector(
             det_model,
-            det_config,
+            det_vdsp_params,
             batch_size,
             device_id,
             hw_config,
+            box_thresh=det_box_thresh,
             elf_file=det_elf_file,
         )
-        self.text_cls = TextClassifier(
-            cls_model, cls_config, cls_label_list, batch_size, device_id, hw_config
-        )
+
+        if use_text_ori_cls:
+            self.text_ori_cls = TextClassifier(
+                text_ori_model, text_ori_vdsp_params, text_ori_label_list, batch_size, device_id, hw_config
+            )
         self.text_rec = TextRecognizer(
-            rec_model, rec_config, rec_label_file, batch_size, device_id, hw_config
+            rec_model, rec_vdsp_params, rec_label_file, batch_size, device_id, hw_config
         )
         self.det_box_type = det_box_type
-        self.use_angle_cls = use_angle_cls
-        self.cls_thresh = cls_thresh
+        self.use_text_ori_cls = use_text_ori_cls
+        self.text_ori_thresh = text_ori_thresh
         self.rec_drop_score = rec_drop_score
         self.device_id = device_id
-        self.image_format = self.text_det.get_fusion_op_iimage_format()
 
-    def process(self, image, cv_image):
-        [dt_boxes, dt_scores] = self.text_det.process(image)
+    def process(self, cv_image: np.ndarray):
+        # document image orientation classifier
+        rotate_angle = 0
+        if self.use_doc_ori_cls:
+            input_format = self.doc_img_orient_cls.get_fusion_op_iimage_format()
+            vsx_image = utils.cv_bgr888_to_vsximage(cv_image, input_format, self.device_id)
+            index, score = self.doc_img_orient_cls.process(vsx_image)
+            if self.doc_ori_labels[index] == 90:
+                cv_image = cv2.rotate(cv_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                rotate_angle = 90
+            elif self.doc_ori_labels[index] == 180:
+                cv_image = cv2.rotate(cv_image, cv2.ROTATE_180)
+                rotate_angle = 180
+            elif self.doc_ori_labels[index] == 270:
+                cv_image = cv2.rotate(cv_image, cv2.ROTATE_90_CLOCKWISE)
+                rotate_angle = 270
+
+        # text detection
+        input_format = self.text_det.get_fusion_op_iimage_format()
+        vsx_image = utils.cv_bgr888_to_vsximage(cv_image, input_format, self.device_id)
+        [dt_boxes, dt_scores] = self.text_det.process(vsx_image)
         if dt_boxes is None or dt_boxes.size == 0:
             return None
         img_crop_list = []
-        vacc_img_crop_list = []
 
+        # crop text box from original image according to the detection result
         for bno in range(len(dt_boxes)):
             tmp_box = copy.deepcopy(dt_boxes[bno])
             if args.det_box_type == "quad":
                 img_crop = self.get_rotate_crop_image(cv_image, tmp_box)
             else:
                 img_crop = self.get_minarea_rect_crop(cv_image, tmp_box)
-            img_crop_list.append(img_crop)
-            vacc_img_crop = utils.cv_bgr888_to_vsximage(
-                img_crop, self.image_format, self.device_id
-            )
-            vacc_img_crop_list.append(vacc_img_crop)
-        if self.use_angle_cls and self.text_cls:
-            cls_result = self.text_cls.process(vacc_img_crop_list)
+            if img_crop is not None:
+                img_crop_list.append(img_crop)
+
+        # rotate text image according to the classification result
+        if self.use_text_ori_cls and self.text_ori_cls:
+            cls_input_format = self.text_ori_cls.get_fusion_op_iimage_format()
+            vacc_cls_input_list = []
+            for img_crop in img_crop_list:
+                vacc_img_crop = utils.cv_bgr888_to_vsximage(
+                    img_crop, cls_input_format, self.device_id
+                )
+                vacc_cls_input_list.append(vacc_img_crop)
+            cls_result = self.text_ori_cls.process(vacc_cls_input_list)
             for rno in range(len(cls_result)):
                 label, score = cls_result[rno]
-                if "180" in label and score > self.cls_thresh:
+                if "180" in label and score > self.text_ori_thresh:
                     img_crop_list[rno] = cv2.rotate(img_crop_list[rno], 1)
-                    vacc_img_crop_list[rno] = utils.cv_bgr888_to_vsximage(
-                        img_crop_list[rno], self.image_format, self.device_id
-                    )
-
-        rec_res = self.text_rec.process(vacc_img_crop_list)
+        # text recognition for each text image
+        vacc_rec_input_list = []
+        rec_input_format = self.text_rec.get_fusion_op_iimage_format()
+        for img_crop in img_crop_list:
+            vacc_img_crop = utils.cv_bgr888_to_vsximage(
+                img_crop, rec_input_format, self.device_id
+            )
+            vacc_rec_input_list.append(vacc_img_crop)
+        rec_res = self.text_rec.process(vacc_rec_input_list)
 
         filter_boxes, filter_rec_res = [], []
         for box, rec_result in zip(dt_boxes, rec_res):
@@ -211,7 +276,7 @@ class OCR_e2e:
             if score >= self.rec_drop_score:
                 filter_boxes.append(box)
                 filter_rec_res.append(rec_result)
-        return filter_boxes, filter_rec_res
+        return filter_boxes, filter_rec_res, rotate_angle
 
     def get_rotate_crop_image(self, img, points):
         """
@@ -238,6 +303,9 @@ class OCR_e2e:
                 np.linalg.norm(points[1] - points[2]),
             )
         )
+        if img_crop_width < 5 or img_crop_height < 5:
+            return None
+        
         pts_std = np.float32(
             [
                 [0, 0],
@@ -247,6 +315,7 @@ class OCR_e2e:
             ]
         )
         M = cv2.getPerspectiveTransform(points, pts_std)
+       
         dst_img = cv2.warpPerspective(
             img,
             M,
@@ -287,17 +356,14 @@ class OCR_e2e:
 
 def inference_thread(model, args, context, thread_index):
     vsx.set_device(model.device_id)
-    image_format = model.get_fusion_op_iimage_format()
-
     if args.dataset_filelist == "":
         cv_image = cv2.imread(args.input_file)
         assert cv_image is not None, f"Failed to read input file: {args.input_file}"
-        vsx_image = utils.cv_bgr888_to_vsximage(cv_image, image_format, model.device_id)
-        ocr_res = model.process(vsx_image, cv_image)
+        ocr_res = model.process(cv_image)
         if ocr_res is None:
-            print("Do not detect any text")
+            print("Cann't detect any text")
         else:
-            boxes, rec_res = ocr_res
+            boxes, rec_res, rot_angle = ocr_res
             for box, rec_result in zip(boxes, rec_res):
                 out_str = "["
                 for point in box:
@@ -305,6 +371,12 @@ def inference_thread(model, args, context, thread_index):
                 out_str = out_str[:-2] + "], "
                 print(out_str, rec_result)
             if args.output_file != "":
+                if rot_angle == 90:
+                    cv_image = cv2.rotate(cv_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                elif rot_angle == 180:
+                    cv_image = cv2.rotate(cv_image, cv2.ROTATE_180)
+                elif rot_angle == 270:
+                    cv_image = cv2.rotate(cv_image, cv2.ROTATE_90_CLOCKWISE)
                 for box in boxes:
                     for i in range(len(box)):
                         t = (i + 1) % len(box)
@@ -313,6 +385,14 @@ def inference_thread(model, args, context, thread_index):
                         cv2.line(cv_image, pt1, pt2, color=(0, 0, 255))
                 dir, basename = os.path.split(args.output_file)
                 save_file = os.path.join(dir, f"thread_{thread_index}_{basename}")
+
+                if rot_angle == 90:
+                    cv_image = cv2.rotate(cv_image, cv2.ROTATE_90_CLOCKWISE)
+                elif rot_angle == 180:
+                    cv_image = cv2.rotate(cv_image, cv2.ROTATE_180)
+                elif rot_angle == 270:
+                    cv_image = cv2.rotate(cv_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
                 cv2.imwrite(save_file, cv_image)
                 print("save file ", save_file)
 
@@ -329,17 +409,14 @@ def inference_thread(model, args, context, thread_index):
                 print("fullname:", fullname)
                 cv_image = cv2.imread(fullname)
                 assert cv_image is not None, f"Read image failed:{filename}"
-                vsx_image = utils.cv_bgr888_to_vsximage(
-                    cv_image, image_format, model.device_id
-                )
                 start = time.time()
-                ocr_res = model.process(vsx_image, cv_image)
+                ocr_res = model.process(cv_image)
                 costs.append(time.time() - start)
                 result_str = ""
                 if ocr_res is None:
-                    result_str = "Do not detect any text"
+                    result_str = "Can't detect any text"
                 else:
-                    boxes, rec_res = ocr_res
+                    boxes, rec_res, _ = ocr_res
                     for box, rec_result in zip(boxes, rec_res):
                         res_str = "["
                         for point in box:
@@ -367,23 +444,36 @@ def inference_thread(model, args, context, thread_index):
 if __name__ == "__main__":
     args = argument_parser()
     device_ids = ast.literal_eval(args.device_ids)
+    use_text_ori_cls = bool(args.use_text_ori_cls)
 
-    models = []
+    doc_ori_labels={}
+    if args.use_doc_ori_cls:
+        lines = utils.load_labels(args.doc_ori_label_file)
+        for line in lines:
+            label, angle = line.strip().split()
+            doc_ori_labels[int(label)] = int(angle)
+
+    models=[]
     for id in device_ids:
-        model = OCR_e2e(
-            args.det_model,
-            args.det_vdsp_params,
-            args.det_box_type,
-            args.det_elf_file,
-            args.cls_model,
-            args.cls_vdsp_params,
-            args.cls_label_list,
-            args.cls_thresh,
-            args.rec_model,
-            args.rec_vdsp_params,
-            args.rec_label_file,
-            args.rec_drop_score,
-            args.use_angle_cls,
+        model = PPOCR(
+            doc_ori_model=args.doc_ori_model,
+            doc_ori_vdsp_params=args.doc_ori_vdsp_params,
+            doc_ori_labels=doc_ori_labels,
+            use_doc_ori_cls=args.use_doc_ori_cls,
+            det_model=args.det_model,
+            det_vdsp_params=args.det_vdsp_params,
+            det_box_type=args.det_box_type,
+            det_elf_file=args.det_elf_file,
+            det_box_thresh=args.det_box_thresh,
+            text_ori_model=args.text_ori_model,
+            text_ori_vdsp_params=args.text_ori_vdsp_params,
+            text_ori_label_list=args.text_ori_label_list,
+            text_ori_thresh=args.text_ori_thresh,
+            use_text_ori_cls=use_text_ori_cls,
+            rec_model=args.rec_model,
+            rec_vdsp_params=args.rec_vdsp_params,
+            rec_label_file=args.rec_label_file,
+            rec_drop_score=args.rec_drop_score,
             batch_size=1,
             device_id=id,
             hw_config=args.hw_config,

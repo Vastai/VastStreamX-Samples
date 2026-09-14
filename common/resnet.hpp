@@ -91,7 +91,7 @@ class Resnet : public ModelCV {
     return results;
   }
 
- private:
+ protected:
   int resize_size_ = 0;
   int model_size_ = 0;
 };
