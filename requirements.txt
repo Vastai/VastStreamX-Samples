@@ -28,7 +28,7 @@ lvis
 terminaltables
 pytest
 pytest-html
-pytest-merge-html
+pytest-html-merger
 crayons
 einops
 timm
